@@ -66,7 +66,7 @@ When real creds arrive, swap one config value, leave `mocks/` in place for offli
 ## Operating constraints
 
 - Daily autonomous run window: **04:00 Europe/Madrid (= 02:00 UTC during CEST, 03:00 UTC during CET).** Spaced one hour after `halflife-nightly` so the two routines don't fight for the same compute window.
-- Daily command budget: **≤10 tool/command calls per scheduled run.**
+- Daily command budget: **≤5 tool/command calls per scheduled run.** (Tightened from the original 10 to stay well inside Andrei's weekly Claude usage cap.)
 - Weekly external-data budget: **≤ $1 USD/week of `corgi` skill usage** (for keyword research on long-tail variants and for SERP qualification).
 - No production deploys, no domain purchases, no API-key commits, no destructive git operations.
 - Same wrapper-publishes model as `halflife`: the agent commits and exits; the cloud platform publishes the branch and opens the PR. Direct `git push` and `gh pr create` are 403'd by the proxy.

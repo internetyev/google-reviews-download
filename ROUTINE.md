@@ -13,7 +13,7 @@ _How each scheduled 04:00 Madrid run is expected to behave._
 
 ## Hard constraints
 
-1. **≤ 10 tool/command calls per run.** Plan the run before starting. A short, clean PR beats a long broken one.
+1. **≤ 5 tool/command calls per run.** Plan the run before starting. A short, clean PR beats a long broken one. (Tightened from 10 on 2026-04-29 to fit Andrei's weekly Claude usage cap.)
 2. **≤ $1 USD/week total `corgi` skill spend.** Cumulative tracked in `LEDGER.md`. If the running 7-day total would exceed $1, defer the corgi step and pick a different leaf. **Note:** the cloud agent has no corgi access — corgi-required leaves are deferred for Andrei's local pass.
 3. **No production deploys, no domain purchases, no API-key commits, no destructive git operations** (no force-push, no `reset --hard` against a remote, no remote-branch deletion).
 4. **No `npm install` / `pnpm install` / `pip install`** — installs are human steps. Commit manifests and config; do not run package managers.
@@ -31,7 +31,7 @@ _How each scheduled 04:00 Madrid run is expected to behave._
 
 - Choose the **first unchecked `[ ]` leaf** in `ROADMAP.md` (top-down, phase-by-phase).
 - If the leaf is marked `(deferred: needs local corgi pass)` or otherwise human-gated, **skip it** and pick the next.
-- If the chosen leaf would clearly need >10 commands, **split it** by writing sub-leaves into `ROADMAP.md` (L1.4 → L1.4a, L1.4b). Splitting itself is a valid productive run.
+- If the chosen leaf would clearly need >5 commands, **split it** by writing sub-leaves into `ROADMAP.md` (L1.4 → L1.4a, L1.4b). Splitting itself is a valid productive run. With a 5-command budget, splitting will be common; that is fine.
 
 ### 3. Work in place
 
@@ -81,7 +81,7 @@ Do **not** write `BLOCKED.md` for run-budget exhaustion or for corgi-deferred le
 
 ## Stop conditions (any one fires → end run gracefully)
 
-- 10 tool/command calls used.
+- 5 tool/command calls used.
 - A test or commit fails twice.
 - Working tree has unrelated changes from another session — abort, do not touch them, write a one-line note in `BLOCKED.md`.
 - A leaf would require buying a domain, deploying, sending an email, or posting publicly.
