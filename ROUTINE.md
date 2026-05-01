@@ -14,9 +14,9 @@ _How each scheduled 04:00 Madrid run is expected to behave._
 ## Hard constraints
 
 1. **Daily budget depends on day of week.** Check `date -u +%u` (Mon=1..Sun=7) and the Madrid local hour (`TZ='Europe/Madrid' date +%H`) before doing anything else.
-   - **Monday before 09:00 Madrid local: UNCAPPED — deplete.** This is the "use it or lose it" run; the weekly Claude cap resets at Monday 09:00 CET, so any quota still on the meter is about to vanish. Burn through as many leaves as the session can handle. Stop only when the session limit kicks in or the work runs out.
-   - Days 1–5 (Mon–Fri) at all other times: **≤ 2 tool/command calls per run.** Tight — usually only enough for a tiny edit or a `ROADMAP.md` split. That is fine. (The 04:00 cron always fires before 09:00, so in practice the Monday cron run uses the UNCAPPED rule above; this 2-command rule covers manual / off-schedule fires.)
-   - Days 6–7 (Sat–Sun): **≤ 10 tool/command calls per run.** Bigger leaves are possible. Andrei targets ~20 commands across the whole weekend (i.e. ~10/day) — burning what's left of his weekly Claude cap.
+   - **Sunday (any hour) and Monday before 09:00 Madrid: UNCAPPED — deplete.** This is the "use it or lose it" window; Andrei's weekly Claude cap resets at Monday 09:00 CET, and Sunday-plus-early-Monday is the last stretch where remaining quota can still be spent on this project. Burn through as many leaves as the session can handle. Stop only when the session limit kicks in or there are no actionable leaves left. Make multiple commits in one session — one per leaf — each in the commit-only-no-push pattern; the wrapper opens a PR per commit and the auto-merge workflow squash-merges them.
+   - **Saturday: ≤ 10 tool/command calls per run.** Saturday is the warm-up: take down a chunky leaf or two, but leave headroom for Sunday's depletion sweep.
+   - **Tue–Fri (any hour) and Mon at 09:00 or later: ≤ 2 tool/command calls per run.** Tight — usually only enough for a tiny edit or a `ROADMAP.md` split. That is fine. (The 04:00 cron always fires before 09:00 on Monday, so in practice the Monday cron run uses the UNCAPPED rule above; this 2-command rule covers manual / off-schedule fires.)
    Plan the run before starting. A short, clean PR beats a long broken one.
 2. **≤ $1 USD/week total `corgi` skill spend.** Cumulative tracked in `LEDGER.md`. If the running 7-day total would exceed $1, defer the corgi step and pick a different leaf. **Note:** the cloud agent has no corgi access — corgi-required leaves are deferred for Andrei's local pass.
 3. **No production deploys, no domain purchases, no API-key commits, no destructive git operations** (no force-push, no `reset --hard` against a remote, no remote-branch deletion).
@@ -35,7 +35,7 @@ _How each scheduled 04:00 Madrid run is expected to behave._
 
 - Choose the **first unchecked `[ ]` leaf** in `ROADMAP.md` (top-down, phase-by-phase).
 - If the leaf is marked `(deferred: needs local corgi pass)` or otherwise human-gated, **skip it** and pick the next.
-- If the chosen leaf would clearly exceed today's budget (2 on weekdays, 10 on weekend, uncapped on Monday-pre-reset), **split it** by writing sub-leaves into `ROADMAP.md` (L1.4 → L1.4a, L1.4b). Splitting itself is a valid productive run. On weekdays splitting will be the norm; that is fine.
+- If the chosen leaf would clearly exceed today's budget (2 on Tue–Fri, 10 on Sat, uncapped on Sun + Mon-pre-09:00), **split it** by writing sub-leaves into `ROADMAP.md` (L1.4 → L1.4a, L1.4b). Splitting itself is a valid productive run. On weekdays splitting will be the norm; that is fine. On uncapped days, prefer to do the work rather than split.
 
 ### 3. Work in place
 
