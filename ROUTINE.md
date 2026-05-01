@@ -49,15 +49,18 @@ _How each scheduled 04:00 Madrid run is expected to behave._
 
 The cloud agent has no access to Andrei's Obsidian Dropbox folder. The agent must instead include a `Mirror:` section in the commit body listing all new/changed `*.md` and `*.csv` paths so Andrei can `cp` them locally during PR review.
 
-### 5. Commit only — the platform publishes
+### 5. Commit only — the platform publishes, the workflow auto-merges
 
 - Commit message format: `<phase-id>: <leaf-id> <imperative summary>` (e.g., `phase-1: L1.3 add fixture data for mid-size business`).
-- Commit body must include the structured PR-ready fields the wrapper will lift into the PR description:
-  - **Leaf:** the line copied verbatim from `ROADMAP.md`
-  - **What changed:** 1–3 bullets
-  - **Cost:** corgi USD spent in this run + Claude prompt cost estimate
-  - **Mirror:** list of new/changed paths to copy to `Obsidian Vault/GOOGLE-REVIEWS-DOWNLOAD/`
-  - **Next:** the leaf id the next run will likely pick
+- **Your PRs auto-merge.** A `.github/workflows/auto-merge-claude.yml` workflow squash-merges any PR opened from a `claude/*` branch as soon as it is created. There is no human review gate. **That means your commit body becomes the merged PR description and lives in the repo's history forever — write it as if a future maintainer (possibly you, in a different session) is the only person who will ever read it.**
+- Commit body must include these structured fields, in this order:
+  - **Leaf:** the line copied verbatim from `ROADMAP.md` (id + description).
+  - **Why:** one sentence on why this leaf, now. Skip if the answer is "it was the next unchecked leaf" — only write Why when there's context worth preserving.
+  - **What changed:** 2–4 bullets that name files and concepts, not just verbs. "Adds `lib/semanticforce/types.ts` with the `Review` and `PlaceMeta` types matching `docs/semanticforce-api.md`" beats "Adds types".
+  - **Design notes:** any non-obvious choice — a tradeoff, a deferred concern, a thing the next run should know. Skip if there are none.
+  - **Cost:** corgi USD spent in this run + Claude prompt cost estimate (e.g. `$0.00 corgi, ~$0.02 prompt`).
+  - **Mirror:** list of new/changed `*.md` and `*.csv` paths under `docs/`, `mocks/`, plus the top-level planning docs. Andrei syncs these to `Obsidian Vault/GOOGLE-REVIEWS-DOWNLOAD/` separately on his Mac — this list is a courtesy index, not a trigger.
+  - **Next:** the leaf id and short description of what the next run will likely pick.
 - **Do NOT run `git push` or `gh pr create`.** The wrapper publishes the commit to a `claude/...` branch and opens the PR for you.
 
 ### 6. If blocked
