@@ -1,0 +1,114 @@
+{
+  "place": {
+    "place_id": "MOCK_SMALL_001",
+    "name": "Joe's Coffee",
+    "address": "123 Main Street, Anytown, USA",
+    "rating_avg": 4.6,
+    "rating_count": 12,
+    "url": "https://maps.google.com/?cid=mock_small_001"
+  },
+  "reviews": [
+    {
+      "review_id": "r1",
+      "author_name": "Maria S.",
+      "rating": 5,
+      "text": "Best flat white in town. The barista remembers my order.",
+      "language": "en",
+      "published_at": "2026-04-15T09:42:00Z",
+      "owner_response": { "text": "Thanks Maria - see you tomorrow!", "responded_at": "2026-04-15T11:02:00Z" }
+    },
+    {
+      "review_id": "r2",
+      "author_name": "Tom L.",
+      "rating": 5,
+      "text": "Cozy spot, great wifi, friendly staff.",
+      "language": "en",
+      "published_at": "2026-04-12T14:11:00Z"
+    },
+    {
+      "review_id": "r3",
+      "author_name": "Aisha R.",
+      "rating": 4,
+      "text": "Good coffee but the queue at 8am is brutal.",
+      "language": "en",
+      "published_at": "2026-04-08T08:33:00Z"
+    },
+    {
+      "review_id": "r4",
+      "author_name": "Lukas M.",
+      "rating": 5,
+      "text": "Heimisches Cafe mit super Espresso. Sehr zu empfehlen!",
+      "language": "de",
+      "published_at": "2026-03-30T12:17:00Z"
+    },
+    {
+      "review_id": "r5",
+      "author_name": "Yuki H.",
+      "rating": 3,
+      "text": "Coffee is fine but pastries were cold today. Hopefully a one-off.",
+      "language": "en",
+      "published_at": "2026-03-22T15:50:00Z",
+      "owner_response": { "text": "Sorry to hear that Yuki - please come back, next pastry is on us.", "responded_at": "2026-03-23T09:10:00Z" }
+    },
+    {
+      "review_id": "r6",
+      "author_name": "Carlos P.",
+      "rating": 5,
+      "text": "Mejor cafe del barrio. El ambiente es genial para trabajar.",
+      "language": "es",
+      "published_at": "2026-03-15T10:05:00Z"
+    },
+    {
+      "review_id": "r7",
+      "author_name": "Anonymous",
+      "rating": 1,
+      "text": "Rude staff, ignored me for 10 minutes.",
+      "language": "en",
+      "published_at": "2026-03-10T16:42:00Z",
+      "owner_response": { "text": "We are very sorry - please email us so we can make it right.", "responded_at": "2026-03-11T08:00:00Z" }
+    },
+    {
+      "review_id": "r8",
+      "author_name": "Priya N.",
+      "rating": 5,
+      "text": "Went here every morning during my work trip. Will miss it.",
+      "language": "en",
+      "published_at": "2026-03-02T07:55:00Z"
+    },
+    {
+      "review_id": "r9",
+      "author_name": "Daniel K.",
+      "rating": 4,
+      "text": "Good but the 'large' is more like a medium elsewhere.",
+      "language": "en",
+      "published_at": "2026-02-25T11:20:00Z"
+    },
+    {
+      "review_id": "r10",
+      "author_name": "Sofia G.",
+      "rating": 5,
+      "text": "Hidden gem - the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2026-02-18T13:08:00Z",
+      "photos": [
+        { "url": "https://example.com/mock-photo-1.jpg", "width": 1024, "height": 768 }
+      ]
+    },
+    {
+      "review_id": "r11",
+      "author_name": "Anna O.",
+      "rating": 5,
+      "text": "Tradycyjna kawa, mily personel. Polecam!",
+      "language": "pl",
+      "published_at": "2026-02-10T09:30:00Z"
+    },
+    {
+      "review_id": "r12",
+      "author_name": "Mark T.",
+      "rating": 2,
+      "text": "Coffee was burnt and overpriced for what you get.",
+      "language": "en",
+      "published_at": "2026-02-05T14:45:00Z"
+    }
+  ]
+}
