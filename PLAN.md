@@ -66,7 +66,7 @@ When real creds arrive, swap one config value, leave `mocks/` in place for offli
 ## Operating constraints
 
 - Daily autonomous run window: **04:00 Europe/Madrid (= 02:00 UTC during CEST, 03:00 UTC during CET).** Spaced one hour after `halflife-nightly` so the two routines don't fight for the same compute window.
-- Daily command budget: **≤2 commands Mon–Fri, ≤10 commands Sat–Sun** (weekend pool target ~20 commands total). **Monday's early-morning cron fire (04:00 Madrid, before the 09:00 weekly reset) is uncapped** — that's the "use it or lose it" window where the routine deletes any remaining weekly quota. Andrei rations his weekly Claude cap during the week and burns the remainder Sat–Mon-pre-reset; the cap resets Monday 09:00 CET.
+- Daily command budget: **≤2 commands Tue–Fri, ≤10 commands Sat, UNCAPPED Sun + Mon-pre-09:00 Madrid.** Andrei's weekly Claude cap resets Monday 09:00 CET; Sunday and the Monday early-morning cron fire form the "use it or lose it" depletion window where the routine spends every remaining token on this project. Saturday is the warm-up. Tue–Fri are conservation-mode (just enough to keep ROADMAP momentum). Each uncapped session may produce multiple PRs (one per leaf), all auto-merged.
 - Weekly external-data budget: **≤ $1 USD/week of `corgi` skill usage** (for keyword research on long-tail variants and for SERP qualification).
 - No production deploys, no domain purchases, no API-key commits, no destructive git operations.
 - Same wrapper-publishes model as `halflife`: the agent commits and exits; the cloud platform publishes the branch and opens the PR. Direct `git push` and `gh pr create` are 403'd by the proxy.
