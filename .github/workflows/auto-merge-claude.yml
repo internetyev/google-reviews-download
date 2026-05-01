@@ -1,0 +1,37 @@
+name: auto-merge claude agent PRs
+
+# The cloud-scheduled "google-reviews-download-nightly" routine commits work,
+# the platform wrapper publishes it to a `claude/...` branch and opens a PR.
+# This workflow squash-merges those PRs immediately. The repo currently has
+# no client-facing code and no branch protection, so unattended auto-merge is
+# the right trade for velocity. If you want a review gate, delete this workflow.
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    if: startsWith(github.event.pull_request.head.ref, 'claude/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: squash-merge or leave open on conflict
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set +e
+          gh pr merge "${{ github.event.pull_request.number }}" \
+            --repo "${{ github.repository }}" \
+            --squash --delete-branch
+          status=$?
+          if [ $status -ne 0 ]; then
+            echo "::warning::auto-merge failed (likely a conflict or check failure); leaving PR open for human review"
+            gh pr comment "${{ github.event.pull_request.number }}" \
+              --repo "${{ github.repository }}" \
+              --body "auto-merge workflow could not merge this PR (likely a merge conflict or required check is failing). Leaving open for human review."
+          fi
+          exit 0
