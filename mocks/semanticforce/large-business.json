@@ -1,0 +1,5265 @@
+{
+  "place": {
+    "place_id": "MOCK_LARGE_001",
+    "name": "The Riverside Hotel",
+    "address": "200 River Road, London SE1 9PX, United Kingdom",
+    "rating_avg": 4.23,
+    "rating_count": 609,
+    "url": "https://maps.google.com/?cid=mock_mock_large_001"
+  },
+  "reviews": [
+    {
+      "review_id": "r0001",
+      "author_name": "Kevin H.",
+      "rating": 3,
+      "text": "Decent coffee, nothing groundbreaking.",
+      "language": "en",
+      "published_at": "2026-04-30T04:14:00Z"
+    },
+    {
+      "review_id": "r0002",
+      "author_name": "Olivia N.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2026-04-29T06:37:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0380"
+    },
+    {
+      "review_id": "r0003",
+      "author_name": "Piotr K.",
+      "rating": 1,
+      "text": "Za drogo jak na to, co dają.",
+      "language": "pl",
+      "published_at": "2026-04-27T04:41:00Z",
+      "owner_response": {
+        "text": "Bardzo przepraszamy — prosimy o kontakt mailowy.",
+        "responded_at": "2026-04-27T10:41:00Z"
+      }
+    },
+    {
+      "review_id": "r0004",
+      "author_name": "Lucía M.",
+      "rating": 5,
+      "text": "¡El mejor café del barrio! Ambiente acogedor.",
+      "language": "es",
+      "published_at": "2026-04-26T20:10:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0473-0.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0473-1.jpg",
+          "width": 1024,
+          "height": 600
+        }
+      ]
+    },
+    {
+      "review_id": "r0005",
+      "author_name": "João S.",
+      "rating": 5,
+      "text": "Melhor café da região!",
+      "language": "pt",
+      "published_at": "2026-04-25T10:57:00Z"
+    },
+    {
+      "review_id": "r0006",
+      "author_name": "Marco R.",
+      "rating": 4,
+      "text": "Il mio bar preferito della zona.",
+      "language": "it",
+      "published_at": "2026-04-22T14:12:00Z"
+    },
+    {
+      "review_id": "r0007",
+      "author_name": "Mark T.",
+      "rating": 5,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2026-04-22T08:07:00Z"
+    },
+    {
+      "review_id": "r0008",
+      "author_name": "Mia J.",
+      "rating": 5,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2026-04-21T20:45:00Z"
+    },
+    {
+      "review_id": "r0009",
+      "author_name": "Sanne J.",
+      "rating": 4,
+      "text": "Beste koffie in de buurt!",
+      "language": "nl",
+      "published_at": "2026-04-21T20:04:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0155",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0155-0.jpg",
+          "width": 1280,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "review_id": "r0010",
+      "author_name": "Jenny P.",
+      "rating": 5,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2026-04-21T14:24:00Z"
+    },
+    {
+      "review_id": "r0011",
+      "author_name": "Marie H.",
+      "rating": 3,
+      "text": "Ganz okay, aber nicht herausragend.",
+      "language": "de",
+      "published_at": "2026-04-21T00:29:00Z"
+    },
+    {
+      "review_id": "r0012",
+      "author_name": "Daniel K.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2026-04-18T20:36:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0290",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0290-0.jpg",
+          "width": 1024,
+          "height": 600
+        },
+        {
+          "url": "https://example.com/mock-photo-0290-1.jpg",
+          "width": 800,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "review_id": "r0013",
+      "author_name": "Élodie B.",
+      "rating": 2,
+      "text": "Service vraiment décevant.",
+      "language": "fr",
+      "published_at": "2026-04-16T00:08:00Z"
+    },
+    {
+      "review_id": "r0014",
+      "author_name": "Hugo M.",
+      "rating": 4,
+      "text": "Endroit parfait pour travailler ☕",
+      "language": "fr",
+      "published_at": "2026-04-15T23:40:00Z"
+    },
+    {
+      "review_id": "r0015",
+      "author_name": "Ольга К.",
+      "rating": 4,
+      "text": "Уютная атмосфера, очень рекомендую.",
+      "language": "ru",
+      "published_at": "2026-04-13T00:43:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0229",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0229-0.jpg",
+          "width": 1280,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "review_id": "r0016",
+      "author_name": "Lucía M.",
+      "rating": 5,
+      "text": "Repostería deliciosa, vuelvo seguro.",
+      "language": "es",
+      "published_at": "2026-04-11T09:01:00Z"
+    },
+    {
+      "review_id": "r0017",
+      "author_name": "Giulia C.",
+      "rating": 4,
+      "text": "Caffè eccezionale, ambiente perfetto.",
+      "language": "it",
+      "published_at": "2026-04-09T01:08:00Z"
+    },
+    {
+      "review_id": "r0018",
+      "author_name": "Tom L.",
+      "rating": 1,
+      "text": "Way overpriced for what you get. Won't return.",
+      "language": "en",
+      "published_at": "2026-04-08T09:39:00Z",
+      "owner_response": {
+        "text": "We're sorry to hear this. Please email us so we can make it right.",
+        "responded_at": "2026-04-09T05:39:00Z"
+      }
+    },
+    {
+      "review_id": "r0019",
+      "author_name": "Maria S.",
+      "rating": 5,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2026-04-08T07:36:00Z"
+    },
+    {
+      "review_id": "r0020",
+      "author_name": "Emma D.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2026-04-07T07:05:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0408"
+    },
+    {
+      "review_id": "r0021",
+      "author_name": "Daniel K.",
+      "rating": 1,
+      "text": "Service was slow and staff seemed annoyed.",
+      "language": "en",
+      "published_at": "2026-04-04T22:28:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0395-0.jpg",
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "url": "https://example.com/mock-photo-0395-1.jpg",
+          "width": 800,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0395-2.jpg",
+          "width": 800,
+          "height": 768
+        }
+      ],
+      "owner_response": {
+        "text": "We're sorry to hear this. Please email us so we can make it right.",
+        "responded_at": "2026-04-07T17:28:00Z"
+      }
+    },
+    {
+      "review_id": "r0022",
+      "author_name": "Maria S.",
+      "rating": 5,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2026-04-03T16:40:00Z"
+    },
+    {
+      "review_id": "r0023",
+      "author_name": "Lukas M.",
+      "rating": 2,
+      "text": "Zu teuer für das, was geboten wird.",
+      "language": "de",
+      "published_at": "2026-03-31T16:29:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0404-0.jpg",
+          "width": 800,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0404-1.jpg",
+          "width": 800,
+          "height": 600
+        }
+      ]
+    },
+    {
+      "review_id": "r0024",
+      "author_name": "Tobias R.",
+      "rating": 5,
+      "text": "Mein Lieblingsort zum Arbeiten.",
+      "language": "de",
+      "published_at": "2026-03-23T20:22:00Z"
+    },
+    {
+      "review_id": "r0025",
+      "author_name": "Noah F.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2026-03-21T02:55:00Z"
+    },
+    {
+      "review_id": "r0026",
+      "author_name": "Kevin H.",
+      "rating": 5,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2026-03-20T06:41:00Z"
+    },
+    {
+      "review_id": "r0027",
+      "author_name": "Noah F.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2026-03-19T20:40:00Z"
+    },
+    {
+      "review_id": "r0028",
+      "author_name": "Ava R.",
+      "rating": 3,
+      "text": "Decent coffee, nothing groundbreaking.",
+      "language": "en",
+      "published_at": "2026-03-17T22:58:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0065-0.jpg",
+          "width": 1024,
+          "height": 768
+        }
+      ],
+      "owner_response": {
+        "text": "Thanks for the honest feedback — we'll keep improving.",
+        "responded_at": "2026-03-19T22:58:00Z"
+      }
+    },
+    {
+      "review_id": "r0029",
+      "author_name": "Manuel L.",
+      "rating": 3,
+      "text": "Está bien, pero nada del otro mundo.",
+      "language": "es",
+      "published_at": "2026-03-17T02:14:00Z"
+    },
+    {
+      "review_id": "r0030",
+      "author_name": "Anna O.",
+      "rating": 4,
+      "text": "Cudowna atmosfera, polecam.",
+      "language": "pl",
+      "published_at": "2026-03-16T21:04:00Z"
+    },
+    {
+      "review_id": "r0031",
+      "author_name": "Noah F.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2026-03-16T10:30:00Z"
+    },
+    {
+      "review_id": "r0032",
+      "author_name": "Wei L.",
+      "rating": 5,
+      "text": "推荐!服务一流。",
+      "language": "zh",
+      "published_at": "2026-03-16T05:37:00Z"
+    },
+    {
+      "review_id": "r0033",
+      "author_name": "Mia J.",
+      "rating": 2,
+      "text": "Way overpriced for what you get. Won't return.",
+      "language": "en",
+      "published_at": "2026-03-14T15:06:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0145-0.jpg",
+          "width": 1280,
+          "height": 600
+        },
+        {
+          "url": "https://example.com/mock-photo-0145-1.jpg",
+          "width": 1280,
+          "height": 768
+        }
+      ],
+      "owner_response": {
+        "text": "We're sorry to hear this. Please email us so we can make it right.",
+        "responded_at": "2026-03-18T21:06:00Z"
+      }
+    },
+    {
+      "review_id": "r0034",
+      "author_name": "Sarah W.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2026-03-14T02:11:00Z"
+    },
+    {
+      "review_id": "r0035",
+      "author_name": "Daniel K.",
+      "rating": 5,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2026-03-13T05:49:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0385",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0385-0.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0385-1.jpg",
+          "width": 1280,
+          "height": 600
+        },
+        {
+          "url": "https://example.com/mock-photo-0385-2.jpg",
+          "width": 1280,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "review_id": "r0036",
+      "author_name": "Soo-yeon L.",
+      "rating": 5,
+      "text": "분위기 좋고 직원분들이 친절해요.",
+      "language": "ko",
+      "published_at": "2026-03-12T13:56:00Z"
+    },
+    {
+      "review_id": "r0037",
+      "author_name": "Sofía G.",
+      "rating": 5,
+      "text": "¡El mejor café del barrio! Ambiente acogedor.",
+      "language": "es",
+      "published_at": "2026-03-12T04:52:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0447"
+    },
+    {
+      "review_id": "r0038",
+      "author_name": "Hugo M.",
+      "rating": 5,
+      "text": "Ambiance super et baristas accueillants.",
+      "language": "fr",
+      "published_at": "2026-03-11T19:14:00Z"
+    },
+    {
+      "review_id": "r0039",
+      "author_name": "Sofía G.",
+      "rating": 4,
+      "text": "Sitio ideal para trabajar unas horas.",
+      "language": "es",
+      "published_at": "2026-03-11T13:39:00Z"
+    },
+    {
+      "review_id": "r0040",
+      "author_name": "Jenny P.",
+      "rating": 5,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2026-03-10T02:07:00Z"
+    },
+    {
+      "review_id": "r0041",
+      "author_name": "Anna B.",
+      "rating": 3,
+      "text": "Solide, aber für den Preis nicht spektakulär.",
+      "language": "de",
+      "published_at": "2026-03-06T01:39:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0039-0.jpg",
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "url": "https://example.com/mock-photo-0039-1.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0039-2.jpg",
+          "width": 1024,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "review_id": "r0042",
+      "author_name": "Ava R.",
+      "rating": 5,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2026-03-04T07:18:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0055",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0055-0.jpg",
+          "width": 1024,
+          "height": 600
+        },
+        {
+          "url": "https://example.com/mock-photo-0055-1.jpg",
+          "width": 1280,
+          "height": 600
+        },
+        {
+          "url": "https://example.com/mock-photo-0055-2.jpg",
+          "width": 1024,
+          "height": 600
+        }
+      ]
+    },
+    {
+      "review_id": "r0043",
+      "author_name": "Pablo H.",
+      "rating": 5,
+      "text": "Trato excelente y café espectacular ☕",
+      "language": "es",
+      "published_at": "2026-03-03T01:52:00Z"
+    },
+    {
+      "review_id": "r0044",
+      "author_name": "Tom L.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2026-03-02T22:37:00Z"
+    },
+    {
+      "review_id": "r0045",
+      "author_name": "Antoine R.",
+      "rating": 3,
+      "text": "Correct, sans plus.",
+      "language": "fr",
+      "published_at": "2026-03-01T16:35:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0043-0.jpg",
+          "width": 1280,
+          "height": 600
+        }
+      ]
+    },
+    {
+      "review_id": "r0046",
+      "author_name": "Alessandro N.",
+      "rating": 5,
+      "text": "Caffè eccezionale, ambiente perfetto.",
+      "language": "it",
+      "published_at": "2026-02-27T20:11:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0251"
+    },
+    {
+      "review_id": "r0047",
+      "author_name": "Mark T.",
+      "rating": 4,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2026-02-25T18:30:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0139"
+    },
+    {
+      "review_id": "r0048",
+      "author_name": "Olivia N.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2026-02-23T21:54:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0403"
+    },
+    {
+      "review_id": "r0049",
+      "author_name": "Wei L.",
+      "rating": 5,
+      "text": "推荐!服务一流。",
+      "language": "zh",
+      "published_at": "2026-02-23T11:19:00Z"
+    },
+    {
+      "review_id": "r0050",
+      "author_name": "Emma D.",
+      "rating": 2,
+      "text": "Way overpriced for what you get. Won't return.",
+      "language": "en",
+      "published_at": "2026-02-22T03:52:00Z"
+    },
+    {
+      "review_id": "r0051",
+      "author_name": "Felix W.",
+      "rating": 5,
+      "text": "Mein Lieblingsort zum Arbeiten.",
+      "language": "de",
+      "published_at": "2026-02-20T14:21:00Z"
+    },
+    {
+      "review_id": "r0052",
+      "author_name": "Mark T.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2026-02-19T15:30:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0008"
+    },
+    {
+      "review_id": "r0053",
+      "author_name": "Pablo H.",
+      "rating": 5,
+      "text": "Sitio ideal para trabajar unas horas.",
+      "language": "es",
+      "published_at": "2026-02-18T18:03:00Z"
+    },
+    {
+      "review_id": "r0054",
+      "author_name": "Olivia N.",
+      "rating": 4,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2026-02-18T16:10:00Z"
+    },
+    {
+      "review_id": "r0055",
+      "author_name": "Olivia N.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2026-02-16T19:27:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0384"
+    },
+    {
+      "review_id": "r0056",
+      "author_name": "Robert F.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2026-02-16T16:47:00Z"
+    },
+    {
+      "review_id": "r0057",
+      "author_name": "Olivia N.",
+      "rating": 4,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2026-02-14T06:07:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0374"
+    },
+    {
+      "review_id": "r0058",
+      "author_name": "Kevin H.",
+      "rating": 5,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2026-02-12T16:39:00Z"
+    },
+    {
+      "review_id": "r0059",
+      "author_name": "Felix W.",
+      "rating": 5,
+      "text": "Mein Lieblingsort zum Arbeiten.",
+      "language": "de",
+      "published_at": "2026-02-10T22:04:00Z"
+    },
+    {
+      "review_id": "r0060",
+      "author_name": "Isabel C.",
+      "rating": 3,
+      "text": "Está bien, pero nada del otro mundo.",
+      "language": "es",
+      "published_at": "2026-02-10T16:06:00Z"
+    },
+    {
+      "review_id": "r0061",
+      "author_name": "Anna O.",
+      "rating": 3,
+      "text": "W porządku, ale bez szału.",
+      "language": "pl",
+      "published_at": "2026-02-09T07:15:00Z"
+    },
+    {
+      "review_id": "r0062",
+      "author_name": "Wei L.",
+      "rating": 3,
+      "text": "还行,没有特别惊艳。",
+      "language": "zh",
+      "published_at": "2026-02-09T01:53:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0014-0.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0014-1.jpg",
+          "width": 800,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "review_id": "r0063",
+      "author_name": "Anna B.",
+      "rating": 5,
+      "text": "Sehr empfehlenswerte Adresse 💛",
+      "language": "de",
+      "published_at": "2026-02-09T00:31:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0235"
+    },
+    {
+      "review_id": "r0064",
+      "author_name": "Mark T.",
+      "rating": 5,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2026-02-07T03:29:00Z"
+    },
+    {
+      "review_id": "r0065",
+      "author_name": "Diego A.",
+      "rating": 5,
+      "text": "Trato excelente y café espectacular ☕",
+      "language": "es",
+      "published_at": "2026-02-06T17:51:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0367"
+    },
+    {
+      "review_id": "r0066",
+      "author_name": "Javier R.",
+      "rating": 4,
+      "text": "Sitio ideal para trabajar unas horas.",
+      "language": "es",
+      "published_at": "2026-02-03T20:06:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0188-0.jpg",
+          "width": 800,
+          "height": 600
+        }
+      ]
+    },
+    {
+      "review_id": "r0067",
+      "author_name": "Anna B.",
+      "rating": 4,
+      "text": "Heimisches Café mit super Espresso.",
+      "language": "de",
+      "published_at": "2026-02-03T06:38:00Z"
+    },
+    {
+      "review_id": "r0068",
+      "author_name": "Luca B.",
+      "rating": 1,
+      "text": "Prezzi alti e servizio mediocre.",
+      "language": "it",
+      "published_at": "2026-01-30T22:32:00Z",
+      "owner_response": {
+        "text": "Ci dispiace molto — scrivici per risolvere.",
+        "responded_at": "2026-02-04T16:32:00Z"
+      }
+    },
+    {
+      "review_id": "r0069",
+      "author_name": "Jenny P.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2026-01-30T08:45:00Z"
+    },
+    {
+      "review_id": "r0070",
+      "author_name": "Emma D.",
+      "rating": 5,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2026-01-27T20:35:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0406",
+      "owner_response": {
+        "text": "Thank you so much! Hope to see you again soon.",
+        "responded_at": "2026-01-30T09:35:00Z"
+      }
+    },
+    {
+      "review_id": "r0071",
+      "author_name": "Jenny P.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2026-01-27T16:32:00Z"
+    },
+    {
+      "review_id": "r0072",
+      "author_name": "Lucía M.",
+      "rating": 3,
+      "text": "Está bien, pero nada del otro mundo.",
+      "language": "es",
+      "published_at": "2026-01-27T02:26:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0446",
+      "owner_response": {
+        "text": "Gracias por tu comentario, lo tenemos en cuenta.",
+        "responded_at": "2026-01-28T17:26:00Z"
+      }
+    },
+    {
+      "review_id": "r0073",
+      "author_name": "Liam B.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2026-01-27T00:41:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0334"
+    },
+    {
+      "review_id": "r0074",
+      "author_name": "Maria S.",
+      "rating": 5,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2026-01-26T15:52:00Z"
+    },
+    {
+      "review_id": "r0075",
+      "author_name": "Elena V.",
+      "rating": 5,
+      "text": "Repostería deliciosa, vuelvo seguro.",
+      "language": "es",
+      "published_at": "2026-01-26T14:15:00Z"
+    },
+    {
+      "review_id": "r0076",
+      "author_name": "Min-jun K.",
+      "rating": 5,
+      "text": "커피가 정말 맛있어요!",
+      "language": "ko",
+      "published_at": "2026-01-24T03:59:00Z"
+    },
+    {
+      "review_id": "r0077",
+      "author_name": "Hugo M.",
+      "rating": 5,
+      "text": "Le meilleur café du quartier !",
+      "language": "fr",
+      "published_at": "2026-01-23T02:18:00Z"
+    },
+    {
+      "review_id": "r0078",
+      "author_name": "Mia J.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2026-01-21T13:03:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0260"
+    },
+    {
+      "review_id": "r0079",
+      "author_name": "João S.",
+      "rating": 5,
+      "text": "Atendimento ótimo e ambiente acolhedor.",
+      "language": "pt",
+      "published_at": "2026-01-19T04:55:00Z"
+    },
+    {
+      "review_id": "r0080",
+      "author_name": "Isabel C.",
+      "rating": 5,
+      "text": "¡El mejor café del barrio! Ambiente acogedor.",
+      "language": "es",
+      "published_at": "2026-01-18T18:41:00Z"
+    },
+    {
+      "review_id": "r0081",
+      "author_name": "Yuki H.",
+      "rating": 5,
+      "text": "最高のコーヒー!落ち着く雰囲気。",
+      "language": "ja",
+      "published_at": "2026-01-17T16:03:00Z"
+    },
+    {
+      "review_id": "r0082",
+      "author_name": "Tom L.",
+      "rating": 4,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2026-01-17T13:53:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0162"
+    },
+    {
+      "review_id": "r0083",
+      "author_name": "Liam B.",
+      "rating": 2,
+      "text": "Way overpriced for what you get. Won't return.",
+      "language": "en",
+      "published_at": "2026-01-16T06:38:00Z",
+      "owner_response": {
+        "text": "We're sorry to hear this. Please email us so we can make it right.",
+        "responded_at": "2026-01-16T15:38:00Z"
+      }
+    },
+    {
+      "review_id": "r0084",
+      "author_name": "Lukas M.",
+      "rating": 5,
+      "text": "Mein Lieblingsort zum Arbeiten.",
+      "language": "de",
+      "published_at": "2026-01-11T22:19:00Z"
+    },
+    {
+      "review_id": "r0085",
+      "author_name": "Tobias R.",
+      "rating": 5,
+      "text": "Mein Lieblingsort zum Arbeiten.",
+      "language": "de",
+      "published_at": "2026-01-11T14:55:00Z"
+    },
+    {
+      "review_id": "r0086",
+      "author_name": "Hugo M.",
+      "rating": 2,
+      "text": "Trop cher pour la qualité.",
+      "language": "fr",
+      "published_at": "2026-01-08T12:08:00Z",
+      "owner_response": {
+        "text": "Nous sommes désolés — merci de nous écrire en privé.",
+        "responded_at": "2026-01-11T14:08:00Z"
+      }
+    },
+    {
+      "review_id": "r0087",
+      "author_name": "Daniel K.",
+      "rating": 1,
+      "text": "Way overpriced for what you get. Won't return.",
+      "language": "en",
+      "published_at": "2026-01-07T21:36:00Z",
+      "owner_response": {
+        "text": "We're sorry to hear this. Please email us so we can make it right.",
+        "responded_at": "2026-01-08T05:36:00Z"
+      }
+    },
+    {
+      "review_id": "r0088",
+      "author_name": "Robert F.",
+      "rating": 5,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2026-01-07T06:47:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0061"
+    },
+    {
+      "review_id": "r0089",
+      "author_name": "Maria S.",
+      "rating": 4,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2026-01-04T23:10:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0266-0.jpg",
+          "width": 800,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "review_id": "r0090",
+      "author_name": "Felix W.",
+      "rating": 4,
+      "text": "Sehr empfehlenswerte Adresse 💛",
+      "language": "de",
+      "published_at": "2026-01-02T09:10:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0097-0.jpg",
+          "width": 1024,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0097-1.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0097-2.jpg",
+          "width": 1280,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "review_id": "r0091",
+      "author_name": "Felix W.",
+      "rating": 3,
+      "text": "Ganz okay, aber nicht herausragend.",
+      "language": "de",
+      "published_at": "2025-12-31T21:53:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0246"
+    },
+    {
+      "review_id": "r0092",
+      "author_name": "Marie H.",
+      "rating": 5,
+      "text": "Sehr empfehlenswerte Adresse 💛",
+      "language": "de",
+      "published_at": "2025-12-30T10:43:00Z"
+    },
+    {
+      "review_id": "r0093",
+      "author_name": "Mia J.",
+      "rating": 5,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2025-12-28T11:00:00Z"
+    },
+    {
+      "review_id": "r0094",
+      "author_name": "Ava R.",
+      "rating": 5,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2025-12-27T13:25:00Z"
+    },
+    {
+      "review_id": "r0095",
+      "author_name": "Mei Z.",
+      "rating": 5,
+      "text": "推荐!服务一流。",
+      "language": "zh",
+      "published_at": "2025-12-26T18:09:00Z"
+    },
+    {
+      "review_id": "r0096",
+      "author_name": "Élodie B.",
+      "rating": 5,
+      "text": "Le meilleur café du quartier !",
+      "language": "fr",
+      "published_at": "2025-12-25T15:31:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0092-0.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0092-1.jpg",
+          "width": 1024,
+          "height": 600
+        }
+      ]
+    },
+    {
+      "review_id": "r0097",
+      "author_name": "Anna O.",
+      "rating": 5,
+      "text": "Najlepsza kawa w okolicy!",
+      "language": "pl",
+      "published_at": "2025-12-25T13:48:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0186-0.jpg",
+          "width": 800,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "review_id": "r0098",
+      "author_name": "Liam B.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2025-12-24T16:44:00Z"
+    },
+    {
+      "review_id": "r0099",
+      "author_name": "Camille D.",
+      "rating": 3,
+      "text": "Café honnête mais un peu cher.",
+      "language": "fr",
+      "published_at": "2025-12-22T23:57:00Z"
+    },
+    {
+      "review_id": "r0100",
+      "author_name": "Kevin H.",
+      "rating": 5,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2025-12-22T01:52:00Z",
+      "owner_response": {
+        "text": "Thank you so much! Hope to see you again soon.",
+        "responded_at": "2025-12-23T09:52:00Z"
+      }
+    },
+    {
+      "review_id": "r0101",
+      "author_name": "Kevin H.",
+      "rating": 3,
+      "text": "Decent coffee, nothing groundbreaking.",
+      "language": "en",
+      "published_at": "2025-12-21T16:56:00Z",
+      "owner_response": {
+        "text": "Thanks for the honest feedback — we'll keep improving.",
+        "responded_at": "2025-12-23T04:56:00Z"
+      }
+    },
+    {
+      "review_id": "r0102",
+      "author_name": "João S.",
+      "rating": 5,
+      "text": "Atendimento ótimo e ambiente acolhedor.",
+      "language": "pt",
+      "published_at": "2025-12-19T23:25:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0002"
+    },
+    {
+      "review_id": "r0103",
+      "author_name": "Noah F.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2025-12-17T09:31:00Z"
+    },
+    {
+      "review_id": "r0104",
+      "author_name": "Lucía M.",
+      "rating": 5,
+      "text": "Sitio ideal para trabajar unas horas.",
+      "language": "es",
+      "published_at": "2025-12-17T07:17:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0117"
+    },
+    {
+      "review_id": "r0105",
+      "author_name": "Jenny P.",
+      "rating": 5,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2025-12-15T05:43:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0018-0.jpg",
+          "width": 1280,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "review_id": "r0106",
+      "author_name": "Lukas M.",
+      "rating": 2,
+      "text": "Service war heute leider unfreundlich.",
+      "language": "de",
+      "published_at": "2025-12-12T23:32:00Z",
+      "owner_response": {
+        "text": "Das tut uns leid. Bitte kontaktieren Sie uns direkt.",
+        "responded_at": "2025-12-14T16:32:00Z"
+      }
+    },
+    {
+      "review_id": "r0107",
+      "author_name": "Ahmed K.",
+      "rating": 5,
+      "text": "مكان رائع للعمل والاسترخاء.",
+      "language": "ar",
+      "published_at": "2025-12-12T05:20:00Z"
+    },
+    {
+      "review_id": "r0108",
+      "author_name": "Alessandro N.",
+      "rating": 2,
+      "text": "Prezzi alti e servizio mediocre.",
+      "language": "it",
+      "published_at": "2025-12-10T11:04:00Z"
+    },
+    {
+      "review_id": "r0109",
+      "author_name": "Hugo M.",
+      "rating": 1,
+      "text": "Service vraiment décevant.",
+      "language": "fr",
+      "published_at": "2025-12-07T00:33:00Z"
+    },
+    {
+      "review_id": "r0110",
+      "author_name": "Ava R.",
+      "rating": 4,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2025-12-04T23:51:00Z"
+    },
+    {
+      "review_id": "r0111",
+      "author_name": "Robert F.",
+      "rating": 3,
+      "text": "It's fine — the seating is a bit cramped though.",
+      "language": "en",
+      "published_at": "2025-12-03T11:08:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0494",
+      "owner_response": {
+        "text": "Thanks for the honest feedback — we'll keep improving.",
+        "responded_at": "2025-12-09T04:08:00Z"
+      }
+    },
+    {
+      "review_id": "r0112",
+      "author_name": "Emma D.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2025-12-02T21:17:00Z"
+    },
+    {
+      "review_id": "r0113",
+      "author_name": "Jonas K.",
+      "rating": 5,
+      "text": "Top Kaffee, super freundliches Personal!",
+      "language": "de",
+      "published_at": "2025-11-30T10:17:00Z"
+    },
+    {
+      "review_id": "r0114",
+      "author_name": "Ava R.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2025-11-30T05:01:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0292"
+    },
+    {
+      "review_id": "r0115",
+      "author_name": "Daniel K.",
+      "rating": 4,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2025-11-29T12:30:00Z"
+    },
+    {
+      "review_id": "r0116",
+      "author_name": "Marco R.",
+      "rating": 5,
+      "text": "Il mio bar preferito della zona.",
+      "language": "it",
+      "published_at": "2025-11-28T15:06:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0182"
+    },
+    {
+      "review_id": "r0117",
+      "author_name": "Kevin H.",
+      "rating": 4,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2025-11-26T03:15:00Z"
+    },
+    {
+      "review_id": "r0118",
+      "author_name": "Piotr K.",
+      "rating": 5,
+      "text": "Tradycyjna kawa, mily personel.",
+      "language": "pl",
+      "published_at": "2025-11-24T17:09:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0080"
+    },
+    {
+      "review_id": "r0119",
+      "author_name": "Léa P.",
+      "rating": 5,
+      "text": "Endroit parfait pour travailler ☕",
+      "language": "fr",
+      "published_at": "2025-11-23T17:16:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0327"
+    },
+    {
+      "review_id": "r0120",
+      "author_name": "Manon T.",
+      "rating": 5,
+      "text": "Le meilleur café du quartier !",
+      "language": "fr",
+      "published_at": "2025-11-23T07:08:00Z"
+    },
+    {
+      "review_id": "r0121",
+      "author_name": "Diego A.",
+      "rating": 4,
+      "text": "Sitio ideal para trabajar unas horas.",
+      "language": "es",
+      "published_at": "2025-11-22T21:39:00Z"
+    },
+    {
+      "review_id": "r0122",
+      "author_name": "Tom L.",
+      "rating": 4,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2025-11-21T12:43:00Z"
+    },
+    {
+      "review_id": "r0123",
+      "author_name": "Min-jun K.",
+      "rating": 5,
+      "text": "커피가 정말 맛있어요!",
+      "language": "ko",
+      "published_at": "2025-11-18T11:20:00Z"
+    },
+    {
+      "review_id": "r0124",
+      "author_name": "Noah F.",
+      "rating": 5,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2025-11-18T08:01:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0258"
+    },
+    {
+      "review_id": "r0125",
+      "author_name": "Min-jun K.",
+      "rating": 5,
+      "text": "분위기 좋고 직원분들이 친절해요.",
+      "language": "ko",
+      "published_at": "2025-11-16T23:09:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0152"
+    },
+    {
+      "review_id": "r0126",
+      "author_name": "Elena V.",
+      "rating": 5,
+      "text": "Trato excelente y café espectacular ☕",
+      "language": "es",
+      "published_at": "2025-11-14T05:19:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0005"
+    },
+    {
+      "review_id": "r0127",
+      "author_name": "Carlos P.",
+      "rating": 5,
+      "text": "Trato excelente y café espectacular ☕",
+      "language": "es",
+      "published_at": "2025-11-13T23:13:00Z"
+    },
+    {
+      "review_id": "r0128",
+      "author_name": "Maria S.",
+      "rating": 5,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2025-11-10T04:59:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0227"
+    },
+    {
+      "review_id": "r0129",
+      "author_name": "Bram V.",
+      "rating": 5,
+      "text": "Beste koffie in de buurt!",
+      "language": "nl",
+      "published_at": "2025-11-07T13:06:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0217"
+    },
+    {
+      "review_id": "r0130",
+      "author_name": "Olivia N.",
+      "rating": 5,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2025-11-07T04:47:00Z"
+    },
+    {
+      "review_id": "r0131",
+      "author_name": "Luca B.",
+      "rating": 4,
+      "text": "Caffè eccezionale, ambiente perfetto.",
+      "language": "it",
+      "published_at": "2025-11-06T21:33:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0137",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0137-0.jpg",
+          "width": 1024,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0137-1.jpg",
+          "width": 1024,
+          "height": 600
+        },
+        {
+          "url": "https://example.com/mock-photo-0137-2.jpg",
+          "width": 800,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "review_id": "r0132",
+      "author_name": "Hao C.",
+      "rating": 5,
+      "text": "咖啡非常棒,环境也很舒适!",
+      "language": "zh",
+      "published_at": "2025-11-06T12:29:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0307",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0307-0.jpg",
+          "width": 1024,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0307-1.jpg",
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "url": "https://example.com/mock-photo-0307-2.jpg",
+          "width": 800,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "review_id": "r0133",
+      "author_name": "Camille D.",
+      "rating": 5,
+      "text": "Le meilleur café du quartier !",
+      "language": "fr",
+      "published_at": "2025-10-30T23:02:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0454"
+    },
+    {
+      "review_id": "r0134",
+      "author_name": "Hugo M.",
+      "rating": 5,
+      "text": "Endroit parfait pour travailler ☕",
+      "language": "fr",
+      "published_at": "2025-10-30T00:00:00Z"
+    },
+    {
+      "review_id": "r0135",
+      "author_name": "Marco R.",
+      "rating": 2,
+      "text": "Prezzi alti e servizio mediocre.",
+      "language": "it",
+      "published_at": "2025-10-29T02:34:00Z"
+    },
+    {
+      "review_id": "r0136",
+      "author_name": "Javier R.",
+      "rating": 3,
+      "text": "Está bien, pero nada del otro mundo.",
+      "language": "es",
+      "published_at": "2025-10-28T08:55:00Z"
+    },
+    {
+      "review_id": "r0137",
+      "author_name": "Mia J.",
+      "rating": 5,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2025-10-28T00:52:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0151"
+    },
+    {
+      "review_id": "r0138",
+      "author_name": "Yuki H.",
+      "rating": 4,
+      "text": "最高のコーヒー!落ち着く雰囲気。",
+      "language": "ja",
+      "published_at": "2025-10-26T10:37:00Z",
+      "owner_response": {
+        "text": "ありがとうございます。またのご来店お待ちしております。",
+        "responded_at": "2025-10-31T19:37:00Z"
+      }
+    },
+    {
+      "review_id": "r0139",
+      "author_name": "Sofía G.",
+      "rating": 5,
+      "text": "Trato excelente y café espectacular ☕",
+      "language": "es",
+      "published_at": "2025-10-25T18:13:00Z"
+    },
+    {
+      "review_id": "r0140",
+      "author_name": "Mei Z.",
+      "rating": 5,
+      "text": "推荐!服务一流。",
+      "language": "zh",
+      "published_at": "2025-10-24T15:16:00Z"
+    },
+    {
+      "review_id": "r0141",
+      "author_name": "Ahmed K.",
+      "rating": 4,
+      "text": "أفضل قهوة في المنطقة!",
+      "language": "ar",
+      "published_at": "2025-10-23T21:57:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0020"
+    },
+    {
+      "review_id": "r0142",
+      "author_name": "Ava R.",
+      "rating": 4,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2025-10-18T18:07:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0485"
+    },
+    {
+      "review_id": "r0143",
+      "author_name": "Daniel K.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2025-10-16T15:52:00Z"
+    },
+    {
+      "review_id": "r0144",
+      "author_name": "Min-jun K.",
+      "rating": 2,
+      "text": "가격이 너무 비싸요.",
+      "language": "ko",
+      "published_at": "2025-10-14T04:05:00Z"
+    },
+    {
+      "review_id": "r0145",
+      "author_name": "Takeshi N.",
+      "rating": 4,
+      "text": "最高のコーヒー!落ち着く雰囲気。",
+      "language": "ja",
+      "published_at": "2025-10-12T22:11:00Z"
+    },
+    {
+      "review_id": "r0146",
+      "author_name": "Robert F.",
+      "rating": 4,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2025-10-11T11:38:00Z"
+    },
+    {
+      "review_id": "r0147",
+      "author_name": "Saori O.",
+      "rating": 1,
+      "text": "値段の割には微妙でした。",
+      "language": "ja",
+      "published_at": "2025-10-09T14:35:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0451",
+      "owner_response": {
+        "text": "申し訳ございません。メールでご連絡いただけますと幸いです。",
+        "responded_at": "2025-10-13T14:35:00Z"
+      }
+    },
+    {
+      "review_id": "r0148",
+      "author_name": "Tobias R.",
+      "rating": 4,
+      "text": "Heimisches Café mit super Espresso.",
+      "language": "de",
+      "published_at": "2025-10-08T13:24:00Z"
+    },
+    {
+      "review_id": "r0149",
+      "author_name": "Daan K.",
+      "rating": 5,
+      "text": "Heerlijk plekje om te werken.",
+      "language": "nl",
+      "published_at": "2025-10-03T22:57:00Z"
+    },
+    {
+      "review_id": "r0150",
+      "author_name": "Jenny P.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2025-10-03T06:55:00Z"
+    },
+    {
+      "review_id": "r0151",
+      "author_name": "Anna B.",
+      "rating": 5,
+      "text": "Top Kaffee, super freundliches Personal!",
+      "language": "de",
+      "published_at": "2025-10-01T09:14:00Z"
+    },
+    {
+      "review_id": "r0152",
+      "author_name": "Emma D.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2025-10-01T04:05:00Z"
+    },
+    {
+      "review_id": "r0153",
+      "author_name": "Anna B.",
+      "rating": 5,
+      "text": "Heimisches Café mit super Espresso.",
+      "language": "de",
+      "published_at": "2025-09-29T05:37:00Z"
+    },
+    {
+      "review_id": "r0154",
+      "author_name": "Diego A.",
+      "rating": 5,
+      "text": "Sitio ideal para trabajar unas horas.",
+      "language": "es",
+      "published_at": "2025-09-28T06:43:00Z"
+    },
+    {
+      "review_id": "r0155",
+      "author_name": "Lotte M.",
+      "rating": 4,
+      "text": "Heerlijk plekje om te werken.",
+      "language": "nl",
+      "published_at": "2025-09-24T12:44:00Z"
+    },
+    {
+      "review_id": "r0156",
+      "author_name": "Marco R.",
+      "rating": 5,
+      "text": "Caffè eccezionale, ambiente perfetto.",
+      "language": "it",
+      "published_at": "2025-09-23T15:53:00Z"
+    },
+    {
+      "review_id": "r0157",
+      "author_name": "Noah F.",
+      "rating": 5,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2025-09-23T12:15:00Z"
+    },
+    {
+      "review_id": "r0158",
+      "author_name": "Noah F.",
+      "rating": 5,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2025-09-22T10:14:00Z"
+    },
+    {
+      "review_id": "r0159",
+      "author_name": "Luca B.",
+      "rating": 3,
+      "text": "Niente di speciale ma carino.",
+      "language": "it",
+      "published_at": "2025-09-20T12:05:00Z",
+      "owner_response": {
+        "text": "Grazie per il feedback, ne terremo conto.",
+        "responded_at": "2025-09-23T08:05:00Z"
+      }
+    },
+    {
+      "review_id": "r0160",
+      "author_name": "Layla H.",
+      "rating": 4,
+      "text": "مكان رائع للعمل والاسترخاء.",
+      "language": "ar",
+      "published_at": "2025-09-19T09:48:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0420"
+    },
+    {
+      "review_id": "r0161",
+      "author_name": "Иван С.",
+      "rating": 4,
+      "text": "Уютная атмосфера, очень рекомендую.",
+      "language": "ru",
+      "published_at": "2025-09-18T14:34:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0207"
+    },
+    {
+      "review_id": "r0162",
+      "author_name": "Lena S.",
+      "rating": 5,
+      "text": "Top Kaffee, super freundliches Personal!",
+      "language": "de",
+      "published_at": "2025-09-18T10:47:00Z"
+    },
+    {
+      "review_id": "r0163",
+      "author_name": "Giulia C.",
+      "rating": 3,
+      "text": "Caffè discreto, prezzi medi.",
+      "language": "it",
+      "published_at": "2025-09-18T07:52:00Z",
+      "owner_response": {
+        "text": "Grazie per il feedback, ne terremo conto.",
+        "responded_at": "2025-09-21T19:52:00Z"
+      }
+    },
+    {
+      "review_id": "r0164",
+      "author_name": "Antoine R.",
+      "rating": 5,
+      "text": "Endroit parfait pour travailler ☕",
+      "language": "fr",
+      "published_at": "2025-09-12T15:34:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0328"
+    },
+    {
+      "review_id": "r0165",
+      "author_name": "Javier R.",
+      "rating": 5,
+      "text": "¡El mejor café del barrio! Ambiente acogedor.",
+      "language": "es",
+      "published_at": "2025-09-11T06:19:00Z"
+    },
+    {
+      "review_id": "r0166",
+      "author_name": "Olivia N.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2025-09-11T01:00:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0437"
+    },
+    {
+      "review_id": "r0167",
+      "author_name": "Emma D.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2025-09-10T06:45:00Z"
+    },
+    {
+      "review_id": "r0168",
+      "author_name": "João S.",
+      "rating": 5,
+      "text": "Adoro este lugar — recomendo muito.",
+      "language": "pt",
+      "published_at": "2025-09-05T03:54:00Z"
+    },
+    {
+      "review_id": "r0169",
+      "author_name": "Liam B.",
+      "rating": 5,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2025-09-03T02:21:00Z"
+    },
+    {
+      "review_id": "r0170",
+      "author_name": "Elena V.",
+      "rating": 4,
+      "text": "¡El mejor café del barrio! Ambiente acogedor.",
+      "language": "es",
+      "published_at": "2025-09-02T09:46:00Z"
+    },
+    {
+      "review_id": "r0171",
+      "author_name": "Lena S.",
+      "rating": 3,
+      "text": "Ganz okay, aber nicht herausragend.",
+      "language": "de",
+      "published_at": "2025-08-30T18:34:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0488-0.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0488-1.jpg",
+          "width": 1280,
+          "height": 768
+        },
+        {
+          "url": "https://example.com/mock-photo-0488-2.jpg",
+          "width": 800,
+          "height": 600
+        }
+      ]
+    },
+    {
+      "review_id": "r0172",
+      "author_name": "Hugo M.",
+      "rating": 5,
+      "text": "Le meilleur café du quartier !",
+      "language": "fr",
+      "published_at": "2025-08-29T08:44:00Z"
+    },
+    {
+      "review_id": "r0173",
+      "author_name": "Lukas M.",
+      "rating": 4,
+      "text": "Heimisches Café mit super Espresso.",
+      "language": "de",
+      "published_at": "2025-08-27T14:23:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0179"
+    },
+    {
+      "review_id": "r0174",
+      "author_name": "Manon T.",
+      "rating": 5,
+      "text": "Ambiance super et baristas accueillants.",
+      "language": "fr",
+      "published_at": "2025-08-26T21:54:00Z"
+    },
+    {
+      "review_id": "r0175",
+      "author_name": "Marie H.",
+      "rating": 5,
+      "text": "Sehr empfehlenswerte Adresse 💛",
+      "language": "de",
+      "published_at": "2025-08-20T07:27:00Z"
+    },
+    {
+      "review_id": "r0176",
+      "author_name": "Saori O.",
+      "rating": 5,
+      "text": "また絶対行きます ☕",
+      "language": "ja",
+      "published_at": "2025-08-20T05:00:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0262"
+    },
+    {
+      "review_id": "r0177",
+      "author_name": "Léa P.",
+      "rating": 4,
+      "text": "Endroit parfait pour travailler ☕",
+      "language": "fr",
+      "published_at": "2025-08-19T03:53:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0407-0.jpg",
+          "width": 1024,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "review_id": "r0178",
+      "author_name": "Sarah W.",
+      "rating": 4,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2025-08-15T00:23:00Z"
+    },
+    {
+      "review_id": "r0179",
+      "author_name": "Liam B.",
+      "rating": 3,
+      "text": "Decent coffee, nothing groundbreaking.",
+      "language": "en",
+      "published_at": "2025-08-15T00:13:00Z"
+    },
+    {
+      "review_id": "r0180",
+      "author_name": "Marie H.",
+      "rating": 5,
+      "text": "Top Kaffee, super freundliches Personal!",
+      "language": "de",
+      "published_at": "2025-08-14T08:52:00Z"
+    },
+    {
+      "review_id": "r0181",
+      "author_name": "Sarah W.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2025-08-13T09:18:00Z"
+    },
+    {
+      "review_id": "r0182",
+      "author_name": "Carlos P.",
+      "rating": 3,
+      "text": "Está bien, pero nada del otro mundo.",
+      "language": "es",
+      "published_at": "2025-08-12T07:01:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0036-0.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0036-1.jpg",
+          "width": 800,
+          "height": 768
+        },
+        {
+          "url": "https://example.com/mock-photo-0036-2.jpg",
+          "width": 1280,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "review_id": "r0183",
+      "author_name": "Tom L.",
+      "rating": 5,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2025-08-12T01:05:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0261"
+    },
+    {
+      "review_id": "r0184",
+      "author_name": "Sofía G.",
+      "rating": 2,
+      "text": "El café estaba quemado. No volveré.",
+      "language": "es",
+      "published_at": "2025-08-11T00:05:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0203",
+      "owner_response": {
+        "text": "Lo sentimos mucho — escríbenos y lo solucionamos.",
+        "responded_at": "2025-08-15T14:05:00Z"
+      }
+    },
+    {
+      "review_id": "r0185",
+      "author_name": "Emma D.",
+      "rating": 4,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2025-08-09T08:53:00Z"
+    },
+    {
+      "review_id": "r0186",
+      "author_name": "Pablo H.",
+      "rating": 5,
+      "text": "Trato excelente y café espectacular ☕",
+      "language": "es",
+      "published_at": "2025-08-08T09:11:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0463"
+    },
+    {
+      "review_id": "r0187",
+      "author_name": "Lucía M.",
+      "rating": 5,
+      "text": "Trato excelente y café espectacular ☕",
+      "language": "es",
+      "published_at": "2025-08-05T11:15:00Z",
+      "owner_response": {
+        "text": "¡Muchas gracias por tu visita!",
+        "responded_at": "2025-08-08T16:15:00Z"
+      }
+    },
+    {
+      "review_id": "r0188",
+      "author_name": "João S.",
+      "rating": 2,
+      "text": "Café fraco para o preço cobrado.",
+      "language": "pt",
+      "published_at": "2025-08-04T20:19:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0180"
+    },
+    {
+      "review_id": "r0189",
+      "author_name": "Robert F.",
+      "rating": 4,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2025-08-04T06:00:00Z"
+    },
+    {
+      "review_id": "r0190",
+      "author_name": "Piotr K.",
+      "rating": 5,
+      "text": "Najlepsza kawa w okolicy!",
+      "language": "pl",
+      "published_at": "2025-08-03T19:04:00Z"
+    },
+    {
+      "review_id": "r0191",
+      "author_name": "Piotr K.",
+      "rating": 5,
+      "text": "Najlepsza kawa w okolicy!",
+      "language": "pl",
+      "published_at": "2025-08-03T15:58:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0059"
+    },
+    {
+      "review_id": "r0192",
+      "author_name": "Lena S.",
+      "rating": 1,
+      "text": "Zu teuer für das, was geboten wird.",
+      "language": "de",
+      "published_at": "2025-08-02T16:23:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0026",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0026-0.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0026-1.jpg",
+          "width": 1280,
+          "height": 768
+        }
+      ],
+      "owner_response": {
+        "text": "Das tut uns leid. Bitte kontaktieren Sie uns direkt.",
+        "responded_at": "2025-08-05T03:23:00Z"
+      }
+    },
+    {
+      "review_id": "r0193",
+      "author_name": "Min-jun K.",
+      "rating": 3,
+      "text": "괜찮아요. 평범한 카페.",
+      "language": "ko",
+      "published_at": "2025-07-31T13:03:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0498"
+    },
+    {
+      "review_id": "r0194",
+      "author_name": "Ana C.",
+      "rating": 4,
+      "text": "Atendimento ótimo e ambiente acolhedor.",
+      "language": "pt",
+      "published_at": "2025-07-31T04:56:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0046"
+    },
+    {
+      "review_id": "r0195",
+      "author_name": "Sarah W.",
+      "rating": 2,
+      "text": "Coffee was burnt. Disappointing.",
+      "language": "en",
+      "published_at": "2025-07-30T14:48:00Z"
+    },
+    {
+      "review_id": "r0196",
+      "author_name": "Felix W.",
+      "rating": 5,
+      "text": "Heimisches Café mit super Espresso.",
+      "language": "de",
+      "published_at": "2025-07-27T18:24:00Z"
+    },
+    {
+      "review_id": "r0197",
+      "author_name": "Daniel K.",
+      "rating": 3,
+      "text": "Solid spot but a bit pricey for the area.",
+      "language": "en",
+      "published_at": "2025-07-25T06:17:00Z",
+      "owner_response": {
+        "text": "Thanks for the honest feedback — we'll keep improving.",
+        "responded_at": "2025-07-29T20:17:00Z"
+      }
+    },
+    {
+      "review_id": "r0198",
+      "author_name": "Elena V.",
+      "rating": 4,
+      "text": "Sitio ideal para trabajar unas horas.",
+      "language": "es",
+      "published_at": "2025-07-23T14:26:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0075",
+      "owner_response": {
+        "text": "¡Muchas gracias por tu visita!",
+        "responded_at": "2025-07-26T10:26:00Z"
+      }
+    },
+    {
+      "review_id": "r0199",
+      "author_name": "Olivia N.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2025-07-22T12:50:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0200-0.jpg",
+          "width": 1024,
+          "height": 600
+        },
+        {
+          "url": "https://example.com/mock-photo-0200-1.jpg",
+          "width": 800,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0200-2.jpg",
+          "width": 800,
+          "height": 600
+        }
+      ]
+    },
+    {
+      "review_id": "r0200",
+      "author_name": "Hugo M.",
+      "rating": 5,
+      "text": "Endroit parfait pour travailler ☕",
+      "language": "fr",
+      "published_at": "2025-07-21T19:46:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0175"
+    },
+    {
+      "review_id": "r0201",
+      "author_name": "Aisha R.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2025-07-18T21:47:00Z"
+    },
+    {
+      "review_id": "r0202",
+      "author_name": "Alessandro N.",
+      "rating": 4,
+      "text": "Il mio bar preferito della zona.",
+      "language": "it",
+      "published_at": "2025-07-18T16:26:00Z"
+    },
+    {
+      "review_id": "r0203",
+      "author_name": "Lucía M.",
+      "rating": 5,
+      "text": "Sitio ideal para trabajar unas horas.",
+      "language": "es",
+      "published_at": "2025-07-16T17:04:00Z"
+    },
+    {
+      "review_id": "r0204",
+      "author_name": "Tom L.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2025-07-15T23:49:00Z"
+    },
+    {
+      "review_id": "r0205",
+      "author_name": "Tom L.",
+      "rating": 4,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2025-07-14T23:31:00Z"
+    },
+    {
+      "review_id": "r0206",
+      "author_name": "Kevin H.",
+      "rating": 5,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2025-07-14T20:27:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0222"
+    },
+    {
+      "review_id": "r0207",
+      "author_name": "Lucía M.",
+      "rating": 1,
+      "text": "El café estaba quemado. No volveré.",
+      "language": "es",
+      "published_at": "2025-07-14T16:29:00Z"
+    },
+    {
+      "review_id": "r0208",
+      "author_name": "Tiago L.",
+      "rating": 5,
+      "text": "Melhor café da região!",
+      "language": "pt",
+      "published_at": "2025-07-14T13:42:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0121"
+    },
+    {
+      "review_id": "r0209",
+      "author_name": "Maria S.",
+      "rating": 5,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2025-07-13T14:48:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0115"
+    },
+    {
+      "review_id": "r0210",
+      "author_name": "Ava R.",
+      "rating": 1,
+      "text": "Way overpriced for what you get. Won't return.",
+      "language": "en",
+      "published_at": "2025-07-12T14:14:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0263-0.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0263-1.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0263-2.jpg",
+          "width": 1024,
+          "height": 600
+        }
+      ]
+    },
+    {
+      "review_id": "r0211",
+      "author_name": "Piotr K.",
+      "rating": 4,
+      "text": "Najlepsza kawa w okolicy!",
+      "language": "pl",
+      "published_at": "2025-07-12T12:25:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0181"
+    },
+    {
+      "review_id": "r0212",
+      "author_name": "Marie H.",
+      "rating": 5,
+      "text": "Top Kaffee, super freundliches Personal!",
+      "language": "de",
+      "published_at": "2025-07-10T17:26:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0079"
+    },
+    {
+      "review_id": "r0213",
+      "author_name": "Jenny P.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2025-07-09T08:39:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0391"
+    },
+    {
+      "review_id": "r0214",
+      "author_name": "Manuel L.",
+      "rating": 5,
+      "text": "Sitio ideal para trabajar unas horas.",
+      "language": "es",
+      "published_at": "2025-07-06T01:00:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0392"
+    },
+    {
+      "review_id": "r0215",
+      "author_name": "Sofía G.",
+      "rating": 5,
+      "text": "Repostería deliciosa, vuelvo seguro.",
+      "language": "es",
+      "published_at": "2025-07-02T04:59:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0067",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0067-0.jpg",
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "url": "https://example.com/mock-photo-0067-1.jpg",
+          "width": 800,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "review_id": "r0216",
+      "author_name": "Hao C.",
+      "rating": 5,
+      "text": "推荐!服务一流。",
+      "language": "zh",
+      "published_at": "2025-06-29T15:57:00Z"
+    },
+    {
+      "review_id": "r0217",
+      "author_name": "Lucía M.",
+      "rating": 5,
+      "text": "Repostería deliciosa, vuelvo seguro.",
+      "language": "es",
+      "published_at": "2025-06-25T22:17:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0438"
+    },
+    {
+      "review_id": "r0218",
+      "author_name": "Mark T.",
+      "rating": 5,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2025-06-25T16:13:00Z"
+    },
+    {
+      "review_id": "r0219",
+      "author_name": "Aisha R.",
+      "rating": 4,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2025-06-21T01:30:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0272"
+    },
+    {
+      "review_id": "r0220",
+      "author_name": "Ava R.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2025-06-20T00:11:00Z"
+    },
+    {
+      "review_id": "r0221",
+      "author_name": "Pablo H.",
+      "rating": 4,
+      "text": "Trato excelente y café espectacular ☕",
+      "language": "es",
+      "published_at": "2025-06-19T21:31:00Z"
+    },
+    {
+      "review_id": "r0222",
+      "author_name": "Anna B.",
+      "rating": 3,
+      "text": "Solide, aber für den Preis nicht spektakulär.",
+      "language": "de",
+      "published_at": "2025-06-19T07:15:00Z"
+    },
+    {
+      "review_id": "r0223",
+      "author_name": "Liam B.",
+      "rating": 4,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2025-06-18T13:49:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0481"
+    },
+    {
+      "review_id": "r0224",
+      "author_name": "Ava R.",
+      "rating": 5,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2025-06-18T02:57:00Z"
+    },
+    {
+      "review_id": "r0225",
+      "author_name": "Takeshi N.",
+      "rating": 5,
+      "text": "また絶対行きます ☕",
+      "language": "ja",
+      "published_at": "2025-06-16T15:33:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0034",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0034-0.jpg",
+          "width": 1280,
+          "height": 600
+        },
+        {
+          "url": "https://example.com/mock-photo-0034-1.jpg",
+          "width": 800,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "review_id": "r0226",
+      "author_name": "Olivia N.",
+      "rating": 3,
+      "text": "Solid spot but a bit pricey for the area.",
+      "language": "en",
+      "published_at": "2025-06-16T00:17:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0027"
+    },
+    {
+      "review_id": "r0227",
+      "author_name": "Camille D.",
+      "rating": 4,
+      "text": "Endroit parfait pour travailler ☕",
+      "language": "fr",
+      "published_at": "2025-06-14T14:08:00Z"
+    },
+    {
+      "review_id": "r0228",
+      "author_name": "Tomasz Z.",
+      "rating": 3,
+      "text": "W porządku, ale bez szału.",
+      "language": "pl",
+      "published_at": "2025-06-12T16:51:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0483-0.jpg",
+          "width": 1280,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "review_id": "r0229",
+      "author_name": "Marie H.",
+      "rating": 5,
+      "text": "Mein Lieblingsort zum Arbeiten.",
+      "language": "de",
+      "published_at": "2025-06-11T23:18:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0220"
+    },
+    {
+      "review_id": "r0230",
+      "author_name": "Jenny P.",
+      "rating": 4,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2025-06-11T00:01:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0497"
+    },
+    {
+      "review_id": "r0231",
+      "author_name": "Luca B.",
+      "rating": 5,
+      "text": "Il mio bar preferito della zona.",
+      "language": "it",
+      "published_at": "2025-06-10T22:46:00Z"
+    },
+    {
+      "review_id": "r0232",
+      "author_name": "Javier R.",
+      "rating": 5,
+      "text": "Repostería deliciosa, vuelvo seguro.",
+      "language": "es",
+      "published_at": "2025-06-10T04:27:00Z"
+    },
+    {
+      "review_id": "r0233",
+      "author_name": "Sarah W.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2025-06-10T02:52:00Z"
+    },
+    {
+      "review_id": "r0234",
+      "author_name": "Manon T.",
+      "rating": 4,
+      "text": "Ambiance super et baristas accueillants.",
+      "language": "fr",
+      "published_at": "2025-06-10T01:12:00Z"
+    },
+    {
+      "review_id": "r0235",
+      "author_name": "Mark T.",
+      "rating": 2,
+      "text": "Way overpriced for what you get. Won't return.",
+      "language": "en",
+      "published_at": "2025-06-09T21:40:00Z",
+      "owner_response": {
+        "text": "We're sorry to hear this. Please email us so we can make it right.",
+        "responded_at": "2025-06-10T04:40:00Z"
+      }
+    },
+    {
+      "review_id": "r0236",
+      "author_name": "Emma D.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2025-06-09T11:41:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0070"
+    },
+    {
+      "review_id": "r0237",
+      "author_name": "Jenny P.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2025-06-06T03:37:00Z"
+    },
+    {
+      "review_id": "r0238",
+      "author_name": "Noah F.",
+      "rating": 5,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2025-06-03T22:29:00Z"
+    },
+    {
+      "review_id": "r0239",
+      "author_name": "Emma D.",
+      "rating": 4,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2025-06-03T11:25:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0352-0.jpg",
+          "width": 1024,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0352-1.jpg",
+          "width": 1024,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "review_id": "r0240",
+      "author_name": "Lucía M.",
+      "rating": 5,
+      "text": "Sitio ideal para trabajar unas horas.",
+      "language": "es",
+      "published_at": "2025-05-26T08:34:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0187"
+    },
+    {
+      "review_id": "r0241",
+      "author_name": "Takeshi N.",
+      "rating": 4,
+      "text": "店員さんがとても親切でした。",
+      "language": "ja",
+      "published_at": "2025-05-25T18:11:00Z"
+    },
+    {
+      "review_id": "r0242",
+      "author_name": "Elena V.",
+      "rating": 5,
+      "text": "Trato excelente y café espectacular ☕",
+      "language": "es",
+      "published_at": "2025-05-25T13:37:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0492"
+    },
+    {
+      "review_id": "r0243",
+      "author_name": "Kevin H.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2025-05-24T03:13:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0283",
+      "owner_response": {
+        "text": "Thank you so much! Hope to see you again soon.",
+        "responded_at": "2025-05-25T11:13:00Z"
+      }
+    },
+    {
+      "review_id": "r0244",
+      "author_name": "Sarah W.",
+      "rating": 5,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2025-05-23T06:50:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0035-0.jpg",
+          "width": 1280,
+          "height": 600
+        },
+        {
+          "url": "https://example.com/mock-photo-0035-1.jpg",
+          "width": 1280,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "review_id": "r0245",
+      "author_name": "Soo-yeon L.",
+      "rating": 5,
+      "text": "분위기 좋고 직원분들이 친절해요.",
+      "language": "ko",
+      "published_at": "2025-05-21T15:27:00Z"
+    },
+    {
+      "review_id": "r0246",
+      "author_name": "Manuel L.",
+      "rating": 5,
+      "text": "Repostería deliciosa, vuelvo seguro.",
+      "language": "es",
+      "published_at": "2025-05-19T00:56:00Z"
+    },
+    {
+      "review_id": "r0247",
+      "author_name": "Marco R.",
+      "rating": 5,
+      "text": "Caffè eccezionale, ambiente perfetto.",
+      "language": "it",
+      "published_at": "2025-05-14T15:41:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0196"
+    },
+    {
+      "review_id": "r0248",
+      "author_name": "Kevin H.",
+      "rating": 4,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2025-05-12T08:18:00Z"
+    },
+    {
+      "review_id": "r0249",
+      "author_name": "Tom L.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2025-05-11T10:19:00Z"
+    },
+    {
+      "review_id": "r0250",
+      "author_name": "Lukas M.",
+      "rating": 5,
+      "text": "Top Kaffee, super freundliches Personal!",
+      "language": "de",
+      "published_at": "2025-05-08T08:25:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0236"
+    },
+    {
+      "review_id": "r0251",
+      "author_name": "Robert F.",
+      "rating": 1,
+      "text": "Service was slow and staff seemed annoyed.",
+      "language": "en",
+      "published_at": "2025-05-07T03:29:00Z",
+      "owner_response": {
+        "text": "We're sorry to hear this. Please email us so we can make it right.",
+        "responded_at": "2025-05-11T04:29:00Z"
+      }
+    },
+    {
+      "review_id": "r0252",
+      "author_name": "Jonas K.",
+      "rating": 5,
+      "text": "Top Kaffee, super freundliches Personal!",
+      "language": "de",
+      "published_at": "2025-05-06T16:59:00Z"
+    },
+    {
+      "review_id": "r0253",
+      "author_name": "Ava R.",
+      "rating": 5,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2025-05-05T17:11:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0225"
+    },
+    {
+      "review_id": "r0254",
+      "author_name": "Diego A.",
+      "rating": 5,
+      "text": "¡El mejor café del barrio! Ambiente acogedor.",
+      "language": "es",
+      "published_at": "2025-05-03T06:45:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0436-0.jpg",
+          "width": 800,
+          "height": 600
+        },
+        {
+          "url": "https://example.com/mock-photo-0436-1.jpg",
+          "width": 800,
+          "height": 600
+        }
+      ]
+    },
+    {
+      "review_id": "r0255",
+      "author_name": "Maria S.",
+      "rating": 3,
+      "text": "Solid spot but a bit pricey for the area.",
+      "language": "en",
+      "published_at": "2025-04-30T09:00:00Z"
+    },
+    {
+      "review_id": "r0256",
+      "author_name": "Kevin H.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2025-04-27T21:10:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0495"
+    },
+    {
+      "review_id": "r0257",
+      "author_name": "Kevin H.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2025-04-25T04:34:00Z"
+    },
+    {
+      "review_id": "r0258",
+      "author_name": "Felix W.",
+      "rating": 5,
+      "text": "Heimisches Café mit super Espresso.",
+      "language": "de",
+      "published_at": "2025-04-24T15:52:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0060-0.jpg",
+          "width": 1024,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0060-1.jpg",
+          "width": 1280,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "review_id": "r0259",
+      "author_name": "Ava R.",
+      "rating": 5,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2025-04-24T14:13:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0319",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0319-0.jpg",
+          "width": 1024,
+          "height": 600
+        }
+      ]
+    },
+    {
+      "review_id": "r0260",
+      "author_name": "Lotte M.",
+      "rating": 4,
+      "text": "Beste koffie in de buurt!",
+      "language": "nl",
+      "published_at": "2025-04-22T20:21:00Z"
+    },
+    {
+      "review_id": "r0261",
+      "author_name": "Alessandro N.",
+      "rating": 5,
+      "text": "Il mio bar preferito della zona.",
+      "language": "it",
+      "published_at": "2025-04-22T11:00:00Z"
+    },
+    {
+      "review_id": "r0262",
+      "author_name": "Wei L.",
+      "rating": 4,
+      "text": "咖啡非常棒,环境也很舒适!",
+      "language": "zh",
+      "published_at": "2025-04-18T14:36:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0178-0.jpg",
+          "width": 800,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "review_id": "r0263",
+      "author_name": "Robert F.",
+      "rating": 5,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2025-04-17T11:46:00Z"
+    },
+    {
+      "review_id": "r0264",
+      "author_name": "Robert F.",
+      "rating": 4,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2025-04-16T09:50:00Z"
+    },
+    {
+      "review_id": "r0265",
+      "author_name": "Emma D.",
+      "rating": 3,
+      "text": "Decent coffee, nothing groundbreaking.",
+      "language": "en",
+      "published_at": "2025-04-14T14:25:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0433-0.jpg",
+          "width": 800,
+          "height": 768
+        },
+        {
+          "url": "https://example.com/mock-photo-0433-1.jpg",
+          "width": 1280,
+          "height": 600
+        },
+        {
+          "url": "https://example.com/mock-photo-0433-2.jpg",
+          "width": 800,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "review_id": "r0266",
+      "author_name": "Luca B.",
+      "rating": 4,
+      "text": "Caffè eccezionale, ambiente perfetto.",
+      "language": "it",
+      "published_at": "2025-04-14T09:53:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0123"
+    },
+    {
+      "review_id": "r0267",
+      "author_name": "Noah F.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2025-04-14T04:44:00Z"
+    },
+    {
+      "review_id": "r0268",
+      "author_name": "Ji-woo P.",
+      "rating": 5,
+      "text": "커피가 정말 맛있어요!",
+      "language": "ko",
+      "published_at": "2025-04-13T18:37:00Z",
+      "owner_response": {
+        "text": "감사합니다! 또 방문해주세요.",
+        "responded_at": "2025-04-15T01:37:00Z"
+      }
+    },
+    {
+      "review_id": "r0269",
+      "author_name": "Иван С.",
+      "rating": 5,
+      "text": "Лучший кофе в городе!",
+      "language": "ru",
+      "published_at": "2025-04-09T22:03:00Z"
+    },
+    {
+      "review_id": "r0270",
+      "author_name": "Sofía G.",
+      "rating": 1,
+      "text": "Demasiado caro y servicio lento.",
+      "language": "es",
+      "published_at": "2025-04-08T18:45:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0135-0.jpg",
+          "width": 800,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0135-1.jpg",
+          "width": 1024,
+          "height": 768
+        }
+      ],
+      "owner_response": {
+        "text": "Lo sentimos mucho — escríbenos y lo solucionamos.",
+        "responded_at": "2025-04-14T16:45:00Z"
+      }
+    },
+    {
+      "review_id": "r0271",
+      "author_name": "Noah F.",
+      "rating": 1,
+      "text": "Coffee was burnt. Disappointing.",
+      "language": "en",
+      "published_at": "2025-04-08T00:26:00Z"
+    },
+    {
+      "review_id": "r0272",
+      "author_name": "Дмитрий П.",
+      "rating": 5,
+      "text": "Уютная атмосфера, очень рекомендую.",
+      "language": "ru",
+      "published_at": "2025-04-07T07:16:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0125"
+    },
+    {
+      "review_id": "r0273",
+      "author_name": "Liam B.",
+      "rating": 1,
+      "text": "Service was slow and staff seemed annoyed.",
+      "language": "en",
+      "published_at": "2025-04-05T00:59:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0475",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0475-0.jpg",
+          "width": 800,
+          "height": 600
+        },
+        {
+          "url": "https://example.com/mock-photo-0475-1.jpg",
+          "width": 800,
+          "height": 600
+        }
+      ]
+    },
+    {
+      "review_id": "r0274",
+      "author_name": "Mei Z.",
+      "rating": 3,
+      "text": "还行,没有特别惊艳。",
+      "language": "zh",
+      "published_at": "2025-04-04T18:47:00Z",
+      "owner_response": {
+        "text": "感谢您的反馈,我们会继续改进。",
+        "responded_at": "2025-04-09T08:47:00Z"
+      }
+    },
+    {
+      "review_id": "r0275",
+      "author_name": "Mia J.",
+      "rating": 5,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2025-04-03T18:20:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0068-0.jpg",
+          "width": 800,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "review_id": "r0276",
+      "author_name": "Daniel K.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2025-04-02T07:53:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0141",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0141-0.jpg",
+          "width": 800,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "review_id": "r0277",
+      "author_name": "Liam B.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2025-04-01T12:47:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0269"
+    },
+    {
+      "review_id": "r0278",
+      "author_name": "Anna B.",
+      "rating": 5,
+      "text": "Heimisches Café mit super Espresso.",
+      "language": "de",
+      "published_at": "2025-04-01T07:54:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0410"
+    },
+    {
+      "review_id": "r0279",
+      "author_name": "Pedro M.",
+      "rating": 4,
+      "text": "Melhor café da região!",
+      "language": "pt",
+      "published_at": "2025-04-01T05:55:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0382-0.jpg",
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "url": "https://example.com/mock-photo-0382-1.jpg",
+          "width": 800,
+          "height": 768
+        },
+        {
+          "url": "https://example.com/mock-photo-0382-2.jpg",
+          "width": 800,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "review_id": "r0280",
+      "author_name": "Pablo H.",
+      "rating": 4,
+      "text": "Repostería deliciosa, vuelvo seguro.",
+      "language": "es",
+      "published_at": "2025-03-31T07:00:00Z"
+    },
+    {
+      "review_id": "r0281",
+      "author_name": "Ольга К.",
+      "rating": 3,
+      "text": "Нормально, но ничего особенного.",
+      "language": "ru",
+      "published_at": "2025-03-31T03:26:00Z"
+    },
+    {
+      "review_id": "r0282",
+      "author_name": "Carlos P.",
+      "rating": 2,
+      "text": "El café estaba quemado. No volveré.",
+      "language": "es",
+      "published_at": "2025-03-30T01:29:00Z",
+      "owner_response": {
+        "text": "Lo sentimos mucho — escríbenos y lo solucionamos.",
+        "responded_at": "2025-04-03T04:29:00Z"
+      }
+    },
+    {
+      "review_id": "r0283",
+      "author_name": "Robert F.",
+      "rating": 2,
+      "text": "Coffee was burnt. Disappointing.",
+      "language": "en",
+      "published_at": "2025-03-29T04:02:00Z",
+      "owner_response": {
+        "text": "We're sorry to hear this. Please email us so we can make it right.",
+        "responded_at": "2025-03-31T10:02:00Z"
+      }
+    },
+    {
+      "review_id": "r0284",
+      "author_name": "Élodie B.",
+      "rating": 5,
+      "text": "Le meilleur café du quartier !",
+      "language": "fr",
+      "published_at": "2025-03-27T03:15:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0256-0.jpg",
+          "width": 1280,
+          "height": 600
+        }
+      ]
+    },
+    {
+      "review_id": "r0285",
+      "author_name": "Anna B.",
+      "rating": 5,
+      "text": "Mein Lieblingsort zum Arbeiten.",
+      "language": "de",
+      "published_at": "2025-03-26T23:45:00Z"
+    },
+    {
+      "review_id": "r0286",
+      "author_name": "Tobias R.",
+      "rating": 5,
+      "text": "Heimisches Café mit super Espresso.",
+      "language": "de",
+      "published_at": "2025-03-26T05:03:00Z"
+    },
+    {
+      "review_id": "r0287",
+      "author_name": "Sarah W.",
+      "rating": 4,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2025-03-26T00:23:00Z"
+    },
+    {
+      "review_id": "r0288",
+      "author_name": "Anna O.",
+      "rating": 5,
+      "text": "Najlepsza kawa w okolicy!",
+      "language": "pl",
+      "published_at": "2025-03-25T17:36:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0416-0.jpg",
+          "width": 1024,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "review_id": "r0289",
+      "author_name": "Lukas M.",
+      "rating": 5,
+      "text": "Sehr empfehlenswerte Adresse 💛",
+      "language": "de",
+      "published_at": "2025-03-23T01:57:00Z"
+    },
+    {
+      "review_id": "r0290",
+      "author_name": "Mia J.",
+      "rating": 5,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2025-03-19T21:16:00Z"
+    },
+    {
+      "review_id": "r0291",
+      "author_name": "Jenny P.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2025-03-19T18:14:00Z"
+    },
+    {
+      "review_id": "r0292",
+      "author_name": "Robert F.",
+      "rating": 1,
+      "text": "Service was slow and staff seemed annoyed.",
+      "language": "en",
+      "published_at": "2025-03-14T00:09:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0474"
+    },
+    {
+      "review_id": "r0293",
+      "author_name": "Sarah W.",
+      "rating": 2,
+      "text": "Service was slow and staff seemed annoyed.",
+      "language": "en",
+      "published_at": "2025-03-13T20:13:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0358"
+    },
+    {
+      "review_id": "r0294",
+      "author_name": "Daniel K.",
+      "rating": 5,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2025-03-13T10:46:00Z"
+    },
+    {
+      "review_id": "r0295",
+      "author_name": "Mark T.",
+      "rating": 4,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2025-03-13T00:18:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0146-0.jpg",
+          "width": 800,
+          "height": 768
+        },
+        {
+          "url": "https://example.com/mock-photo-0146-1.jpg",
+          "width": 1024,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "review_id": "r0296",
+      "author_name": "Jenny P.",
+      "rating": 5,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2025-03-08T16:04:00Z"
+    },
+    {
+      "review_id": "r0297",
+      "author_name": "Manuel L.",
+      "rating": 5,
+      "text": "Repostería deliciosa, vuelvo seguro.",
+      "language": "es",
+      "published_at": "2025-03-08T10:24:00Z"
+    },
+    {
+      "review_id": "r0298",
+      "author_name": "Isabel C.",
+      "rating": 5,
+      "text": "Sitio ideal para trabajar unas horas.",
+      "language": "es",
+      "published_at": "2025-03-08T06:40:00Z"
+    },
+    {
+      "review_id": "r0299",
+      "author_name": "Antoine R.",
+      "rating": 5,
+      "text": "Ambiance super et baristas accueillants.",
+      "language": "fr",
+      "published_at": "2025-03-06T12:01:00Z"
+    },
+    {
+      "review_id": "r0300",
+      "author_name": "Emma D.",
+      "rating": 5,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2025-03-05T05:39:00Z",
+      "owner_response": {
+        "text": "Thank you so much! Hope to see you again soon.",
+        "responded_at": "2025-03-10T18:39:00Z"
+      }
+    },
+    {
+      "review_id": "r0301",
+      "author_name": "Tom L.",
+      "rating": 3,
+      "text": "Solid spot but a bit pricey for the area.",
+      "language": "en",
+      "published_at": "2025-03-04T21:39:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0032-0.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0032-1.jpg",
+          "width": 1280,
+          "height": 768
+        },
+        {
+          "url": "https://example.com/mock-photo-0032-2.jpg",
+          "width": 1280,
+          "height": 600
+        }
+      ],
+      "owner_response": {
+        "text": "Thanks for the honest feedback — we'll keep improving.",
+        "responded_at": "2025-03-04T22:39:00Z"
+      }
+    },
+    {
+      "review_id": "r0302",
+      "author_name": "Javier R.",
+      "rating": 4,
+      "text": "Sitio ideal para trabajar unas horas.",
+      "language": "es",
+      "published_at": "2025-03-02T19:02:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0314"
+    },
+    {
+      "review_id": "r0303",
+      "author_name": "Wei L.",
+      "rating": 5,
+      "text": "推荐!服务一流。",
+      "language": "zh",
+      "published_at": "2025-03-01T11:39:00Z"
+    },
+    {
+      "review_id": "r0304",
+      "author_name": "Anna B.",
+      "rating": 5,
+      "text": "Sehr empfehlenswerte Adresse 💛",
+      "language": "de",
+      "published_at": "2025-02-27T18:12:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0376"
+    },
+    {
+      "review_id": "r0305",
+      "author_name": "Diego A.",
+      "rating": 5,
+      "text": "Repostería deliciosa, vuelvo seguro.",
+      "language": "es",
+      "published_at": "2025-02-26T18:00:00Z"
+    },
+    {
+      "review_id": "r0306",
+      "author_name": "Mark T.",
+      "rating": 4,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2025-02-16T06:53:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0093-0.jpg",
+          "width": 1024,
+          "height": 600
+        },
+        {
+          "url": "https://example.com/mock-photo-0093-1.jpg",
+          "width": 800,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "review_id": "r0307",
+      "author_name": "Mia J.",
+      "rating": 5,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2025-02-14T22:05:00Z"
+    },
+    {
+      "review_id": "r0308",
+      "author_name": "Lucía M.",
+      "rating": 5,
+      "text": "¡El mejor café del barrio! Ambiente acogedor.",
+      "language": "es",
+      "published_at": "2025-02-13T15:32:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0134"
+    },
+    {
+      "review_id": "r0309",
+      "author_name": "Mia J.",
+      "rating": 5,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2025-02-10T22:25:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0084"
+    },
+    {
+      "review_id": "r0310",
+      "author_name": "Léa P.",
+      "rating": 3,
+      "text": "Correct, sans plus.",
+      "language": "fr",
+      "published_at": "2025-02-10T01:04:00Z"
+    },
+    {
+      "review_id": "r0311",
+      "author_name": "Robert F.",
+      "rating": 5,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2025-02-09T17:35:00Z"
+    },
+    {
+      "review_id": "r0312",
+      "author_name": "Kevin H.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2025-02-09T07:57:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0311"
+    },
+    {
+      "review_id": "r0313",
+      "author_name": "Lucía M.",
+      "rating": 5,
+      "text": "Repostería deliciosa, vuelvo seguro.",
+      "language": "es",
+      "published_at": "2025-02-08T13:44:00Z"
+    },
+    {
+      "review_id": "r0314",
+      "author_name": "Anna B.",
+      "rating": 5,
+      "text": "Heimisches Café mit super Espresso.",
+      "language": "de",
+      "published_at": "2025-02-06T12:10:00Z"
+    },
+    {
+      "review_id": "r0315",
+      "author_name": "Emma D.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2025-02-04T07:39:00Z"
+    },
+    {
+      "review_id": "r0316",
+      "author_name": "Beatriz F.",
+      "rating": 5,
+      "text": "Adoro este lugar — recomendo muito.",
+      "language": "pt",
+      "published_at": "2025-02-03T22:57:00Z"
+    },
+    {
+      "review_id": "r0317",
+      "author_name": "Min-jun K.",
+      "rating": 5,
+      "text": "분위기 좋고 직원분들이 친절해요.",
+      "language": "ko",
+      "published_at": "2025-01-29T09:29:00Z"
+    },
+    {
+      "review_id": "r0318",
+      "author_name": "Alessandro N.",
+      "rating": 1,
+      "text": "Prezzi alti e servizio mediocre.",
+      "language": "it",
+      "published_at": "2025-01-24T19:24:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0045",
+      "owner_response": {
+        "text": "Ci dispiace molto — scrivici per risolvere.",
+        "responded_at": "2025-01-29T09:24:00Z"
+      }
+    },
+    {
+      "review_id": "r0319",
+      "author_name": "Marco R.",
+      "rating": 3,
+      "text": "Caffè discreto, prezzi medi.",
+      "language": "it",
+      "published_at": "2025-01-23T08:07:00Z"
+    },
+    {
+      "review_id": "r0320",
+      "author_name": "Camille D.",
+      "rating": 5,
+      "text": "Ambiance super et baristas accueillants.",
+      "language": "fr",
+      "published_at": "2025-01-22T02:49:00Z"
+    },
+    {
+      "review_id": "r0321",
+      "author_name": "Javier R.",
+      "rating": 5,
+      "text": "Trato excelente y café espectacular ☕",
+      "language": "es",
+      "published_at": "2025-01-19T22:51:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0459"
+    },
+    {
+      "review_id": "r0322",
+      "author_name": "Saori O.",
+      "rating": 5,
+      "text": "店員さんがとても親切でした。",
+      "language": "ja",
+      "published_at": "2025-01-08T19:15:00Z"
+    },
+    {
+      "review_id": "r0323",
+      "author_name": "Pedro M.",
+      "rating": 5,
+      "text": "Adoro este lugar — recomendo muito.",
+      "language": "pt",
+      "published_at": "2025-01-08T08:52:00Z"
+    },
+    {
+      "review_id": "r0324",
+      "author_name": "Ji-woo P.",
+      "rating": 4,
+      "text": "커피가 정말 맛있어요!",
+      "language": "ko",
+      "published_at": "2025-01-07T17:03:00Z"
+    },
+    {
+      "review_id": "r0325",
+      "author_name": "Ava R.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2025-01-05T11:06:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0419"
+    },
+    {
+      "review_id": "r0326",
+      "author_name": "Hao C.",
+      "rating": 5,
+      "text": "咖啡非常棒,环境也很舒适!",
+      "language": "zh",
+      "published_at": "2025-01-04T00:48:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0373-0.jpg",
+          "width": 800,
+          "height": 600
+        },
+        {
+          "url": "https://example.com/mock-photo-0373-1.jpg",
+          "width": 800,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "review_id": "r0327",
+      "author_name": "Antoine R.",
+      "rating": 1,
+      "text": "Trop cher pour la qualité.",
+      "language": "fr",
+      "published_at": "2025-01-03T12:19:00Z"
+    },
+    {
+      "review_id": "r0328",
+      "author_name": "Tomasz Z.",
+      "rating": 5,
+      "text": "Tradycyjna kawa, mily personel.",
+      "language": "pl",
+      "published_at": "2025-01-02T08:10:00Z"
+    },
+    {
+      "review_id": "r0329",
+      "author_name": "Tom L.",
+      "rating": 3,
+      "text": "Decent coffee, nothing groundbreaking.",
+      "language": "en",
+      "published_at": "2025-01-01T18:44:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0338",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0338-0.jpg",
+          "width": 1024,
+          "height": 600
+        }
+      ],
+      "owner_response": {
+        "text": "Thanks for the honest feedback — we'll keep improving.",
+        "responded_at": "2025-01-02T00:44:00Z"
+      }
+    },
+    {
+      "review_id": "r0330",
+      "author_name": "Maria S.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2024-12-29T13:38:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0350"
+    },
+    {
+      "review_id": "r0331",
+      "author_name": "Marco R.",
+      "rating": 3,
+      "text": "Niente di speciale ma carino.",
+      "language": "it",
+      "published_at": "2024-12-29T13:29:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0467"
+    },
+    {
+      "review_id": "r0332",
+      "author_name": "Liam B.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2024-12-27T13:49:00Z"
+    },
+    {
+      "review_id": "r0333",
+      "author_name": "Emma D.",
+      "rating": 5,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2024-12-27T06:20:00Z"
+    },
+    {
+      "review_id": "r0334",
+      "author_name": "Ana C.",
+      "rating": 1,
+      "text": "Café fraco para o preço cobrado.",
+      "language": "pt",
+      "published_at": "2024-12-26T06:55:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0047",
+      "owner_response": {
+        "text": "Lamentamos muito — escreva-nos para resolver.",
+        "responded_at": "2024-12-27T23:55:00Z"
+      }
+    },
+    {
+      "review_id": "r0335",
+      "author_name": "Léa P.",
+      "rating": 5,
+      "text": "Ambiance super et baristas accueillants.",
+      "language": "fr",
+      "published_at": "2024-12-26T03:59:00Z"
+    },
+    {
+      "review_id": "r0336",
+      "author_name": "Mark T.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2024-12-26T01:01:00Z"
+    },
+    {
+      "review_id": "r0337",
+      "author_name": "Kenji M.",
+      "rating": 3,
+      "text": "まあまあ。可もなく不可もなく。",
+      "language": "ja",
+      "published_at": "2024-12-21T20:08:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0458"
+    },
+    {
+      "review_id": "r0338",
+      "author_name": "Marco R.",
+      "rating": 4,
+      "text": "Da consigliare assolutamente!",
+      "language": "it",
+      "published_at": "2024-12-20T04:00:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0165"
+    },
+    {
+      "review_id": "r0339",
+      "author_name": "Bram V.",
+      "rating": 3,
+      "text": "Prima, niets bijzonders.",
+      "language": "nl",
+      "published_at": "2024-12-17T08:26:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0273-0.jpg",
+          "width": 1280,
+          "height": 600
+        }
+      ]
+    },
+    {
+      "review_id": "r0340",
+      "author_name": "Olivia N.",
+      "rating": 4,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2024-12-17T08:00:00Z"
+    },
+    {
+      "review_id": "r0341",
+      "author_name": "Mark T.",
+      "rating": 5,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2024-12-17T04:33:00Z"
+    },
+    {
+      "review_id": "r0342",
+      "author_name": "Ahmed K.",
+      "rating": 5,
+      "text": "مكان رائع للعمل والاسترخاء.",
+      "language": "ar",
+      "published_at": "2024-12-16T14:42:00Z"
+    },
+    {
+      "review_id": "r0343",
+      "author_name": "Jonas K.",
+      "rating": 5,
+      "text": "Heimisches Café mit super Espresso.",
+      "language": "de",
+      "published_at": "2024-12-14T22:57:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0381-0.jpg",
+          "width": 1024,
+          "height": 600
+        },
+        {
+          "url": "https://example.com/mock-photo-0381-1.jpg",
+          "width": 800,
+          "height": 600
+        },
+        {
+          "url": "https://example.com/mock-photo-0381-2.jpg",
+          "width": 800,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "review_id": "r0344",
+      "author_name": "Ava R.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2024-12-13T06:00:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0113"
+    },
+    {
+      "review_id": "r0345",
+      "author_name": "Robert F.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2024-12-10T22:07:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0422"
+    },
+    {
+      "review_id": "r0346",
+      "author_name": "Lukas M.",
+      "rating": 5,
+      "text": "Top Kaffee, super freundliches Personal!",
+      "language": "de",
+      "published_at": "2024-12-09T00:52:00Z"
+    },
+    {
+      "review_id": "r0347",
+      "author_name": "Emma D.",
+      "rating": 5,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2024-12-08T05:08:00Z"
+    },
+    {
+      "review_id": "r0348",
+      "author_name": "Robert F.",
+      "rating": 5,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2024-12-08T00:55:00Z"
+    },
+    {
+      "review_id": "r0349",
+      "author_name": "Sarah W.",
+      "rating": 4,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2024-12-06T12:15:00Z"
+    },
+    {
+      "review_id": "r0350",
+      "author_name": "Liam B.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2024-12-06T07:28:00Z"
+    },
+    {
+      "review_id": "r0351",
+      "author_name": "Manuel L.",
+      "rating": 5,
+      "text": "Repostería deliciosa, vuelvo seguro.",
+      "language": "es",
+      "published_at": "2024-11-29T07:58:00Z"
+    },
+    {
+      "review_id": "r0352",
+      "author_name": "Robert F.",
+      "rating": 5,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2024-11-29T00:35:00Z"
+    },
+    {
+      "review_id": "r0353",
+      "author_name": "Ana C.",
+      "rating": 5,
+      "text": "Adoro este lugar — recomendo muito.",
+      "language": "pt",
+      "published_at": "2024-11-28T09:38:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0364"
+    },
+    {
+      "review_id": "r0354",
+      "author_name": "Pablo H.",
+      "rating": 5,
+      "text": "¡El mejor café del barrio! Ambiente acogedor.",
+      "language": "es",
+      "published_at": "2024-11-23T18:33:00Z"
+    },
+    {
+      "review_id": "r0355",
+      "author_name": "Chiara V.",
+      "rating": 5,
+      "text": "Il mio bar preferito della zona.",
+      "language": "it",
+      "published_at": "2024-11-23T12:08:00Z"
+    },
+    {
+      "review_id": "r0356",
+      "author_name": "Élodie B.",
+      "rating": 5,
+      "text": "Ambiance super et baristas accueillants.",
+      "language": "fr",
+      "published_at": "2024-11-19T22:54:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0470-0.jpg",
+          "width": 1280,
+          "height": 768
+        },
+        {
+          "url": "https://example.com/mock-photo-0470-1.jpg",
+          "width": 1024,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0470-2.jpg",
+          "width": 1024,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "review_id": "r0357",
+      "author_name": "Chiara V.",
+      "rating": 5,
+      "text": "Caffè eccezionale, ambiente perfetto.",
+      "language": "it",
+      "published_at": "2024-11-19T15:46:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0174",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0174-0.jpg",
+          "width": 1280,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "review_id": "r0358",
+      "author_name": "Manon T.",
+      "rating": 5,
+      "text": "Le meilleur café du quartier !",
+      "language": "fr",
+      "published_at": "2024-11-17T03:38:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0228"
+    },
+    {
+      "review_id": "r0359",
+      "author_name": "Chiara V.",
+      "rating": 5,
+      "text": "Da consigliare assolutamente!",
+      "language": "it",
+      "published_at": "2024-11-14T20:42:00Z"
+    },
+    {
+      "review_id": "r0360",
+      "author_name": "Javier R.",
+      "rating": 5,
+      "text": "Repostería deliciosa, vuelvo seguro.",
+      "language": "es",
+      "published_at": "2024-11-12T22:26:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0096-0.jpg",
+          "width": 1280,
+          "height": 768
+        },
+        {
+          "url": "https://example.com/mock-photo-0096-1.jpg",
+          "width": 1280,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "review_id": "r0361",
+      "author_name": "Emma D.",
+      "rating": 1,
+      "text": "Way overpriced for what you get. Won't return.",
+      "language": "en",
+      "published_at": "2024-11-10T12:47:00Z",
+      "owner_response": {
+        "text": "We're sorry to hear this. Please email us so we can make it right.",
+        "responded_at": "2024-11-15T11:47:00Z"
+      }
+    },
+    {
+      "review_id": "r0362",
+      "author_name": "Bram V.",
+      "rating": 4,
+      "text": "Heerlijk plekje om te werken.",
+      "language": "nl",
+      "published_at": "2024-11-09T14:35:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0218"
+    },
+    {
+      "review_id": "r0363",
+      "author_name": "Jonas K.",
+      "rating": 4,
+      "text": "Top Kaffee, super freundliches Personal!",
+      "language": "de",
+      "published_at": "2024-11-08T16:18:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0450"
+    },
+    {
+      "review_id": "r0364",
+      "author_name": "Sofía G.",
+      "rating": 4,
+      "text": "¡El mejor café del barrio! Ambiente acogedor.",
+      "language": "es",
+      "published_at": "2024-11-08T10:38:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0493-0.jpg",
+          "width": 1280,
+          "height": 768
+        },
+        {
+          "url": "https://example.com/mock-photo-0493-1.jpg",
+          "width": 1280,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "review_id": "r0365",
+      "author_name": "Jenny P.",
+      "rating": 5,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2024-11-08T06:36:00Z"
+    },
+    {
+      "review_id": "r0366",
+      "author_name": "Isabel C.",
+      "rating": 4,
+      "text": "Repostería deliciosa, vuelvo seguro.",
+      "language": "es",
+      "published_at": "2024-11-06T20:10:00Z"
+    },
+    {
+      "review_id": "r0367",
+      "author_name": "Diego A.",
+      "rating": 5,
+      "text": "Sitio ideal para trabajar unas horas.",
+      "language": "es",
+      "published_at": "2024-11-06T00:17:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0478",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0478-0.jpg",
+          "width": 800,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0478-1.jpg",
+          "width": 800,
+          "height": 600
+        },
+        {
+          "url": "https://example.com/mock-photo-0478-2.jpg",
+          "width": 1280,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "review_id": "r0368",
+      "author_name": "Manon T.",
+      "rating": 5,
+      "text": "Ambiance super et baristas accueillants.",
+      "language": "fr",
+      "published_at": "2024-11-05T09:24:00Z"
+    },
+    {
+      "review_id": "r0369",
+      "author_name": "Pablo H.",
+      "rating": 2,
+      "text": "El café estaba quemado. No volveré.",
+      "language": "es",
+      "published_at": "2024-11-04T11:57:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0195"
+    },
+    {
+      "review_id": "r0370",
+      "author_name": "Élodie B.",
+      "rating": 5,
+      "text": "Endroit parfait pour travailler ☕",
+      "language": "fr",
+      "published_at": "2024-11-02T21:07:00Z"
+    },
+    {
+      "review_id": "r0371",
+      "author_name": "Tom L.",
+      "rating": 4,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2024-10-30T03:55:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0224",
+      "owner_response": {
+        "text": "Thank you so much! Hope to see you again soon.",
+        "responded_at": "2024-11-01T01:55:00Z"
+      }
+    },
+    {
+      "review_id": "r0372",
+      "author_name": "Kenji M.",
+      "rating": 5,
+      "text": "店員さんがとても親切でした。",
+      "language": "ja",
+      "published_at": "2024-10-30T00:09:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0150"
+    },
+    {
+      "review_id": "r0373",
+      "author_name": "Mark T.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2024-10-29T12:59:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0157-0.jpg",
+          "width": 1280,
+          "height": 600
+        }
+      ]
+    },
+    {
+      "review_id": "r0374",
+      "author_name": "Daniel K.",
+      "rating": 3,
+      "text": "It's fine — the seating is a bit cramped though.",
+      "language": "en",
+      "published_at": "2024-10-29T02:18:00Z"
+    },
+    {
+      "review_id": "r0375",
+      "author_name": "Aisha R.",
+      "rating": 5,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2024-10-19T16:54:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0105-0.jpg",
+          "width": 1280,
+          "height": 600
+        },
+        {
+          "url": "https://example.com/mock-photo-0105-1.jpg",
+          "width": 1024,
+          "height": 600
+        },
+        {
+          "url": "https://example.com/mock-photo-0105-2.jpg",
+          "width": 1024,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "review_id": "r0376",
+      "author_name": "Emma D.",
+      "rating": 4,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2024-10-19T07:35:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0294-0.jpg",
+          "width": 1280,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "review_id": "r0377",
+      "author_name": "Felix W.",
+      "rating": 1,
+      "text": "Zu teuer für das, was geboten wird.",
+      "language": "de",
+      "published_at": "2024-10-14T10:12:00Z",
+      "owner_response": {
+        "text": "Das tut uns leid. Bitte kontaktieren Sie uns direkt.",
+        "responded_at": "2024-10-19T08:12:00Z"
+      }
+    },
+    {
+      "review_id": "r0378",
+      "author_name": "Sarah W.",
+      "rating": 5,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2024-10-14T08:32:00Z"
+    },
+    {
+      "review_id": "r0379",
+      "author_name": "Ava R.",
+      "rating": 5,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2024-10-14T01:36:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0274"
+    },
+    {
+      "review_id": "r0380",
+      "author_name": "Noah F.",
+      "rating": 5,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2024-10-10T15:16:00Z"
+    },
+    {
+      "review_id": "r0381",
+      "author_name": "Ana C.",
+      "rating": 5,
+      "text": "Melhor café da região!",
+      "language": "pt",
+      "published_at": "2024-10-09T16:06:00Z"
+    },
+    {
+      "review_id": "r0382",
+      "author_name": "Felix W.",
+      "rating": 4,
+      "text": "Sehr empfehlenswerte Adresse 💛",
+      "language": "de",
+      "published_at": "2024-10-09T12:50:00Z"
+    },
+    {
+      "review_id": "r0383",
+      "author_name": "Ольга К.",
+      "rating": 5,
+      "text": "Лучший кофе в городе!",
+      "language": "ru",
+      "published_at": "2024-10-07T12:34:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0102-0.jpg",
+          "width": 800,
+          "height": 600
+        },
+        {
+          "url": "https://example.com/mock-photo-0102-1.jpg",
+          "width": 1024,
+          "height": 600
+        },
+        {
+          "url": "https://example.com/mock-photo-0102-2.jpg",
+          "width": 1280,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "review_id": "r0384",
+      "author_name": "Olivia N.",
+      "rating": 4,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2024-10-07T02:13:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0462"
+    },
+    {
+      "review_id": "r0385",
+      "author_name": "Manuel L.",
+      "rating": 4,
+      "text": "Repostería deliciosa, vuelvo seguro.",
+      "language": "es",
+      "published_at": "2024-10-06T14:10:00Z"
+    },
+    {
+      "review_id": "r0386",
+      "author_name": "Mei Z.",
+      "rating": 4,
+      "text": "咖啡非常棒,环境也很舒适!",
+      "language": "zh",
+      "published_at": "2024-10-06T01:17:00Z"
+    },
+    {
+      "review_id": "r0387",
+      "author_name": "Mia J.",
+      "rating": 5,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2024-10-05T20:27:00Z"
+    },
+    {
+      "review_id": "r0388",
+      "author_name": "Liam B.",
+      "rating": 5,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2024-10-05T16:03:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0342-0.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0342-1.jpg",
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "url": "https://example.com/mock-photo-0342-2.jpg",
+          "width": 1024,
+          "height": 600
+        }
+      ]
+    },
+    {
+      "review_id": "r0389",
+      "author_name": "Noah F.",
+      "rating": 5,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2024-10-05T09:06:00Z"
+    },
+    {
+      "review_id": "r0390",
+      "author_name": "Manon T.",
+      "rating": 2,
+      "text": "Trop cher pour la qualité.",
+      "language": "fr",
+      "published_at": "2024-10-04T01:29:00Z"
+    },
+    {
+      "review_id": "r0391",
+      "author_name": "Kevin H.",
+      "rating": 4,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2024-10-03T15:35:00Z"
+    },
+    {
+      "review_id": "r0392",
+      "author_name": "Pablo H.",
+      "rating": 5,
+      "text": "Repostería deliciosa, vuelvo seguro.",
+      "language": "es",
+      "published_at": "2024-10-01T13:43:00Z"
+    },
+    {
+      "review_id": "r0393",
+      "author_name": "Emma D.",
+      "rating": 5,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2024-10-01T08:46:00Z"
+    },
+    {
+      "review_id": "r0394",
+      "author_name": "Wei L.",
+      "rating": 3,
+      "text": "还行,没有特别惊艳。",
+      "language": "zh",
+      "published_at": "2024-09-28T16:56:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0427"
+    },
+    {
+      "review_id": "r0395",
+      "author_name": "Ava R.",
+      "rating": 1,
+      "text": "Service was slow and staff seemed annoyed.",
+      "language": "en",
+      "published_at": "2024-09-28T02:36:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0456-0.jpg",
+          "width": 800,
+          "height": 768
+        },
+        {
+          "url": "https://example.com/mock-photo-0456-1.jpg",
+          "width": 1280,
+          "height": 768
+        },
+        {
+          "url": "https://example.com/mock-photo-0456-2.jpg",
+          "width": 1280,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "review_id": "r0396",
+      "author_name": "Javier R.",
+      "rating": 5,
+      "text": "Trato excelente y café espectacular ☕",
+      "language": "es",
+      "published_at": "2024-09-25T23:58:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0439",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0439-0.jpg",
+          "width": 800,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "review_id": "r0397",
+      "author_name": "Marie H.",
+      "rating": 3,
+      "text": "Solide, aber für den Preis nicht spektakulär.",
+      "language": "de",
+      "published_at": "2024-09-24T16:18:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0445"
+    },
+    {
+      "review_id": "r0398",
+      "author_name": "Sarah W.",
+      "rating": 3,
+      "text": "Solid spot but a bit pricey for the area.",
+      "language": "en",
+      "published_at": "2024-09-22T09:19:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0398"
+    },
+    {
+      "review_id": "r0399",
+      "author_name": "Daniel K.",
+      "rating": 2,
+      "text": "Coffee was burnt. Disappointing.",
+      "language": "en",
+      "published_at": "2024-09-22T07:18:00Z"
+    },
+    {
+      "review_id": "r0400",
+      "author_name": "Anna B.",
+      "rating": 3,
+      "text": "Ganz okay, aber nicht herausragend.",
+      "language": "de",
+      "published_at": "2024-09-21T18:56:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0480",
+      "owner_response": {
+        "text": "Danke für das Feedback — wir arbeiten daran.",
+        "responded_at": "2024-09-23T17:56:00Z"
+      }
+    },
+    {
+      "review_id": "r0401",
+      "author_name": "Ava R.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2024-09-21T18:42:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0289",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0289-0.jpg",
+          "width": 800,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0289-1.jpg",
+          "width": 1024,
+          "height": 600
+        }
+      ]
+    },
+    {
+      "review_id": "r0402",
+      "author_name": "Marco R.",
+      "rating": 5,
+      "text": "Il mio bar preferito della zona.",
+      "language": "it",
+      "published_at": "2024-09-18T23:30:00Z"
+    },
+    {
+      "review_id": "r0403",
+      "author_name": "Pedro M.",
+      "rating": 5,
+      "text": "Adoro este lugar — recomendo muito.",
+      "language": "pt",
+      "published_at": "2024-09-17T09:15:00Z"
+    },
+    {
+      "review_id": "r0404",
+      "author_name": "Daan K.",
+      "rating": 5,
+      "text": "Heerlijk plekje om te werken.",
+      "language": "nl",
+      "published_at": "2024-09-16T22:35:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0268"
+    },
+    {
+      "review_id": "r0405",
+      "author_name": "Aisha R.",
+      "rating": 3,
+      "text": "Decent coffee, nothing groundbreaking.",
+      "language": "en",
+      "published_at": "2024-09-16T07:49:00Z"
+    },
+    {
+      "review_id": "r0406",
+      "author_name": "Lena S.",
+      "rating": 5,
+      "text": "Heimisches Café mit super Espresso.",
+      "language": "de",
+      "published_at": "2024-09-16T06:36:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0029"
+    },
+    {
+      "review_id": "r0407",
+      "author_name": "Soo-yeon L.",
+      "rating": 5,
+      "text": "커피가 정말 맛있어요!",
+      "language": "ko",
+      "published_at": "2024-09-15T22:33:00Z"
+    },
+    {
+      "review_id": "r0408",
+      "author_name": "Robert F.",
+      "rating": 5,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2024-09-15T14:27:00Z"
+    },
+    {
+      "review_id": "r0409",
+      "author_name": "Alessandro N.",
+      "rating": 3,
+      "text": "Niente di speciale ma carino.",
+      "language": "it",
+      "published_at": "2024-09-13T20:28:00Z"
+    },
+    {
+      "review_id": "r0410",
+      "author_name": "Giulia C.",
+      "rating": 4,
+      "text": "Caffè eccezionale, ambiente perfetto.",
+      "language": "it",
+      "published_at": "2024-09-13T18:21:00Z"
+    },
+    {
+      "review_id": "r0411",
+      "author_name": "Elena V.",
+      "rating": 5,
+      "text": "Repostería deliciosa, vuelvo seguro.",
+      "language": "es",
+      "published_at": "2024-09-11T05:44:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0389"
+    },
+    {
+      "review_id": "r0412",
+      "author_name": "Ava R.",
+      "rating": 1,
+      "text": "Coffee was burnt. Disappointing.",
+      "language": "en",
+      "published_at": "2024-09-07T17:44:00Z"
+    },
+    {
+      "review_id": "r0413",
+      "author_name": "Sofía G.",
+      "rating": 3,
+      "text": "Café decente, precio un poco alto.",
+      "language": "es",
+      "published_at": "2024-09-05T23:24:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0109"
+    },
+    {
+      "review_id": "r0414",
+      "author_name": "Carlos P.",
+      "rating": 5,
+      "text": "Trato excelente y café espectacular ☕",
+      "language": "es",
+      "published_at": "2024-09-04T19:21:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0479",
+      "owner_response": {
+        "text": "¡Muchas gracias por tu visita!",
+        "responded_at": "2024-09-09T11:21:00Z"
+      }
+    },
+    {
+      "review_id": "r0415",
+      "author_name": "Luca B.",
+      "rating": 5,
+      "text": "Caffè eccezionale, ambiente perfetto.",
+      "language": "it",
+      "published_at": "2024-09-02T00:08:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0095"
+    },
+    {
+      "review_id": "r0416",
+      "author_name": "Ava R.",
+      "rating": 4,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2024-08-31T05:12:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0265-0.jpg",
+          "width": 800,
+          "height": 600
+        },
+        {
+          "url": "https://example.com/mock-photo-0265-1.jpg",
+          "width": 1024,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "review_id": "r0417",
+      "author_name": "Lukas M.",
+      "rating": 4,
+      "text": "Mein Lieblingsort zum Arbeiten.",
+      "language": "de",
+      "published_at": "2024-08-30T23:24:00Z"
+    },
+    {
+      "review_id": "r0418",
+      "author_name": "Sarah W.",
+      "rating": 5,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2024-08-27T10:55:00Z"
+    },
+    {
+      "review_id": "r0419",
+      "author_name": "Ji-woo P.",
+      "rating": 5,
+      "text": "분위기 좋고 직원분들이 친절해요.",
+      "language": "ko",
+      "published_at": "2024-08-27T05:47:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0280"
+    },
+    {
+      "review_id": "r0420",
+      "author_name": "Olivia N.",
+      "rating": 4,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2024-08-26T10:25:00Z"
+    },
+    {
+      "review_id": "r0421",
+      "author_name": "Sanne J.",
+      "rating": 5,
+      "text": "Beste koffie in de buurt!",
+      "language": "nl",
+      "published_at": "2024-08-26T03:57:00Z"
+    },
+    {
+      "review_id": "r0422",
+      "author_name": "Maria S.",
+      "rating": 2,
+      "text": "Service was slow and staff seemed annoyed.",
+      "language": "en",
+      "published_at": "2024-08-19T13:17:00Z",
+      "owner_response": {
+        "text": "We're sorry to hear this. Please email us so we can make it right.",
+        "responded_at": "2024-08-24T20:17:00Z"
+      }
+    },
+    {
+      "review_id": "r0423",
+      "author_name": "Noah F.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2024-08-16T01:25:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0206",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0206-0.jpg",
+          "width": 1280,
+          "height": 600
+        },
+        {
+          "url": "https://example.com/mock-photo-0206-1.jpg",
+          "width": 800,
+          "height": 600
+        },
+        {
+          "url": "https://example.com/mock-photo-0206-2.jpg",
+          "width": 1280,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "review_id": "r0424",
+      "author_name": "Maria S.",
+      "rating": 5,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2024-08-15T20:10:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0022-0.jpg",
+          "width": 1024,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0022-1.jpg",
+          "width": 800,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0022-2.jpg",
+          "width": 800,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "review_id": "r0425",
+      "author_name": "Daniel K.",
+      "rating": 4,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2024-08-14T05:45:00Z"
+    },
+    {
+      "review_id": "r0426",
+      "author_name": "Manon T.",
+      "rating": 4,
+      "text": "Ambiance super et baristas accueillants.",
+      "language": "fr",
+      "published_at": "2024-08-14T05:34:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0277",
+      "owner_response": {
+        "text": "Merci beaucoup, à très vite !",
+        "responded_at": "2024-08-15T21:34:00Z"
+      }
+    },
+    {
+      "review_id": "r0427",
+      "author_name": "Lucía M.",
+      "rating": 4,
+      "text": "Repostería deliciosa, vuelvo seguro.",
+      "language": "es",
+      "published_at": "2024-08-09T19:34:00Z"
+    },
+    {
+      "review_id": "r0428",
+      "author_name": "Luca B.",
+      "rating": 2,
+      "text": "Prezzi alti e servizio mediocre.",
+      "language": "it",
+      "published_at": "2024-08-08T21:17:00Z",
+      "owner_response": {
+        "text": "Ci dispiace molto — scrivici per risolvere.",
+        "responded_at": "2024-08-13T15:17:00Z"
+      }
+    },
+    {
+      "review_id": "r0429",
+      "author_name": "Tom L.",
+      "rating": 3,
+      "text": "It's fine — the seating is a bit cramped though.",
+      "language": "en",
+      "published_at": "2024-08-08T04:16:00Z"
+    },
+    {
+      "review_id": "r0430",
+      "author_name": "Alessandro N.",
+      "rating": 5,
+      "text": "Caffè eccezionale, ambiente perfetto.",
+      "language": "it",
+      "published_at": "2024-08-06T17:22:00Z"
+    },
+    {
+      "review_id": "r0431",
+      "author_name": "Robert F.",
+      "rating": 5,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2024-08-06T03:26:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0412"
+    },
+    {
+      "review_id": "r0432",
+      "author_name": "Omar S.",
+      "rating": 5,
+      "text": "مكان رائع للعمل والاسترخاء.",
+      "language": "ar",
+      "published_at": "2024-08-05T17:51:00Z"
+    },
+    {
+      "review_id": "r0433",
+      "author_name": "Luca B.",
+      "rating": 5,
+      "text": "Il mio bar preferito della zona.",
+      "language": "it",
+      "published_at": "2024-08-02T12:00:00Z"
+    },
+    {
+      "review_id": "r0434",
+      "author_name": "Tom L.",
+      "rating": 4,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2024-07-30T17:48:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0210"
+    },
+    {
+      "review_id": "r0435",
+      "author_name": "Soo-yeon L.",
+      "rating": 5,
+      "text": "분위기 좋고 직원분들이 친절해요.",
+      "language": "ko",
+      "published_at": "2024-07-26T11:00:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0295-0.jpg",
+          "width": 1024,
+          "height": 600
+        },
+        {
+          "url": "https://example.com/mock-photo-0295-1.jpg",
+          "width": 1280,
+          "height": 768
+        },
+        {
+          "url": "https://example.com/mock-photo-0295-2.jpg",
+          "width": 1024,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "review_id": "r0436",
+      "author_name": "Olivia N.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2024-07-24T16:58:00Z"
+    },
+    {
+      "review_id": "r0437",
+      "author_name": "Mia J.",
+      "rating": 3,
+      "text": "Solid spot but a bit pricey for the area.",
+      "language": "en",
+      "published_at": "2024-07-23T17:53:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0122"
+    },
+    {
+      "review_id": "r0438",
+      "author_name": "Maria S.",
+      "rating": 4,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2024-07-17T14:02:00Z"
+    },
+    {
+      "review_id": "r0439",
+      "author_name": "Mia J.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2024-07-16T06:41:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0386",
+      "owner_response": {
+        "text": "Thank you so much! Hope to see you again soon.",
+        "responded_at": "2024-07-16T11:41:00Z"
+      }
+    },
+    {
+      "review_id": "r0440",
+      "author_name": "Camille D.",
+      "rating": 5,
+      "text": "Endroit parfait pour travailler ☕",
+      "language": "fr",
+      "published_at": "2024-07-14T21:34:00Z"
+    },
+    {
+      "review_id": "r0441",
+      "author_name": "Pablo H.",
+      "rating": 5,
+      "text": "Sitio ideal para trabajar unas horas.",
+      "language": "es",
+      "published_at": "2024-07-13T19:47:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0213"
+    },
+    {
+      "review_id": "r0442",
+      "author_name": "Tom L.",
+      "rating": 5,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2024-07-13T15:40:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0201"
+    },
+    {
+      "review_id": "r0443",
+      "author_name": "Liam B.",
+      "rating": 5,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2024-07-12T17:49:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0281"
+    },
+    {
+      "review_id": "r0444",
+      "author_name": "Noah F.",
+      "rating": 4,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2024-07-09T04:18:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0320"
+    },
+    {
+      "review_id": "r0445",
+      "author_name": "Wei L.",
+      "rating": 5,
+      "text": "咖啡非常棒,环境也很舒适!",
+      "language": "zh",
+      "published_at": "2024-07-09T00:43:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0415",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0415-0.jpg",
+          "width": 1024,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0415-1.jpg",
+          "width": 1024,
+          "height": 600
+        },
+        {
+          "url": "https://example.com/mock-photo-0415-2.jpg",
+          "width": 1280,
+          "height": 600
+        }
+      ]
+    },
+    {
+      "review_id": "r0446",
+      "author_name": "Emma D.",
+      "rating": 5,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2024-07-08T10:14:00Z"
+    },
+    {
+      "review_id": "r0447",
+      "author_name": "Beatriz F.",
+      "rating": 5,
+      "text": "Atendimento ótimo e ambiente acolhedor.",
+      "language": "pt",
+      "published_at": "2024-07-08T09:01:00Z"
+    },
+    {
+      "review_id": "r0448",
+      "author_name": "Manuel L.",
+      "rating": 3,
+      "text": "Café decente, precio un poco alto.",
+      "language": "es",
+      "published_at": "2024-07-07T01:32:00Z"
+    },
+    {
+      "review_id": "r0449",
+      "author_name": "Tom L.",
+      "rating": 4,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2024-07-06T04:29:00Z"
+    },
+    {
+      "review_id": "r0450",
+      "author_name": "Tomasz Z.",
+      "rating": 4,
+      "text": "Cudowna atmosfera, polecam.",
+      "language": "pl",
+      "published_at": "2024-07-05T19:09:00Z"
+    },
+    {
+      "review_id": "r0451",
+      "author_name": "Emma D.",
+      "rating": 3,
+      "text": "It's fine — the seating is a bit cramped though.",
+      "language": "en",
+      "published_at": "2024-07-05T18:07:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0370"
+    },
+    {
+      "review_id": "r0452",
+      "author_name": "Antoine R.",
+      "rating": 5,
+      "text": "Endroit parfait pour travailler ☕",
+      "language": "fr",
+      "published_at": "2024-07-03T17:17:00Z"
+    },
+    {
+      "review_id": "r0453",
+      "author_name": "Marie H.",
+      "rating": 1,
+      "text": "Service war heute leider unfreundlich.",
+      "language": "de",
+      "published_at": "2024-07-03T05:18:00Z",
+      "owner_response": {
+        "text": "Das tut uns leid. Bitte kontaktieren Sie uns direkt.",
+        "responded_at": "2024-07-04T16:18:00Z"
+      }
+    },
+    {
+      "review_id": "r0454",
+      "author_name": "Camille D.",
+      "rating": 4,
+      "text": "Endroit parfait pour travailler ☕",
+      "language": "fr",
+      "published_at": "2024-06-28T19:37:00Z"
+    },
+    {
+      "review_id": "r0455",
+      "author_name": "Lukas M.",
+      "rating": 5,
+      "text": "Top Kaffee, super freundliches Personal!",
+      "language": "de",
+      "published_at": "2024-06-28T01:24:00Z"
+    },
+    {
+      "review_id": "r0456",
+      "author_name": "Felix W.",
+      "rating": 1,
+      "text": "Service war heute leider unfreundlich.",
+      "language": "de",
+      "published_at": "2024-06-27T18:18:00Z"
+    },
+    {
+      "review_id": "r0457",
+      "author_name": "Ava R.",
+      "rating": 4,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2024-06-26T19:36:00Z"
+    },
+    {
+      "review_id": "r0458",
+      "author_name": "Liam B.",
+      "rating": 5,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2024-06-26T10:55:00Z"
+    },
+    {
+      "review_id": "r0459",
+      "author_name": "Daniel K.",
+      "rating": 1,
+      "text": "Service was slow and staff seemed annoyed.",
+      "language": "en",
+      "published_at": "2024-06-25T05:13:00Z",
+      "owner_response": {
+        "text": "We're sorry to hear this. Please email us so we can make it right.",
+        "responded_at": "2024-06-25T13:13:00Z"
+      }
+    },
+    {
+      "review_id": "r0460",
+      "author_name": "Luca B.",
+      "rating": 5,
+      "text": "Il mio bar preferito della zona.",
+      "language": "it",
+      "published_at": "2024-06-20T00:02:00Z"
+    },
+    {
+      "review_id": "r0461",
+      "author_name": "Piotr K.",
+      "rating": 5,
+      "text": "Najlepsza kawa w okolicy!",
+      "language": "pl",
+      "published_at": "2024-06-15T22:35:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0414-0.jpg",
+          "width": 1024,
+          "height": 768
+        },
+        {
+          "url": "https://example.com/mock-photo-0414-1.jpg",
+          "width": 1024,
+          "height": 600
+        }
+      ]
+    },
+    {
+      "review_id": "r0462",
+      "author_name": "Tiago L.",
+      "rating": 5,
+      "text": "Adoro este lugar — recomendo muito.",
+      "language": "pt",
+      "published_at": "2024-06-14T15:41:00Z"
+    },
+    {
+      "review_id": "r0463",
+      "author_name": "Tobias R.",
+      "rating": 5,
+      "text": "Mein Lieblingsort zum Arbeiten.",
+      "language": "de",
+      "published_at": "2024-06-14T14:12:00Z"
+    },
+    {
+      "review_id": "r0464",
+      "author_name": "Camille D.",
+      "rating": 3,
+      "text": "Correct, sans plus.",
+      "language": "fr",
+      "published_at": "2024-06-14T12:00:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0024-0.jpg",
+          "width": 1024,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "review_id": "r0465",
+      "author_name": "Felix W.",
+      "rating": 3,
+      "text": "Ganz okay, aber nicht herausragend.",
+      "language": "de",
+      "published_at": "2024-06-14T05:30:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0197",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0197-0.jpg",
+          "width": 1280,
+          "height": 600
+        }
+      ],
+      "owner_response": {
+        "text": "Danke für das Feedback — wir arbeiten daran.",
+        "responded_at": "2024-06-15T00:30:00Z"
+      }
+    },
+    {
+      "review_id": "r0466",
+      "author_name": "Sofía G.",
+      "rating": 5,
+      "text": "Repostería deliciosa, vuelvo seguro.",
+      "language": "es",
+      "published_at": "2024-06-13T13:05:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0010"
+    },
+    {
+      "review_id": "r0467",
+      "author_name": "Mia J.",
+      "rating": 3,
+      "text": "It's fine — the seating is a bit cramped though.",
+      "language": "en",
+      "published_at": "2024-06-10T04:36:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0129-0.jpg",
+          "width": 1280,
+          "height": 768
+        },
+        {
+          "url": "https://example.com/mock-photo-0129-1.jpg",
+          "width": 1280,
+          "height": 960
+        },
+        {
+          "url": "https://example.com/mock-photo-0129-2.jpg",
+          "width": 800,
+          "height": 768
+        }
+      ]
+    },
+    {
+      "review_id": "r0468",
+      "author_name": "Tobias R.",
+      "rating": 4,
+      "text": "Top Kaffee, super freundliches Personal!",
+      "language": "de",
+      "published_at": "2024-06-10T00:22:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0298"
+    },
+    {
+      "review_id": "r0469",
+      "author_name": "Sarah W.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2024-06-09T16:03:00Z"
+    },
+    {
+      "review_id": "r0470",
+      "author_name": "Kevin H.",
+      "rating": 5,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2024-06-08T10:12:00Z"
+    },
+    {
+      "review_id": "r0471",
+      "author_name": "Camille D.",
+      "rating": 5,
+      "text": "Le meilleur café du quartier !",
+      "language": "fr",
+      "published_at": "2024-06-08T02:03:00Z"
+    },
+    {
+      "review_id": "r0472",
+      "author_name": "Omar S.",
+      "rating": 5,
+      "text": "مكان رائع للعمل والاسترخاء.",
+      "language": "ar",
+      "published_at": "2024-06-07T01:23:00Z"
+    },
+    {
+      "review_id": "r0473",
+      "author_name": "Pablo H.",
+      "rating": 4,
+      "text": "¡El mejor café del barrio! Ambiente acogedor.",
+      "language": "es",
+      "published_at": "2024-06-07T00:15:00Z"
+    },
+    {
+      "review_id": "r0474",
+      "author_name": "Ji-woo P.",
+      "rating": 5,
+      "text": "커피가 정말 맛있어요!",
+      "language": "ko",
+      "published_at": "2024-05-31T14:12:00Z"
+    },
+    {
+      "review_id": "r0475",
+      "author_name": "Tobias R.",
+      "rating": 5,
+      "text": "Sehr empfehlenswerte Adresse 💛",
+      "language": "de",
+      "published_at": "2024-05-30T19:31:00Z"
+    },
+    {
+      "review_id": "r0476",
+      "author_name": "Mark T.",
+      "rating": 1,
+      "text": "Service was slow and staff seemed annoyed.",
+      "language": "en",
+      "published_at": "2024-05-28T09:25:00Z",
+      "owner_response": {
+        "text": "We're sorry to hear this. Please email us so we can make it right.",
+        "responded_at": "2024-05-31T08:25:00Z"
+      }
+    },
+    {
+      "review_id": "r0477",
+      "author_name": "Noah F.",
+      "rating": 5,
+      "text": "My go-to morning stop. Highly recommend.",
+      "language": "en",
+      "published_at": "2024-05-28T05:59:00Z"
+    },
+    {
+      "review_id": "r0478",
+      "author_name": "Robert F.",
+      "rating": 5,
+      "text": "Perfect place to work for a few hours.",
+      "language": "en",
+      "published_at": "2024-05-26T10:27:00Z"
+    },
+    {
+      "review_id": "r0479",
+      "author_name": "Olivia N.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2024-05-23T11:59:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0468"
+    },
+    {
+      "review_id": "r0480",
+      "author_name": "Kenji M.",
+      "rating": 5,
+      "text": "店員さんがとても親切でした。",
+      "language": "ja",
+      "published_at": "2024-05-21T05:55:00Z"
+    },
+    {
+      "review_id": "r0481",
+      "author_name": "Sarah W.",
+      "rating": 1,
+      "text": "Service was slow and staff seemed annoyed.",
+      "language": "en",
+      "published_at": "2024-05-21T00:46:00Z"
+    },
+    {
+      "review_id": "r0482",
+      "author_name": "Olivia N.",
+      "rating": 5,
+      "text": "Hidden gem — the cinnamon rolls are unreal.",
+      "language": "en",
+      "published_at": "2024-05-19T16:55:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0066"
+    },
+    {
+      "review_id": "r0483",
+      "author_name": "Lena S.",
+      "rating": 5,
+      "text": "Heimisches Café mit super Espresso.",
+      "language": "de",
+      "published_at": "2024-05-18T13:04:00Z"
+    },
+    {
+      "review_id": "r0484",
+      "author_name": "Giulia C.",
+      "rating": 4,
+      "text": "Caffè eccezionale, ambiente perfetto.",
+      "language": "it",
+      "published_at": "2024-05-18T04:04:00Z",
+      "owner_response": {
+        "text": "Grazie mille, a presto!",
+        "responded_at": "2024-05-19T17:04:00Z"
+      }
+    },
+    {
+      "review_id": "r0485",
+      "author_name": "Marie H.",
+      "rating": 4,
+      "text": "Top Kaffee, super freundliches Personal!",
+      "language": "de",
+      "published_at": "2024-05-17T12:12:00Z"
+    },
+    {
+      "review_id": "r0486",
+      "author_name": "João S.",
+      "rating": 5,
+      "text": "Atendimento ótimo e ambiente acolhedor.",
+      "language": "pt",
+      "published_at": "2024-05-17T07:06:00Z"
+    },
+    {
+      "review_id": "r0487",
+      "author_name": "Lucía M.",
+      "rating": 5,
+      "text": "Repostería deliciosa, vuelvo seguro.",
+      "language": "es",
+      "published_at": "2024-05-17T04:31:00Z"
+    },
+    {
+      "review_id": "r0488",
+      "author_name": "Beatriz F.",
+      "rating": 5,
+      "text": "Adoro este lugar — recomendo muito.",
+      "language": "pt",
+      "published_at": "2024-05-16T21:43:00Z"
+    },
+    {
+      "review_id": "r0489",
+      "author_name": "Marie H.",
+      "rating": 2,
+      "text": "Service war heute leider unfreundlich.",
+      "language": "de",
+      "published_at": "2024-05-15T21:56:00Z",
+      "author_url": "https://maps.google.com/contrib/mock_0221",
+      "owner_response": {
+        "text": "Das tut uns leid. Bitte kontaktieren Sie uns direkt.",
+        "responded_at": "2024-05-20T18:56:00Z"
+      }
+    },
+    {
+      "review_id": "r0490",
+      "author_name": "Lena S.",
+      "rating": 4,
+      "text": "Mein Lieblingsort zum Arbeiten.",
+      "language": "de",
+      "published_at": "2024-05-14T09:57:00Z"
+    },
+    {
+      "review_id": "r0491",
+      "author_name": "Lucía M.",
+      "rating": 4,
+      "text": "Trato excelente y café espectacular ☕",
+      "language": "es",
+      "published_at": "2024-05-13T15:51:00Z"
+    },
+    {
+      "review_id": "r0492",
+      "author_name": "Maria S.",
+      "rating": 5,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2024-05-09T14:51:00Z"
+    },
+    {
+      "review_id": "r0493",
+      "author_name": "Carlos P.",
+      "rating": 1,
+      "text": "Demasiado caro y servicio lento.",
+      "language": "es",
+      "published_at": "2024-05-09T11:55:00Z",
+      "owner_response": {
+        "text": "Lo sentimos mucho — escríbenos y lo solucionamos.",
+        "responded_at": "2024-05-10T19:55:00Z"
+      }
+    },
+    {
+      "review_id": "r0494",
+      "author_name": "Bram V.",
+      "rating": 3,
+      "text": "Prima, niets bijzonders.",
+      "language": "nl",
+      "published_at": "2024-05-08T05:36:00Z"
+    },
+    {
+      "review_id": "r0495",
+      "author_name": "Tiago L.",
+      "rating": 4,
+      "text": "Adoro este lugar — recomendo muito.",
+      "language": "pt",
+      "published_at": "2024-05-07T02:54:00Z"
+    },
+    {
+      "review_id": "r0496",
+      "author_name": "Liam B.",
+      "rating": 4,
+      "text": "Friendly baristas and amazing pastries 🥐",
+      "language": "en",
+      "published_at": "2024-05-05T08:16:00Z",
+      "photos": [
+        {
+          "url": "https://example.com/mock-photo-0286-0.jpg",
+          "width": 1024,
+          "height": 600
+        }
+      ]
+    },
+    {
+      "review_id": "r0497",
+      "author_name": "Sarah W.",
+      "rating": 5,
+      "text": "Best coffee in town! Cosy spot with great wifi.",
+      "language": "en",
+      "published_at": "2024-05-04T19:31:00Z"
+    },
+    {
+      "review_id": "r0498",
+      "author_name": "Ahmed K.",
+      "rating": 5,
+      "text": "أفضل قهوة في المنطقة!",
+      "language": "ar",
+      "published_at": "2024-05-03T21:43:00Z"
+    },
+    {
+      "review_id": "r0499",
+      "author_name": "Manuel L.",
+      "rating": 4,
+      "text": "Trato excelente y café espectacular ☕",
+      "language": "es",
+      "published_at": "2024-05-03T13:19:00Z"
+    },
+    {
+      "review_id": "r0500",
+      "author_name": "Carlos P.",
+      "rating": 4,
+      "text": "Trato excelente y café espectacular ☕",
+      "language": "es",
+      "published_at": "2024-05-02T18:22:00Z"
+    }
+  ]
+}
