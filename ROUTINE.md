@@ -4,18 +4,28 @@ _How each scheduled local run is expected to behave._
 
 ## Schedule
 
-- **Cadence:** every 4 hours, on the user's MacBook (laptop is `andrei` or `andriy` — same person, two machines)
-- **Driver:** macOS `launchd` agent (see `~/Library/LaunchAgents/com.google-reviews-download.routine.plist`); the agent invokes `claude -p` headlessly via `~/bin/run-claude-routine.sh google-reviews-download`, capped at $2 USD per run via `--max-budget-usd` (Claude Code CLI has no turn-count flag — soft target is ~50 turns)
-- **Working tree:** `~/PROJ/google-reviews-download` (resolves to `/Users/andrei/PROJ/google-reviews-download` on one laptop, `/Users/andriy/PROJ/google-reviews-download` on the other)
-- **Remote:** `https://github.com/internetyev/google-reviews-download`
-- **Mirror:** `~/Library/CloudStorage/Dropbox/DropsyncFiles/Obsidian Vault/GOOGLE-REVIEWS-DOWNLOAD/` (if the directory exists on this laptop; otherwise skip the mirror step and note it in the commit body)
+The routine fires only at **night** — daytime is reserved for the human's own work. There are two intensities:
+
+- **Burn (full speed, hourly).** The weekend depletion window: **Friday 23:30 → Monday 04:00**, with daytime gaps Sat 04:00–22:00 and Sun 04:00–22:00. google-reviews-download fires on the hour (`:00`); halflife fires on the half-hour (`:30`); the two repos alternate every 30 min so there is at most one routine running at a time. Last fire each night is at 04:00 (gr-d). Token-use cap per fire: `$3.00` via `--max-budget-usd` (a Max-quota proxy, not real cash — see the spend note below).
+- **Weeknight (50% intensity, every 4h).** Mon–Fri nights at 22:00/22:30 and 02:00/02:30 (last fire ≤ 04:00). Token-use cap per fire: `$1.00` — about ⅓ of a burn fire, leaving at least half the user's weekly Max plan quota free for their own work.
+
+Other scheduling facts:
+- **Driver:** macOS `launchd`. Two plists per repo, one per intensity:
+  `~/Library/LaunchAgents/com.google-reviews-download.routine.burn.plist`,
+  `~/Library/LaunchAgents/com.google-reviews-download.routine.weeknight.plist`.
+  Both call `~/bin/run-claude-routine.sh google-reviews-download <intensity>` headlessly with `claude -p --max-budget-usd <cap> --dangerously-skip-permissions`.
+- **Working tree:** `~/PROJ/google-reviews-download` (resolves to `/Users/andrei/PROJ/google-reviews-download` on one laptop, `/Users/andriy/PROJ/google-reviews-download` on the other).
+- **Remote:** `https://github.com/internetyev/google-reviews-download`.
+- **Mirror:** `~/Library/CloudStorage/Dropbox/DropsyncFiles/Obsidian Vault/GOOGLE-REVIEWS-DOWNLOAD/` (if the directory exists on this laptop; otherwise skip the mirror step and note it in the commit body).
+
+> **Spend model — read this before changing budgets.** Claude prompt token use is paid by the user's Claude.ai Max subscription; it is *not* real cash and does *not* count toward the `$1/week` LEDGER cap. The `$3.00` (burn) and `$1.00` (weeknight) numbers are Max-quota proxies — `--max-budget-usd` is the only knob the CLI exposes for capping per-run agent work, so we use its dollar value as a token-use limiter. Real cash spend in this routine comes only from `corgi` CLI calls (DataForSEO API), which the LEDGER tracks against a $1/week cap.
 
 > **Note:** This routine used to run as a cloud agent on a daily 04:00 schedule. The cloud agent stopped landing commits, so the routine moved to local execution. Any reference below to "the wrapper" or "the cloud platform" is historical — it is the local launchd job and the local `git push` that publishes work now.
 
 ## Hard constraints
 
-1. **Per-run budget: ≤ $2 USD spend** (enforced by `claude -p --max-budget-usd 2.00`). Soft target: ~50 prompt turns. Plan to land at least one leaf per run; on a quiet run, prefer splitting a chunky leaf into sub-leaves over forcing low-value work.
-2. **≤ $1 USD/week total `corgi` skill spend.** Cumulative tracked in `LEDGER.md`. If the running 7-day total would exceed $1, defer the corgi step and pick a different leaf.
+1. **Per-run token-use cap (Max-quota proxy, not real cash):** `$3.00` for burn fires, `$1.00` for weeknight fires (passed to `claude -p` as `--max-budget-usd`). Pace yourself within the cap; on weeknights especially, prefer one small leaf or a leaf-split over heroics.
+2. **Real-cash cap: ≤ $1 USD/week total `corgi` CLI spend** (DataForSEO calls). Cumulative tracked in `LEDGER.md`. If the running 7-day total would exceed $1, defer the corgi step and pick a different leaf. **This is the only spend that costs the human real money.**
 3. **No production deploys, no domain purchases, no API-key commits, no destructive git operations** (no force-push, no `reset --hard` against a remote, no remote-branch deletion).
 4. **No `npm install` / `pnpm install` / `pip install`** — installs are human steps. Commit manifests and config; do not run package managers.
 5. **No interactive commands.** Every command must run non-interactively to completion.
@@ -34,7 +44,7 @@ _How each scheduled local run is expected to behave._
 
 - Choose the **first unchecked `[ ]` leaf** in `ROADMAP.md` (top-down, phase-by-phase).
 - If the leaf is marked `(deferred: needs local corgi pass)` or otherwise human-gated, **skip it** and pick the next.
-- If the leaf would clearly exceed the $2 / ~50-turn budget, **split it** by writing sub-leaves into `ROADMAP.md` (L1.4 → L1.4a, L1.4b). Splitting itself is a valid productive run.
+- If the leaf would clearly exceed this run's token-use cap (`$3.00` burn / `$1.00` weeknight), **split it** by writing sub-leaves into `ROADMAP.md` (L1.4 → L1.4a, L1.4b). Splitting itself is a valid productive run.
 
 ### 3. Work in place
 
@@ -90,7 +100,7 @@ Do **not** write `BLOCKED.md` for run-budget exhaustion or for corgi-deferred le
 
 ## Stop conditions (any one fires → end run gracefully)
 
-- The $2 spend budget is exhausted.
+- This run's token-use cap is exhausted (`$3.00` burn / `$1.00` weeknight).
 - A test or `git push` fails twice.
 - Working tree has unrelated changes from another session — abort, do not touch them, write a one-line note in `BLOCKED.md`.
 - A leaf would require buying a domain, deploying, sending an email, or posting publicly.
