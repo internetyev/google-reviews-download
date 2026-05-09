@@ -11,3 +11,9 @@ Append-only ADR-style log. One line per decision unless rationale is non-obvious
 - **D-005** CSV defaults: UTF-8 with BOM, CRLF, QUOTE_ALL (per project-memory `feedback_csv_ascii_for_excel`). XLSX gets unicode natively.
 - **D-006** Daily autonomous routine, ≤10 commands/run, 04:00 Europe/Madrid (one hour after `halflife-nightly`), wrapper-publishes (no `git push` / `gh pr create` from the agent). Routine forbidden from running installs, deploying, buying domains, or sending external messages.
 - **D-007** Cache strategy: Vercel KV keyed by normalised `place_id`, 24h TTL. Reviews are slow-changing; 24h amortises cost without staleness pain.
+
+## 2026-05-09
+
+- **D-008** Tailwind **v3.4** (not v4) for the manifest baseline. Rationale: shadcn/ui's component generators and most third-party Tailwind ecosystem snippets still assume v3 syntax; we can revisit v4 once shadcn's v4 path is the default. `tailwindcss-animate` is included because shadcn components reference it.
+- **D-009** `xlsx` pinned to `^0.18.5` from the npm registry rather than the SheetJS CDN tarball (`https://cdn.sheetjs.com/...`). Rationale: keeps `package.json` registry-only and lockfile-friendly for now; the npm 0.18.5 build is sufficient for our writer (one row per review, frozen header, column widths). If a future SheetJS feature is needed we'll switch to the CDN tarball at that point — the import surface (`import * as XLSX from 'xlsx'`) is identical either way.
+- **D-010** React 19 + Next.js 15 (App Router) confirmed in the manifest. Node engine `>=20.11` to match Next 15's minimum.
