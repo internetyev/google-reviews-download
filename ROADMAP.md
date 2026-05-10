@@ -1,6 +1,6 @@
 # google-reviews-download — Roadmap
 
-_Last updated: 2026-05-09_ (L1.4 in PR)
+_Last updated: 2026-05-10_ (L1.5 in PR)
 
 Leaf-task granularity. Each leaf should fit in **one scheduled run (≤10 commands)**. The routine picks the next unchecked leaf top-down. Mark `[x]` when merged, `[~]` when draft PR open awaiting review, `[!]` when blocked.
 
@@ -20,7 +20,7 @@ Leaf-task granularity. Each leaf should fit in **one scheduled run (≤10 comman
 - [x] L1.2 Add `.gitignore`, `.env.example` (lists `SF_API_KEY`, `SF_API_BASE`, `KV_*`), `tsconfig.json`, base `next.config.ts`
 - [x] L1.3 Flesh out `mocks/semanticforce/`: small (10 reviews), mid (80), large (500). Include unicode, multi-language, varying star distributions, photo URLs.
 - [x] L1.4 Implement `lib/semanticforce/client.ts` with the type interface and a fixture-fallback when `SF_API_KEY` is unset. Add `lib/semanticforce/types.ts` with `Review`, `PlaceMeta`, `GetReviewsResponse`.
-- [ ] L1.5 Write `docs/methodology.md` — how `place_id` is normalised (slug + raw), how pagination is handled, how cache keys are constructed, how rate-limiting is enforced
+- [x] L1.5 Write `docs/methodology.md` — how `place_id` is normalised (slug + raw), how pagination is handled, how cache keys are constructed, how rate-limiting is enforced
 - [ ] L1.6 Long-tail seed: list ~10 candidate variants in `docs/seo-variants.md`. (deferred: needs local corgi pass for keyword volumes — agent commits the candidate list, Andrei runs corgi locally to add volumes)
 - [ ] L1.7 Write `DECISIONS.md` ADRs for stack, mock-first contract, export-format defaults
 
