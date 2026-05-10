@@ -5,9 +5,12 @@
 // HARD_CAP fires. Mid-walk rate-limit returns 429 with whatever we collected
 // so far as `partial`.
 //
-// KV cache (L2.3) and edge rate-limit (L2.8) are not yet wired in — they
-// land at the same interface in later leaves. CSV (L2.6) and XLSX (L2.7)
-// writers also land later; this route currently 501s those formats.
+// KV cache (L2.3) is wired below — assembled payloads are stored at
+// `gr:reviews:v1:<slug>` with a 24h TTL; the `limit` query param slices the
+// cached array client-side so a `limit=50` and a `limit=200` request share
+// one entry. Edge rate-limit (L2.8) is not yet wired in. CSV (L2.6) and
+// XLSX (L2.7) writers also land later; this route currently 501s those
+// formats.
 import { NextRequest, NextResponse } from "next/server";
 import { createSemanticForceClient } from "@/lib/semanticforce/client";
 import {
@@ -20,6 +23,10 @@ import {
   normalisePlaceId,
   PlaceIdParseError,
 } from "@/lib/semanticforce/place-id";
+import {
+  CachedReviewsPayload,
+  createReviewsCache,
+} from "@/lib/cache/reviews-cache";
 
 export const runtime = "edge";
 
@@ -81,6 +88,12 @@ export async function GET(req: NextRequest) {
       return errorJson("bad_request", err.message, 400);
     }
     throw err;
+  }
+
+  const cache = createReviewsCache();
+  const cached = await cache.get(normalised.slug);
+  if (cached) {
+    return respondSuccess(cached, format, userLimit, "HIT");
   }
 
   const client = createSemanticForceClient();
@@ -145,12 +158,15 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const trimmed = userLimit != null ? collected.slice(0, userLimit) : collected;
-
   if (rateLimited) {
+    // Methodology §3: partial walks caused by mid-walk rate-limit are NOT
+    // cached — the next request should retry against SF, not inherit the
+    // partial. We slice with userLimit for the response only.
+    const partialTrimmed =
+      userLimit != null ? collected.slice(0, userLimit) : collected;
     const body: PartialBody = {
       error: { code: "rate_limited", message: rateLimitMessage },
-      partial: trimmed,
+      partial: partialTrimmed,
     };
     if (retryAfterS != null) body.retry_after_s = retryAfterS;
     const headers: Record<string, string> = {};
@@ -158,15 +174,41 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(body, { status: 429, headers });
   }
 
-  const body: ReviewsBody = {
+  // Cache the full assembled walk (pre-limit) so a later request with a
+  // different `limit` reuses the same entry. Truncation from HARD_CAP is
+  // a stable outcome and IS cacheable (methodology §3); only the partial-
+  // from-rate-limit branch above is excluded.
+  const payload: CachedReviewsPayload = {
     place: placeMeta,
-    reviews: trimmed,
+    reviews: collected,
     fetched_at: new Date().toISOString(),
   };
-  if (truncated) body.truncated = true;
+  if (truncated) payload.truncated = true;
+
+  await cache.set(normalised.slug, payload);
+
+  return respondSuccess(payload, format, userLimit, "MISS");
+}
+
+function respondSuccess(
+  payload: CachedReviewsPayload,
+  format: Format,
+  userLimit: number | undefined,
+  cacheStatus: "HIT" | "MISS",
+) {
+  const trimmed =
+    userLimit != null ? payload.reviews.slice(0, userLimit) : payload.reviews;
+  const body: ReviewsBody = {
+    place: payload.place,
+    reviews: trimmed,
+    fetched_at: payload.fetched_at,
+  };
+  if (payload.truncated) body.truncated = true;
 
   if (format === "json") {
-    return NextResponse.json(body);
+    return NextResponse.json(body, {
+      headers: { "X-Cache": cacheStatus },
+    });
   }
 
   // csv (L2.6) and xlsx (L2.7) writers are not yet implemented; fail
