@@ -31,3 +31,68 @@ Append-only ADR-style log. One line per decision unless rationale is non-obvious
 - **D-019** Pagination walker uses `limit: 100` per page (the max), `HARD_CAP_REVIEWS = 5_000`, `HARD_CAP_PAGES = 50`. Reviews assembled into a single payload before caching; per-page slices are not cached. Rationale: SF is the rate-limit dimension, not us; sequential walking gives correct ordering and respects upstream backpressure; a single assembled payload means one KV read per cache hit.
 - **D-020** Cache key shape: `gr:reviews:v1:<slug>`. The `v1:` segment is a schema version we bump (to `v2:`) when the cached payload shape changes — old keys then expire on TTL rather than serve stale-shape data into a new code path. Cheaper than a flag-day migration. Errors and partial walks are **not** cached so the next request retries against SF.
 - **D-021** Rate-limiter is in-memory token bucket (10/min/IP, burst 10) at the edge, not KV-backed. Rationale: KV-backed adds one RTT per request for a problem we do not have at MVP; per-region in-memory state is sufficient until traffic warrants a swap. Swap is a one-leaf change at the same interface if needed (Sprint 2). 429 envelope mirrors `SemanticForceError` shape so UI handles upstream-rate-limited and our-rate-limited identically.
+
+---
+
+## Formal ADRs
+
+The entries above are the chronological one-liners. The records below consolidate the three foundational decisions called out in `ROADMAP.md` L1.7 — **stack**, **mock-first contract**, **export-format defaults** — into proper ADRs (Status / Context / Decision / Consequences). When a future maintainer asks "why is this thing the way it is?", these are the three records to read first; the D-### log above tracks the increments.
+
+### ADR-001 — Stack: Next.js 15 + TS + Tailwind + shadcn/ui on Vercel, with `xlsx` for XLSX
+
+**Status:** Accepted (2026-05-10). Supersedes nothing. Folds in D-004, D-008, D-009, D-010, D-011, D-012.
+
+**Context.** The product is a single-page tool: paste a place, get a downloadable export. We need (a) a server endpoint that talks to SemanticForce and writes CSV/JSON/XLSX, (b) a small interactive UI, (c) ~10 SEO-rendered variant pages for long-tail queries, (d) an edge-friendly cache layer keyed by `place_id`. Hosting must be cheap-to-zero at MVP traffic and support edge runtime so the tool feels fast in EU and US. Two of us touch this codebase: Andrei and the autonomous routine. The routine writes one leaf per fire and must work without `npm install` between commits — so the stack has to be one where reading manifests + types is enough to keep iterating, even before a human installs packages.
+
+**Decision.**
+- **Framework:** Next.js 15 (App Router) on Vercel. React 19. Node `>=20.11`.
+- **Language:** TypeScript with `moduleResolution: "bundler"`, `module: "esnext"`, `paths: { "@/*": ["./*"] }`.
+- **Styling:** Tailwind CSS **v3.4** (not v4) with `tailwindcss-animate`.
+- **UI primitives:** shadcn/ui — components are copied into the repo, not imported as a package.
+- **XLSX writer:** `xlsx` (SheetJS) pinned to `^0.18.5` from the npm registry.
+- **Cache:** Vercel KV.
+- **Analytics:** Plausible (env-gated via `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`).
+- **Config:** `next.config.ts` (TS) kept minimal — only `reactStrictMode: true` until a concrete need surfaces.
+
+**Consequences.**
+- *Positive.* Vercel + Next 15 gives edge-runtime route handlers, ISR for the SEO variants, and zero-cost hobby hosting through MVP. Tailwind v3.4 + shadcn/ui matches the ecosystem most snippets/AI suggestions still target, so iteration is fast. SheetJS 0.18.5 from the registry keeps the lockfile clean and avoids the SheetJS CDN tarball footgun for now.
+- *Negative.* Tailwind v4 and the SheetJS CDN tarball are both better long-term defaults; we'll pay a small migration cost when we adopt them. Vercel KV is a soft lock-in — if we leave Vercel, the cache layer needs a one-leaf swap (acceptable; the surface is `get/set` keyed by the slug from D-017).
+- *Reversibility.* Framework swap = expensive (rewrite). Tailwind v3 → v4 = mechanical (codemod). KV provider swap = one leaf at the cache interface. SheetJS registry → CDN = one-line import unchanged.
+
+### ADR-002 — Mock-first SemanticForce contract: our types are the contract, not theirs
+
+**Status:** Accepted (2026-05-10). Supersedes nothing. Folds in D-002, D-003, D-014, D-015, D-016. Phase 4 (L4.1) is the human-gated point where this ADR's "real-creds" branch gets exercised.
+
+**Context.** SemanticForce is the only data source for v1 — no direct scraping (PLAN.md, anti-audience). We do not yet have SF credentials; real creds arrive in a human-gated Phase 4 leaf. The autonomous routine and any future contributor must be able to build, test, and ship the entire MVP — UI, exporters, cache, rate-limiter, SEO pages — against deterministic data, then flip a single environment variable when creds land. SF's wire schema is unknown to us, will probably change once or twice between the public docs and reality, and is not something callers (route handlers, exporters, UI) should be coupled to.
+
+**Decision.**
+- The contract callers depend on is **ours**: `Review`, `PlaceMeta`, `GetReviewsResponse` in `lib/semanticforce/types.ts`, and the single client method `getReviews({placeId, limit?, after?}) → Promise<GetReviewsResponse>` in `lib/semanticforce/client.ts`.
+- The client reads `SF_API_KEY` and `SF_API_BASE` from the environment. **`SF_API_KEY` unset ⇒ fixture mode**: the client serves from `mocks/semanticforce/{small,mid,large}-business.json`. This is the default state of the repo.
+- Fixtures are produced by `scripts/gen-fixtures.py` — a deterministic seeded generator (not hand-written) for mid (80) and large (500); `small-business.json` stays hand-curated. The generator lives outside the Next.js source tree so it never ships to Vercel. Distribution targets (13 langs, ~40% en, 60/20/10/5/5 rating skew, ~15% photos, owner-response chance scaling with negativity) are encoded in one place.
+- Errors surface as a single `SemanticForceError` class with a coarse `code` enum: `rate_limited` | `not_found` | `unauthorized` | `bad_request` | `upstream_error` | `unknown`. Network failures and 5xx both map to `upstream_error` so retry policy is one branch.
+- Pagination: `limit` clamped to `[1, 100]` (default 50) inside the client. Fixture cursor is `btoa(JSON.stringify({offset:N}))` (edge-safe — no `Buffer`); the real-API cursor is opaque pass-through.
+- When real creds land (L4.1), only `client.ts` changes; `types.ts`, callers, and exporters stay put. Any schema delta is documented in `docs/semanticforce-api.md` rather than leaking into call sites.
+
+**Consequences.**
+- *Positive.* Every Phase 1–3 leaf is unblocked without credentials. Diffs against fixtures are byte-stable so reviews focus on intentional changes. The coarse error enum stays valid no matter what shape SF's real error envelope takes. Edge-safe cursor encoding means no surprises moving to edge runtime.
+- *Negative.* When creds arrive, our schema guess will be wrong somewhere — that adapter work is real. The "fixtures match reality" assumption is a known unknown until L4.1. Fixture mode also masks rate-limit and pagination edge cases that only show up against the live API (mitigated by `HARD_CAP_REVIEWS = 5_000`, `HARD_CAP_PAGES = 50` from D-019).
+- *Reversibility.* Free — flip `SF_API_KEY` and the client switches branches. Fixtures stay in the repo as offline-dev / CI ammo even after creds land.
+
+### ADR-003 — Export-format defaults: CSV (UTF-8 BOM + CRLF + QUOTE_ALL), JSON, XLSX
+
+**Status:** Accepted (2026-05-10). Supersedes nothing. Folds in D-005. Implementation lands in L2.6 (CSV) and L2.7 (XLSX); JSON is `Response.json()`.
+
+**Context.** The audience is local-SEO consultants and SMB owners pulling reviews for client work, sentiment analysis, marketing quotes, and backup. The dominant downstream tool is Excel (often on Windows, often via "double-click the CSV"). Reviews contain unicode the Excel CSV path historically mishandles: emoji, smart quotes, em dashes, accented Latin, CJK, RTL scripts. We can either pick defaults that just work in Excel, or push every user to learn the import wizard. The same fixture data is intentionally seeded with awkward unicode (D-014) so the writer is stress-tested on every change.
+
+**Decision.**
+- **CSV** (`lib/export/csv.ts`, L2.6): UTF-8 with **BOM**, **CRLF** line endings, **QUOTE_ALL** every field. One row per review; header row first. Per project memory `feedback_csv_ascii_for_excel`, this is the combination that makes Excel-on-Windows render unicode correctly without prompting the import wizard.
+- **JSON**: `application/json`, the same `GetReviewsResponse` shape the client returns — `{reviews: Review[], place: PlaceMeta, next_cursor?: string}`. No transformation; no flattening. JSON consumers want the structure, not a denormalised export.
+- **XLSX** (`lib/export/xlsx.ts`, L2.7): SheetJS `xlsx` writes a single worksheet, one row per review, frozen header (`ySplit: 1`), sensible per-column widths. Unicode is native to XLSX so no BOM/encoding gymnastics.
+- **Filename convention** for downloads: `google-reviews-<slug>-<YYYYMMDD>.<ext>`, where `<slug>` is the lowercased URL-safe place-id slug from D-017. Stable across sessions so users can diff exports.
+- **Format selection** is a query param `format=csv|json|xlsx` on `app/api/reviews/route.ts` (L2.2). CSV is the default — the audience and the head-term query both point at CSV.
+- Errors during export do **not** produce a partial file. The route returns the `SemanticForceError`-shaped envelope from ADR-002 with the appropriate HTTP status; the UI surfaces it without writing a file.
+
+**Consequences.**
+- *Positive.* CSV double-clicks correctly in Excel-on-Windows even with multi-language review bodies. XLSX gives users a "looks like a spreadsheet" path without LibreOffice quirks. JSON is structurally identical to what the client/cache emits, so analysts can pipe it into anything. The seeded-unicode fixtures from D-014 mean every CSV writer change must survive Excel-realistic input.
+- *Negative.* QUOTE_ALL bloats CSV file size ~10–20%. CRLF makes the file mildly annoying on Unix tools that don't auto-handle it (rare; most do). Locking the export shape early means a future "flat denormalised CSV with author / rating / text columns only" request becomes a new format flag rather than a default change.
+- *Reversibility.* CSV defaults are one constant in `lib/export/csv.ts`; XLSX styling is one config object. Adding a fourth format = one writer module + one switch arm. No callers depend on internal export details, only on the `format` query param.
