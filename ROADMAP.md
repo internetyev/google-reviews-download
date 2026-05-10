@@ -1,6 +1,6 @@
 # google-reviews-download — Roadmap
 
-_Last updated: 2026-05-10_ (L2.1 in PR; L1.6b deferred for local corgi pass)
+_Last updated: 2026-05-10_ (L2.2 in PR; L1.6b deferred for local corgi pass)
 
 Leaf-task granularity. Each leaf should fit in **one scheduled run (≤10 commands)**. The routine picks the next unchecked leaf top-down. Mark `[x]` when merged, `[~]` when draft PR open awaiting review, `[!]` when blocked.
 
@@ -28,7 +28,7 @@ Leaf-task granularity. Each leaf should fit in **one scheduled run (≤10 comman
 ## Phase 2 — Core MVP (Sprint 2, ~6 daily runs)
 
 - [x] L2.1 Scaffold Next.js app skeleton (commit code only; no install)
-- [ ] L2.2 Implement `app/api/reviews/route.ts` calling the SF client; query params: `placeId`, `format` (csv/json/xlsx), `limit?`
+- [x] L2.2 Implement `app/api/reviews/route.ts` calling the SF client; query params: `placeId`, `format` (csv/json/xlsx), `limit?`
 - [ ] L2.3 Implement KV cache layer keyed by normalised `place_id`, 24h TTL
 - [ ] L2.4 Build the input form `app/page.tsx` — single field, format toggle, download button
 - [ ] L2.5 Build the result preview component (first 5 reviews + total count + download CTA)
