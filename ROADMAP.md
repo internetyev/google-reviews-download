@@ -1,6 +1,6 @@
 # google-reviews-download — Roadmap
 
-_Last updated: 2026-05-10_ (L1.7 in PR)
+_Last updated: 2026-05-10_ (L1.6a in PR; L1.6b deferred for local corgi pass)
 
 Leaf-task granularity. Each leaf should fit in **one scheduled run (≤10 commands)**. The routine picks the next unchecked leaf top-down. Mark `[x]` when merged, `[~]` when draft PR open awaiting review, `[!]` when blocked.
 
@@ -21,7 +21,8 @@ Leaf-task granularity. Each leaf should fit in **one scheduled run (≤10 comman
 - [x] L1.3 Flesh out `mocks/semanticforce/`: small (10 reviews), mid (80), large (500). Include unicode, multi-language, varying star distributions, photo URLs.
 - [x] L1.4 Implement `lib/semanticforce/client.ts` with the type interface and a fixture-fallback when `SF_API_KEY` is unset. Add `lib/semanticforce/types.ts` with `Review`, `PlaceMeta`, `GetReviewsResponse`.
 - [x] L1.5 Write `docs/methodology.md` — how `place_id` is normalised (slug + raw), how pagination is handled, how cache keys are constructed, how rate-limiting is enforced
-- [ ] L1.6 Long-tail seed: list ~10 candidate variants in `docs/seo-variants.md`. (deferred: needs local corgi pass for keyword volumes — agent commits the candidate list, Andrei runs corgi locally to add volumes)
+- [x] L1.6a Long-tail seed (agent half): write `docs/seo-variants.md` with ~10 candidate variants grouped by intent + per-variant rationale, **no volumes**. Volumes are L1.6b.
+- [ ] L1.6b Long-tail seed (corgi half): run `corgi keywords ...` locally on the L1.6a variants and paste volume + competition columns back into `docs/seo-variants.md`. **(deferred: needs local corgi pass — human-gated, real-cash spend tracked in LEDGER.md.)**
 - [x] L1.7 Write `DECISIONS.md` ADRs for stack, mock-first contract, export-format defaults
 
 ## Phase 2 — Core MVP (Sprint 2, ~6 daily runs)
@@ -39,7 +40,7 @@ Leaf-task granularity. Each leaf should fit in **one scheduled run (≤10 comman
 
 ## Phase 3 — SEO surface (Sprint 3, ~3 daily runs)
 
-- [ ] L3.1 (depends on L1.6) Pick top 5 long-tail variants from `seo-variants.md` and create `app/(seo)/<slug>/page.tsx` for each — same tool below the fold, custom intro/explainer above
+- [ ] L3.1 (depends on L1.6b) Pick top 5 long-tail variants from `seo-variants.md` and create `app/(seo)/<slug>/page.tsx` for each — same tool below the fold, custom intro/explainer above
 - [ ] L3.2 Add sitemap.xml, robots.txt, JSON-LD `FAQPage` schema on each variant page
 - [ ] L3.3 Add a "How it works" + "Is this allowed by Google?" FAQ to `app/page.tsx`
 
