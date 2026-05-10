@@ -1,6 +1,27 @@
 # SEO Variants — long-tail seed list
 
-_Status: candidate variants only. Volumes / SERP-difficulty are **not** populated here — that is a corgi (DataForSEO) pass that runs locally on Andrei's machine and respects the LEDGER's $1/week real-cash cap. When corgi data lands, this doc gains a `Volume` and `Top-3 SERP signal` column and L1.6b can be marked `[x]`._
+_Status: candidate variants + head-term competitive read. **Volume data still TBD** — `corgi-keywords` is Ahrefs-backed in the private fork and no Ahrefs key is set on this machine. SERP signal for the head term is captured below (corgi-serp 2026-05-11, $0.0006); full variant SERP pass deferred until either (a) Ahrefs creds land, or (b) we accept WebSearch-grade qualitative volumes._
+
+## Head-term SERP read (`google reviews download`, geo=US, 2026-05-11)
+
+The PLAN.md thesis was "weak SERP — mostly blog spam / agency lead-magnets / buried features." The measured SERP is **mixed, not weak**:
+
+| Position | URL | Type |
+|---|---|---|
+| 2 | exportcomments.com/export-google-reviews | **Direct competitor** — purpose-built tool |
+| 3 | support.google.com/business/thread/230049280 | Help thread |
+| 4 | help.reviewflowz.com/.../how-to-export-google-reviews-to-excel | Agency platform help doc |
+| 5 | reddit.com/r/GoogleMyBusiness | Community |
+| 7 | phantomlocal.com/export-google-reviews | **Direct competitor** — tool |
+| 8 | saijogeorge.com/export-google-reviews | Solo blogger article |
+| 9 | outscraper.com/google-maps-reviews-scraper | **Direct competitor** — scraper |
+
+Three purpose-built competitors in the top 10, not zero. The "no incumbent" claim in PLAN.md needs revision. Differentiators we can still own:
+- **Single-purpose tool with no signup** (ExportComments and Outscraper both push pricing pages / "try for free with limit").
+- **XLSX + Excel-friendly CSV out of the box** (most competitors are CSV-only).
+- **Long-tail variant pages** (none of the top-10 SERP results are dedicated landing pages for the format-named variants — A1–A4 below are still genuinely open).
+
+Strategy implication: the head term is **a defensible #4–7 slot, not a #1 grab**. Long-tail variant pages (Group A especially) are the more realistic ranking wins.
 
 The autonomous routine cannot call DataForSEO, so this leaf is split:
 
