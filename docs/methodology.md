@@ -1,6 +1,6 @@
 # Methodology — google-reviews-download
 
-_Status: design contract for Phase 1–3. Implementation lands incrementally (place-id normalisation in `lib/semanticforce/`, pagination in `app/api/reviews/route.ts` at L2.2, KV caching at L2.3, rate-limiting at L2.8). When this doc disagrees with the code, the code is wrong._
+_Status: design contract for Phase 1–3. Implementation lands incrementally (place-id normalisation in `lib/semanticforce/place-id.ts` at L2.2, pagination in `app/api/reviews/route.ts` at L2.2, KV caching in `lib/cache/reviews-cache.ts` at L2.3, rate-limiting at L2.8). When this doc disagrees with the code, the code is wrong._
 
 The four contracts below are the interfaces the rest of the system depends on. They are written here so a leaf in Sprint 2 (cache, rate limit, pagination walker) does not have to re-derive them from scratch — and so a future maintainer can tell at a glance whether a change is a refactor or a contract break.
 
