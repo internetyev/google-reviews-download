@@ -8,9 +8,9 @@
 // KV cache (L2.3) is wired below — assembled payloads are stored at
 // `gr:reviews:v1:<slug>` with a 24h TTL; the `limit` query param slices the
 // cached array client-side so a `limit=50` and a `limit=200` request share
-// one entry. Edge rate-limit (L2.8) is not yet wired in. CSV (L2.6) and
-// XLSX (L2.7) writers also land later; this route currently 501s those
-// formats.
+// one entry. Edge rate-limit (L2.8) is not yet wired in. CSV (L2.6) is
+// wired through `lib/export/csv.ts`; XLSX (L2.7) still 501s until its writer
+// lands.
 import { NextRequest, NextResponse } from "next/server";
 import { createSemanticForceClient } from "@/lib/semanticforce/client";
 import {
@@ -27,6 +27,7 @@ import {
   CachedReviewsPayload,
   createReviewsCache,
 } from "@/lib/cache/reviews-cache";
+import { csvFilename, formatReviewsAsCsv } from "@/lib/export/csv";
 
 export const runtime = "edge";
 
@@ -93,7 +94,7 @@ export async function GET(req: NextRequest) {
   const cache = createReviewsCache();
   const cached = await cache.get(normalised.slug);
   if (cached) {
-    return respondSuccess(cached, format, userLimit, "HIT");
+    return respondSuccess(cached, format, userLimit, "HIT", normalised.slug);
   }
 
   const client = createSemanticForceClient();
@@ -187,7 +188,7 @@ export async function GET(req: NextRequest) {
 
   await cache.set(normalised.slug, payload);
 
-  return respondSuccess(payload, format, userLimit, "MISS");
+  return respondSuccess(payload, format, userLimit, "MISS", normalised.slug);
 }
 
 function respondSuccess(
@@ -195,27 +196,50 @@ function respondSuccess(
   format: Format,
   userLimit: number | undefined,
   cacheStatus: "HIT" | "MISS",
+  slug: string,
 ) {
   const trimmed =
     userLimit != null ? payload.reviews.slice(0, userLimit) : payload.reviews;
-  const body: ReviewsBody = {
+  // CSV and XLSX exports operate on the trimmed view too, so a `limit=N`
+  // request produces a file with N rows. The cache key is unaffected
+  // (D-030: cache holds the full walk).
+  const trimmedPayload: CachedReviewsPayload = {
     place: payload.place,
     reviews: trimmed,
     fetched_at: payload.fetched_at,
   };
-  if (payload.truncated) body.truncated = true;
+  if (payload.truncated) trimmedPayload.truncated = true;
 
   if (format === "json") {
+    const body: ReviewsBody = {
+      place: payload.place,
+      reviews: trimmed,
+      fetched_at: payload.fetched_at,
+    };
+    if (payload.truncated) body.truncated = true;
     return NextResponse.json(body, {
       headers: { "X-Cache": cacheStatus },
     });
   }
 
-  // csv (L2.6) and xlsx (L2.7) writers are not yet implemented; fail
-  // explicitly so the UI can route to JSON in the meantime.
+  if (format === "csv") {
+    const csv = formatReviewsAsCsv(trimmedPayload);
+    const filename = csvFilename(slug, payload.fetched_at);
+    return new NextResponse(csv, {
+      status: 200,
+      headers: {
+        "Content-Type": "text/csv; charset=utf-8",
+        "Content-Disposition": `attachment; filename="${filename}"`,
+        "X-Cache": cacheStatus,
+      },
+    });
+  }
+
+  // xlsx (L2.7) writer is not yet implemented; fail explicitly so the UI
+  // can route to JSON/CSV in the meantime.
   return errorJson(
     "not_implemented",
-    `Export format "${format}" is not implemented yet — see ROADMAP.md L2.6 (csv) / L2.7 (xlsx).`,
+    `Export format "${format}" is not implemented yet — see ROADMAP.md L2.7 (xlsx).`,
     501,
   );
 }
