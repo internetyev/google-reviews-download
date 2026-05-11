@@ -8,9 +8,10 @@
 // KV cache (L2.3) is wired below — assembled payloads are stored at
 // `gr:reviews:v1:<slug>` with a 24h TTL; the `limit` query param slices the
 // cached array client-side so a `limit=50` and a `limit=200` request share
-// one entry. Edge rate-limit (L2.8) is not yet wired in. CSV (L2.6) and
-// XLSX (L2.7) are wired through `lib/export/csv.ts` and `lib/export/xlsx.ts`
-// respectively.
+// one entry. Edge rate-limit (L2.8) lives in `middleware.ts` and runs in
+// front of this route (10 req/min/IP, burst 10, Retry-After: 6). CSV
+// (L2.6) and XLSX (L2.7) are wired through `lib/export/csv.ts` and
+// `lib/export/xlsx.ts` respectively.
 import { NextRequest, NextResponse } from "next/server";
 import { createSemanticForceClient } from "@/lib/semanticforce/client";
 import {
