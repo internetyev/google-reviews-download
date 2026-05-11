@@ -8,9 +8,9 @@
 // KV cache (L2.3) is wired below — assembled payloads are stored at
 // `gr:reviews:v1:<slug>` with a 24h TTL; the `limit` query param slices the
 // cached array client-side so a `limit=50` and a `limit=200` request share
-// one entry. Edge rate-limit (L2.8) is not yet wired in. CSV (L2.6) is
-// wired through `lib/export/csv.ts`; XLSX (L2.7) still 501s until its writer
-// lands.
+// one entry. Edge rate-limit (L2.8) is not yet wired in. CSV (L2.6) and
+// XLSX (L2.7) are wired through `lib/export/csv.ts` and `lib/export/xlsx.ts`
+// respectively.
 import { NextRequest, NextResponse } from "next/server";
 import { createSemanticForceClient } from "@/lib/semanticforce/client";
 import {
@@ -28,6 +28,11 @@ import {
   createReviewsCache,
 } from "@/lib/cache/reviews-cache";
 import { csvFilename, formatReviewsAsCsv } from "@/lib/export/csv";
+import {
+  XLSX_CONTENT_TYPE,
+  formatReviewsAsXlsx,
+  xlsxFilename,
+} from "@/lib/export/xlsx";
 
 export const runtime = "edge";
 
@@ -235,13 +240,17 @@ function respondSuccess(
     });
   }
 
-  // xlsx (L2.7) writer is not yet implemented; fail explicitly so the UI
-  // can route to JSON/CSV in the meantime.
-  return errorJson(
-    "not_implemented",
-    `Export format "${format}" is not implemented yet — see ROADMAP.md L2.7 (xlsx).`,
-    501,
-  );
+  // format === "xlsx" — only branch left after json/csv above.
+  const xlsx = formatReviewsAsXlsx(trimmedPayload);
+  const xlsxName = xlsxFilename(slug, payload.fetched_at);
+  return new NextResponse(xlsx, {
+    status: 200,
+    headers: {
+      "Content-Type": XLSX_CONTENT_TYPE,
+      "Content-Disposition": `attachment; filename="${xlsxName}"`,
+      "X-Cache": cacheStatus,
+    },
+  });
 }
 
 function isFormat(s: string): s is Format {
