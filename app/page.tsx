@@ -1,6 +1,6 @@
 const FORMATS = [
   { value: "json", label: "JSON", hint: "available today" },
-  { value: "csv", label: "CSV", hint: "ships in L2.6" },
+  { value: "csv", label: "CSV", hint: "available today" },
   { value: "xlsx", label: "XLSX", hint: "ships in L2.7" },
 ] as const;
 
@@ -65,8 +65,8 @@ export default function HomePage() {
             ))}
           </div>
           <span className="text-xs text-muted-foreground">
-            CSV and XLSX selections currently return HTTP 501 from the API
-            until the writers land in L2.6 / L2.7.
+            XLSX currently returns HTTP 501 from the API until its writer
+            lands in L2.7.
           </span>
         </fieldset>
 
