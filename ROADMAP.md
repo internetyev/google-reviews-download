@@ -1,6 +1,6 @@
 # google-reviews-download — Roadmap
 
-_Last updated: 2026-05-12_ (L2.9 launch-checklist landed; L2.8 edge rate-limit middleware has draft PR #23 awaiting auto-merge; L2.5 has draft PR #20 with a merge conflict needing human rebase; L1.6b deferred for local corgi pass)
+_Last updated: 2026-05-12_ (L2.10 Plausible snippet env-gated in `app/layout.tsx`; L2.9 launch-checklist landed; L2.8 edge rate-limit middleware has draft PR #23 awaiting auto-merge; L2.5 has draft PR #20 with a merge conflict needing human rebase; L1.6b deferred for local corgi pass)
 
 Leaf-task granularity. Each leaf should fit in **one scheduled run (≤10 commands)**. The routine picks the next unchecked leaf top-down. Mark `[x]` when merged, `[~]` when draft PR open awaiting review, `[!]` when blocked.
 
@@ -36,7 +36,7 @@ Leaf-task granularity. Each leaf should fit in **one scheduled run (≤10 comman
 - [x] L2.7 Implement XLSX writer in `lib/export/xlsx.ts` using `xlsx`; one row per review, frozen header, sensible column widths
 - [~] L2.8 Add edge rate-limit middleware (token-bucket per IP, e.g. 10 req/min) — PR #23 open, awaiting auto-merge
 - [x] L2.9 Write `docs/launch-checklist.md` for human sign-off before deploy
-- [ ] L2.10 Add Plausible analytics snippet (env-gated)
+- [x] L2.10 Add Plausible analytics snippet (env-gated)
 
 ## Phase 3 — SEO surface (Sprint 3, ~3 daily runs)
 
