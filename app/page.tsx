@@ -84,6 +84,69 @@ export default function HomePage() {
         Result preview (first 5 reviews + total count) ships in L2.5. Until
         then the API response opens in a new browser tab.
       </p>
+
+      <section
+        aria-labelledby="faq-heading"
+        className="flex w-full flex-col gap-3"
+      >
+        <h2
+          id="faq-heading"
+          className="text-lg font-semibold tracking-tight"
+        >
+          FAQ
+        </h2>
+
+        <details className="group rounded-md border border-border bg-card p-4">
+          <summary className="cursor-pointer text-sm font-medium">
+            How it works
+          </summary>
+          <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-muted-foreground">
+            <li>
+              Paste a Google Maps place URL or a raw Place ID. We extract
+              and normalise the ID (see <code>docs/methodology.md</code>
+              §1); short <code>maps.app.goo.gl</code> links are not
+              resolved in v1.
+            </li>
+            <li>
+              We page through every review for that place via a licensed
+              third-party reviews API (max 100 per request, hard cap 5,000
+              reviews / 50 pages). Results are cached for 24h per
+              normalised place so a repeat download is instant.
+            </li>
+            <li>
+              You pick CSV, XLSX, or JSON and the browser downloads the
+              file. CSV opens in Excel without an import wizard (UTF-8
+              BOM, CRLF, QUOTE_ALL); XLSX has a frozen header row.
+            </li>
+          </ol>
+        </details>
+
+        <details className="group rounded-md border border-border bg-card p-4">
+          <summary className="cursor-pointer text-sm font-medium">
+            Is this allowed by Google?
+          </summary>
+          <div className="mt-3 space-y-2 text-sm text-muted-foreground">
+            <p>
+              Reviews on Google Maps are public. This tool does not scrape
+              Google directly — it queries a licensed third-party reviews
+              data provider (SemanticForce) that maintains a Google-Maps
+              snapshot under its own data agreements.
+            </p>
+            <p>
+              The export is meant for the business owner or their agency
+              to keep an offline copy of their own reviews — for backup,
+              sentiment analysis, training data, or republishing
+              individual quotes with author credit. Bulk redistribution of
+              the raw dataset is not the intent.
+            </p>
+            <p>
+              If you republish individual reviews, keep the author
+              attribution. Google&apos;s own attribution requirements
+              apply to anything pulled from Maps.
+            </p>
+          </div>
+        </details>
+      </section>
     </main>
   );
 }
