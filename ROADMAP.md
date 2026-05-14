@@ -1,6 +1,6 @@
 # google-reviews-download — Roadmap
 
-_Last updated: 2026-05-13_ (L3.2 split into L3.2a — robots.ts + sitemap.ts for the root route, landed in `app/` — and L3.2b — JSON-LD `FAQPage` schema, deferred until L3.1 variant pages exist + L3.3 FAQ content lands; L2.10 Plausible snippet env-gated in `app/layout.tsx`; L2.9 launch-checklist landed; L2.8 edge rate-limit middleware has draft PR #23 awaiting auto-merge; L2.5 has draft PR #20 with a merge conflict needing human rebase; L1.6b deferred for local corgi pass)
+_Last updated: 2026-05-14_ (L5.3 drafts ProductHunt + Indie Hackers + LinkedIn launch posts in `docs/launch-posts.md` — `<TODO>` placeholders for live URL, cross-post checklist gating on L5.2 deploy + L2.10 analytics env + L2.8 rate-limit middleware; L3.2 split into L3.2a — robots.ts + sitemap.ts for the root route, landed in `app/` — and L3.2b — JSON-LD `FAQPage` schema, deferred until L3.1 variant pages exist + L3.3 FAQ content lands; L2.10 Plausible snippet env-gated in `app/layout.tsx`; L2.9 launch-checklist landed; L2.8 edge rate-limit middleware has draft PR #23 awaiting auto-merge; L2.5 has draft PR #20 with a merge conflict needing human rebase; L1.6b deferred for local corgi pass)
 
 Leaf-task granularity. Each leaf should fit in **one scheduled run (≤10 commands)**. The routine picks the next unchecked leaf top-down. Mark `[x]` when merged, `[~]` when draft PR open awaiting review, `[!]` when blocked.
 
@@ -54,7 +54,7 @@ Leaf-task granularity. Each leaf should fit in **one scheduled run (≤10 comman
 
 - [ ] L5.1 Naming + domain decision (target candidates: `googlereviewsdownload.com`, `.co`, `.app` — **human-gated** purchase)
 - [ ] L5.2 Deploy to Vercel (**human-gated**, needs SF + KV creds)
-- [ ] L5.3 Draft launch posts in `docs/launch-posts.md` (ProductHunt, IndieHackers, LinkedIn)
+- [x] L5.3 Draft launch posts in `docs/launch-posts.md` (ProductHunt, IndieHackers, LinkedIn)
 - [ ] L5.4 Outreach plan to local-SEO communities
 
 ---
