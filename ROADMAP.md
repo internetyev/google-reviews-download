@@ -1,6 +1,6 @@
 # google-reviews-download — Roadmap
 
-_Last updated: 2026-05-15_ (L5.4 lands `docs/outreach-plan.md` — per-channel community outreach plan for after launch: Sterling Sky Local Search Forum, r/bigseo, LocalU, r/SEO, r/smallbusiness, Traffic Think Tank, AgencyAnalytics Slack, Search Engine Roundtable, Twitter/X, LinkedIn groups; pre-flight gates on L5.2 deploy + L2.8 rate-limit + L2.10 analytics + L4.1 real creds; one channel per weekday cadence with UTM tagging for Plausible attribution; explicit skip list (BHW, Warrior Forum, FB groups); L3.3 FAQ on `app/page.tsx` — three `<details>` items — unblocks FAQ-content half of L3.2b; L5.3 launch posts in `docs/launch-posts.md`; L3.2 split into L3.2a — robots.ts + sitemap.ts for root — and L3.2b — JSON-LD `FAQPage` deferred until L3.1; L2.10 Plausible snippet env-gated; L2.9 launch-checklist landed; L2.8 has PR #23 awaiting auto-merge; L2.5 has PR #20 with a merge conflict needing human rebase; L1.6b deferred for local corgi pass)
+_Last updated: 2026-05-15_ (L4.2 adds `app/api/healthcheck/route.ts` — edge route that pings SF via the shared client with `MOCK_SMALL_001`/`limit:1`, reports `status` (ok/degraded/down), `mode` (fixture/live, inferred from `SF_API_KEY`), and `latency_ms`; 200 when ok, 503 otherwise, `Cache-Control: no-store`; mock-safe so it runs before the human-gated L4.1; L5.4 lands `docs/outreach-plan.md` — per-channel community outreach plan for after launch: Sterling Sky Local Search Forum, r/bigseo, LocalU, r/SEO, r/smallbusiness, Traffic Think Tank, AgencyAnalytics Slack, Search Engine Roundtable, Twitter/X, LinkedIn groups; pre-flight gates on L5.2 deploy + L2.8 rate-limit + L2.10 analytics + L4.1 real creds; one channel per weekday cadence with UTM tagging for Plausible attribution; explicit skip list (BHW, Warrior Forum, FB groups); L3.3 FAQ on `app/page.tsx` — three `<details>` items — unblocks FAQ-content half of L3.2b; L5.3 launch posts in `docs/launch-posts.md`; L3.2 split into L3.2a — robots.ts + sitemap.ts for root — and L3.2b — JSON-LD `FAQPage` deferred until L3.1; L2.10 Plausible snippet env-gated; L2.9 launch-checklist landed; L2.8 has PR #23 awaiting auto-merge; L2.5 has PR #20 with a merge conflict needing human rebase; L1.6b deferred for local corgi pass)
 
 Leaf-task granularity. Each leaf should fit in **one scheduled run (≤10 commands)**. The routine picks the next unchecked leaf top-down. Mark `[x]` when merged, `[~]` when draft PR open awaiting review, `[!]` when blocked.
 
@@ -48,7 +48,7 @@ Leaf-task granularity. Each leaf should fit in **one scheduled run (≤10 comman
 ## Phase 4 — Real-creds integration (Sprint 4, ~2 daily runs — gated)
 
 - [ ] L4.1 (**human-gated**, requires real SF creds) Update `client.ts` to call the live SF API; verify against fixtures; document any schema deltas
-- [ ] L4.2 Add a `/api/healthcheck` route that pings SF with a known place and reports latency
+- [x] L4.2 Add a `/api/healthcheck` route that pings SF with a known place and reports latency
 
 ## Phase 5 — Launch prep (Sprint 5)
 
