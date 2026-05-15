@@ -38,6 +38,8 @@ Other scheduling facts:
 - `cd ~/PROJ/google-reviews-download`
 - `git status && git fetch origin && git log --oneline -10` — confirm clean state.
 - If the working tree is dirty with someone else's changes, **abort** — write a one-line note to `BLOCKED.md` and stop.
+- **Re-baseline to the remote.** A previous run may have left HEAD on a stale `claude/*` branch whose PR never merged (conflict). Before doing anything else: `git checkout main && git merge --ff-only origin/main`. If the ff-only merge fails, local `main` has diverged — **abort** and write `BLOCKED.md`; do not branch off a diverged base. (This is the guard against the cascading-conflict failure mode where every new branch is cut from an ever-diverging tree and no PR can ever auto-merge.)
+- **Check the open-PR queue.** `gh pr list --state open --json number,mergeable` (if `gh` is authed). If there are ≥3 open `claude/*` PRs or any is `CONFLICTING`, the pipeline is stuck — do **not** add more leaf PRs. Instead, this run's job is to rebuild the stuck work cleanly off `origin/main` (cherry-pick the net-new commits onto a fresh branch from `main`, resolve `ROADMAP.md`/`DECISIONS.md` text conflicts, one consolidated PR) and stop.
 - Read `ROADMAP.md` and `BLOCKED.md` (if present).
 
 ### 2. Pick a leaf
@@ -48,7 +50,7 @@ Other scheduling facts:
 
 ### 3. Work in place
 
-- Create a fresh working branch: `git checkout -b claude/$(date -u +%Y%m%dT%H%M%SZ)-<leaf-id>` (e.g. `claude/20260509T140000Z-L1.3`).
+- Create a fresh working branch **explicitly off the fetched remote tip**: `git checkout -b claude/$(date -u +%Y%m%dT%H%M%SZ)-<leaf-id> origin/main` (e.g. `claude/20260509T140000Z-L1.3`). Always pass `origin/main` as the base — never let the branch inherit a previous run's `claude/*` HEAD, which is what caused the cascading-conflict pile-up of PRs #23/#27/#29/#30/#31.
 - Do the smallest amount of work that completes the leaf.
 - Update `ROADMAP.md`: mark the leaf `[~]` (draft, wants review) or `[x]` (ready to merge).
 - Append a one-line entry to `DECISIONS.md` if a non-obvious choice was made.
