@@ -12,6 +12,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ReviewToolForm } from "@/app/_components/review-tool-form";
+import { FaqSection, faqJsonLd } from "@/app/_components/faq";
 import {
   findPublishedVariant,
   publishedVariants,
@@ -53,6 +54,13 @@ export default async function VariantPage({
 
   return (
     <main className="mx-auto flex min-h-screen max-w-2xl flex-col items-center justify-center gap-8 px-6 py-16">
+      {/* FAQPage structured data. The matching FAQ is rendered visibly by
+          <FaqSection /> below, so the markup describes on-page content. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd()) }}
+      />
+
       <header className="flex flex-col items-center gap-4 text-center">
         <h1 className="text-3xl font-semibold tracking-tight">
           {variant.h1}
@@ -70,6 +78,8 @@ export default async function VariantPage({
         Result preview (first 5 reviews + total count) ships in L2.5. Until
         then the API response opens in a new browser tab.
       </p>
+
+      <FaqSection />
     </main>
   );
 }
