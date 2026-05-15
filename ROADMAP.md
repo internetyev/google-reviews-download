@@ -1,6 +1,6 @@
 # google-reviews-download — Roadmap
 
-_Last updated: 2026-05-14_ (L5.3 drafts ProductHunt + Indie Hackers + LinkedIn launch posts in `docs/launch-posts.md` — `<TODO>` placeholders for live URL, cross-post checklist gating on L5.2 deploy + L2.10 analytics env + L2.8 rate-limit middleware; L3.2 split into L3.2a — robots.ts + sitemap.ts for the root route, landed in `app/` — and L3.2b — JSON-LD `FAQPage` schema, deferred until L3.1 variant pages exist + L3.3 FAQ content lands; L2.10 Plausible snippet env-gated in `app/layout.tsx`; L2.9 launch-checklist landed; L2.8 edge rate-limit middleware has draft PR #23 awaiting auto-merge; L2.5 has draft PR #20 with a merge conflict needing human rebase; L1.6b deferred for local corgi pass)
+_Last updated: 2026-05-15_ (L4.2 adds `app/api/healthcheck/route.ts` — edge route that pings SF via the shared client with `MOCK_SMALL_001`/`limit:1`, reports `status` (ok/degraded/down), `mode` (fixture/live, inferred from `SF_API_KEY`), and `latency_ms`; 200 when ok, 503 otherwise, `Cache-Control: no-store`; mock-safe so it runs before the human-gated L4.1; L5.4 lands `docs/outreach-plan.md` — per-channel community outreach plan for after launch: Sterling Sky Local Search Forum, r/bigseo, LocalU, r/SEO, r/smallbusiness, Traffic Think Tank, AgencyAnalytics Slack, Search Engine Roundtable, Twitter/X, LinkedIn groups; pre-flight gates on L5.2 deploy + L2.8 rate-limit + L2.10 analytics + L4.1 real creds; one channel per weekday cadence with UTM tagging for Plausible attribution; explicit skip list (BHW, Warrior Forum, FB groups); L3.3 FAQ on `app/page.tsx` — three `<details>` items — unblocks FAQ-content half of L3.2b; L5.3 launch posts in `docs/launch-posts.md`; L3.2 split into L3.2a — robots.ts + sitemap.ts for root — and L3.2b — JSON-LD `FAQPage` deferred until L3.1; L2.10 Plausible snippet env-gated; L2.9 launch-checklist landed; L2.8 has PR #23 awaiting auto-merge; L2.5 has PR #20 with a merge conflict needing human rebase; L1.6b deferred for local corgi pass)
 
 Leaf-task granularity. Each leaf should fit in **one scheduled run (≤10 commands)**. The routine picks the next unchecked leaf top-down. Mark `[x]` when merged, `[~]` when draft PR open awaiting review, `[!]` when blocked.
 
@@ -42,20 +42,20 @@ Leaf-task granularity. Each leaf should fit in **one scheduled run (≤10 comman
 
 - [ ] L3.1 (depends on L1.6b) Pick top 5 long-tail variants from `seo-variants.md` and create `app/(seo)/<slug>/page.tsx` for each — same tool below the fold, custom intro/explainer above
 - [x] L3.2a Add `app/robots.ts` and `app/sitemap.ts` (root route only; variant routes get added in L3.1; `NEXT_PUBLIC_SITE_URL` env var with fallback)
-- [ ] L3.2b Add JSON-LD `FAQPage` schema on each variant page. **(deferred: needs L3.1 variant pages and L3.3 FAQ content first.)**
-- [ ] L3.3 Add a "How it works" + "Is this allowed by Google?" FAQ to `app/page.tsx`
+- [ ] L3.2b Add JSON-LD `FAQPage` schema on each variant page. **(deferred: needs L3.1 variant pages first; FAQ content now exists on the home page after L3.3 and can be reused.)**
+- [x] L3.3 Add a "How it works" + "Is this allowed by Google?" FAQ to `app/page.tsx`
 
 ## Phase 4 — Real-creds integration (Sprint 4, ~2 daily runs — gated)
 
 - [ ] L4.1 (**human-gated**, requires real SF creds) Update `client.ts` to call the live SF API; verify against fixtures; document any schema deltas
-- [ ] L4.2 Add a `/api/healthcheck` route that pings SF with a known place and reports latency
+- [x] L4.2 Add a `/api/healthcheck` route that pings SF with a known place and reports latency
 
 ## Phase 5 — Launch prep (Sprint 5)
 
 - [ ] L5.1 Naming + domain decision (target candidates: `googlereviewsdownload.com`, `.co`, `.app` — **human-gated** purchase)
 - [ ] L5.2 Deploy to Vercel (**human-gated**, needs SF + KV creds)
 - [x] L5.3 Draft launch posts in `docs/launch-posts.md` (ProductHunt, IndieHackers, LinkedIn)
-- [ ] L5.4 Outreach plan to local-SEO communities
+- [x] L5.4 Outreach plan to local-SEO communities
 
 ---
 
