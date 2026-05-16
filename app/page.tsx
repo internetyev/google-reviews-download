@@ -16,11 +16,6 @@ export default function HomePage() {
 
       <ReviewToolForm />
 
-      <p className="text-xs text-muted-foreground">
-        Result preview (first 5 reviews + total count) ships in L2.5. Until
-        then the API response opens in a new browser tab.
-      </p>
-
       <FaqSection />
     </main>
   );

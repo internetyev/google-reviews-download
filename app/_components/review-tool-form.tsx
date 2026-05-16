@@ -1,8 +1,10 @@
-// The "paste a place, pick a format, download" tool.
+// The "paste a place, preview, download" tool.
 //
 // Single source of truth for the form so the home page (L2.4) and every
 // SEO variant page (L3.1) render the identical tool below the fold. Plain
-// GET form — no client JS — it just navigates to `/api/reviews`.
+// GET form — no client JS — it navigates to `/preview` (L2.5), which shows
+// the first 5 reviews + total count + a download CTA. `format` rides along
+// as the *preferred* download format so the preview CTA defaults to it.
 
 const FORMATS = [
   { value: "json", label: "JSON", hint: "available today" },
@@ -13,10 +15,8 @@ const FORMATS = [
 export function ReviewToolForm() {
   return (
     <form
-      action="/api/reviews"
+      action="/preview"
       method="GET"
-      target="_blank"
-      rel="noopener"
       className="flex w-full flex-col gap-5 rounded-lg border border-border bg-card p-6 shadow-sm"
     >
       <label className="flex flex-col gap-2 text-sm" htmlFor="placeId">
@@ -71,7 +71,7 @@ export function ReviewToolForm() {
         type="submit"
         className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring"
       >
-        Download reviews
+        Preview &amp; download reviews
       </button>
     </form>
   );
