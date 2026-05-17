@@ -1,0 +1,62 @@
+name: ci
+
+# Informational quality gate for PRs into `main`: install, typecheck, lint, test.
+#
+# This workflow is deliberately NON-BLOCKING. The repo has no branch protection
+# and `auto-merge-claude.yml` squash-merges any `claude/*` PR the moment it is
+# opened, without waiting for status checks — so this job runs in parallel with
+# (and is usually outrun by) the auto-merge. Its value is the recorded
+# pass/fail status on each PR/commit, which a human can later promote to a
+# required check by adding branch protection. Do not add `continue-on-error`:
+# the whole point is that a red X here is a real, visible signal.
+#
+# Install posture: the repo is intentionally manifest-only (no committed
+# package-lock.json; `npm install` is a human step per the routine's hard
+# constraints — D-039/D-040). `npm ci` therefore cannot run here (it requires a
+# lockfile and would be permanently red), so we keep the leaf's intent by
+# preferring `npm ci` and falling back to `npm install` when no lockfile is
+# present — see D-045.
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        # Prefer reproducible `npm ci`; fall back to `npm install` while the
+        # repo stays lockfile-free (manifest-only posture — D-045).
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            echo "No package-lock.json (manifest-only repo); using npm install."
+            npm install --no-audit --no-fund
+          fi
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
