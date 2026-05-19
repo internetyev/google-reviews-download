@@ -7,27 +7,30 @@
 // SF_API_KEY presence), and the always-`Cache-Control: no-store` header (a
 // cached health probe is a lie).
 //
-// The route's GET takes no args and calls createSemanticForceClient() with no
-// options, so there is NO injection seam: the `degraded` branch (client
-// answers but res.place is falsy) and the getReviews()-throws → `down` branch
-// are not reachable through env alone — FixtureClient(MOCK_SMALL_001) always
-// returns a place and never throws. We deliberately do NOT introduce vi.mock
-// to force them (the whole suite family is no-mock, env + real NextRequest /
-// injected stubs — D-044), and instead exercise the *other* genuine SF-throw →
-// `down` path the route exposes: a misconfig where SF_API_KEY is set but
-// SF_API_BASE is missing makes createSemanticForceClient() throw a
-// SemanticForceError, which the route catches at init and reports as `down`
-// with mode `live`. That single case covers the down/503 mapping, the
-// error-envelope shape, and the `mode: "live"` inference at once. The
-// degraded / getReviews-throw limitation is documented here, not worked
-// around — closing it needs a client-injection seam on the route (a future
-// leaf), not a test hack.
+// `GET` itself takes no args and calls createSemanticForceClient() with no
+// options, so the env-only paths are: ok/200 (fixture), and the misconfig
+// SF-throw → down/503 (SF_API_KEY set without SF_API_BASE makes
+// createSemanticForceClient() throw a SemanticForceError caught at init,
+// which also pins mode: "live"). The `degraded` branch (client answers but
+// res.place is falsy) and the getReviews()-throws → `down` branch are NOT
+// reachable through env alone — FixtureClient(MOCK_SMALL_001) always returns
+// a place and never throws.
+//
+// L8.5 closed that gap the way the suite family demands (no vi.mock — D-044):
+// the route now exposes a real client-injection seam, `__testing.handle`,
+// which `GET` calls with no argument (production path unchanged) but which
+// accepts an optional pre-built SemanticForceClient. The `degraded` and
+// `down`-on-throw branches below drive that seam with a tiny hand-written
+// stub client, not a mocking framework — the stub is ordinary code that
+// satisfies the SemanticForceClient interface, flowing through the exact
+// same status/latency/error-envelope logic as a constructed client.
 //
 // Committed, not run in-routine (no node_modules; `npm install` is a human
 // step — D-039/D-040 posture, same as the other suites).
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { GET, __testing } from "@/app/api/healthcheck/route";
+import { SemanticForceError } from "@/lib/semanticforce/types";
 
 // SF_API_KEY drives BOTH the client path (unset → FixtureClient) and the
 // route's `mode` field, so each test pins it explicitly. SF_API_BASE matters
@@ -120,11 +123,89 @@ describe("GET /api/healthcheck — down path (misconfig: key set, base missing)"
   });
 });
 
+describe("GET /api/healthcheck — injected-client seam (L8.5, no mocks)", () => {
+  // The seam is `__testing.handle(client?)`. A hand-written stub satisfying
+  // the SemanticForceClient interface (a `getReviews` method) is passed
+  // through it; no vi.mock anywhere. SF_API_KEY stays unset so `mode` is
+  // "fixture" — proving the injected client flows through the same logic the
+  // constructed one would, with mode still inferred purely from env.
+
+  it("returns 503 status:degraded when the client answers without place metadata", async () => {
+    // res.place falsy → degraded (the dependency answered but not usefully).
+    // FixtureClient can never produce this; only the seam can reach it.
+    const stub = {
+      async getReviews() {
+        return { place: undefined, reviews: [] } as never;
+      },
+    };
+    const res = await __testing.handle(stub);
+    expect(res.status).toBe(503);
+    const body = await res.json();
+    expect(body.status).toBe("degraded");
+    expect(body.mode).toBe("fixture");
+    expect(body.error).toBeUndefined();
+    expect(body.place_id).toBe("MOCK_SMALL_001");
+    expect(typeof body.latency_ms).toBe("number");
+    expect(res.headers.get("Cache-Control")).toBe("no-store");
+  });
+
+  it("returns 503 status:down with the SemanticForce code when getReviews() throws", async () => {
+    const stub = {
+      async getReviews(): Promise<never> {
+        throw new SemanticForceError("upstream_error", "SF exploded");
+      },
+    };
+    const res = await __testing.handle(stub);
+    expect(res.status).toBe(503);
+    const body = await res.json();
+    expect(body.status).toBe("down");
+    expect(body.error?.code).toBe("upstream_error");
+    expect(body.error?.message).toBe("SF exploded");
+    expect(res.headers.get("Cache-Control")).toBe("no-store");
+  });
+
+  it("maps a non-SemanticForce throw to error code unknown (still down/503)", async () => {
+    const stub = {
+      async getReviews(): Promise<never> {
+        throw new Error("boom");
+      },
+    };
+    const res = await __testing.handle(stub);
+    expect(res.status).toBe(503);
+    const body = await res.json();
+    expect(body.status).toBe("down");
+    expect(body.error?.code).toBe("unknown");
+    expect(body.error?.message).toBe("boom");
+  });
+
+  it("an injected client that returns place metadata still resolves ok/200", async () => {
+    // Guards that the seam is a transparent pass-through, not a degraded-only
+    // shortcut: a healthy injected client gets the identical ok mapping.
+    const stub = {
+      async getReviews() {
+        return {
+          place: { place_id: "X", name: "X", rating_avg: 5, rating_count: 1 },
+          reviews: [],
+        } as never;
+      },
+    };
+    const res = await __testing.handle(stub);
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.status).toBe("ok");
+    expect(body.error).toBeUndefined();
+  });
+});
+
 describe("GET /api/healthcheck — __testing surface", () => {
   it("exposes the stable probe place id used by the route", () => {
     // The route hard-codes this fixture id; the assertion locks it so a swap
     // (e.g. L4.1 picking a real well-known place) is a conscious, reviewed
     // change rather than a silent one.
     expect(__testing.PROBE_PLACE_ID).toBe("MOCK_SMALL_001");
+  });
+
+  it("exposes the client-injection handle seam (L8.5)", () => {
+    expect(typeof __testing.handle).toBe("function");
   });
 });
