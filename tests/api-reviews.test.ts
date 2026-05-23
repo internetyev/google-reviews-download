@@ -133,6 +133,98 @@ describe("GET /api/reviews — success-path response contract", () => {
   });
 });
 
+describe("GET /api/reviews — userLimit slicing (the download-size contract)", () => {
+  // The route slices `payload.reviews.slice(0, userLimit)` in respondSuccess
+  // for every format. A regression that skipped the slice (or used `>` instead
+  // of `>=` in the loop guard) would silently return all 12 fixture reviews
+  // when the user asked for 3 — a download larger than the user authorised.
+  // The small fixture is 12 reviews (pinned by tests/fixtures-contract.test.ts);
+  // limit=3 / limit=99999 / limit=3.7 exercise the three boundaries: under,
+  // over, and fractional. Asserted from the *response* (not the route helper)
+  // so a refactor that moved the slice elsewhere still has to satisfy it.
+  it("json ?limit=3 returns exactly 3 reviews from the 12-review fixture", async () => {
+    const res = await call("?placeId=MOCK_SMALL_001&limit=3");
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.reviews).toHaveLength(3);
+    // place metadata is unaffected by the slice (it's per-payload, not per-review).
+    expect(body.place.place_id).toBe("MOCK_SMALL_001");
+  });
+
+  it("csv ?limit=3 body has exactly 3 data rows under the header", async () => {
+    const res = await call("?placeId=MOCK_SMALL_001&format=csv&limit=3");
+    expect(res.status).toBe(200);
+    const body = await res.text();
+    // BOM + 1 header line + 3 data lines, each terminated by CRLF (formatReviewsAsCsv
+    // emits a trailing CRLF). Strip the BOM, split on CRLF, drop the trailing empty:
+    // we want exactly 4 non-empty lines (header + 3 data).
+    const lines = body.replace(/^﻿/, "").split("\r\n").filter((l) => l.length > 0);
+    expect(lines).toHaveLength(4);
+  });
+
+  it("xlsx ?limit=3 worksheet has exactly 3 data rows under the header", async () => {
+    const res = await call("?placeId=MOCK_SMALL_001&format=xlsx&limit=3");
+    expect(res.status).toBe(200);
+    const buf = new Uint8Array(await res.arrayBuffer());
+    const XLSX = await import("xlsx");
+    const wb = XLSX.read(buf, { type: "array" });
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const aoa = XLSX.utils.sheet_to_json<unknown[]>(ws, { header: 1 });
+    // 1 header row + 3 data rows = 4 total.
+    expect(aoa).toHaveLength(4);
+  });
+
+  it("?limit=99999 (larger than the 12-review fixture) returns all 12, not garbage", async () => {
+    // Array.slice past the end is safe — pin that the route inherits that
+    // safety rather than throwing or padding.
+    const res = await call("?placeId=MOCK_SMALL_001&limit=99999");
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.reviews).toHaveLength(12);
+  });
+
+  it("?limit=3.7 floors to 3 (the route's Math.floor contract)", async () => {
+    // The route does Math.floor(parsed) before slicing; a refactor that
+    // dropped the floor would slice with a fractional length and JS would
+    // coerce — observably the same in modern engines, but the floor is the
+    // documented intent and any divergence is worth catching.
+    const res = await call("?placeId=MOCK_SMALL_001&limit=3.7");
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.reviews).toHaveLength(3);
+  });
+});
+
+describe("GET /api/reviews — Content-Disposition filename uses the normalised slug", () => {
+  // csvFilename / xlsxFilename produce `google-reviews-<slug>-<YYYYMMDD>.<ext>`
+  // (lib/export/csv.ts §74, lib/export/xlsx.ts §134 — ADR-003). The route
+  // passes `normalised.slug`, *not* `normalised.raw` or `placeIdInput`, so a
+  // refactor that swapped the argument would silently rename every user's
+  // download (breaking automation that ingests files by name). Sending a
+  // mixed-case underscore-form input (`mock_SMALL_001`) so the slug transform
+  // (lowercase + underscores → dashes) is what surfaces in the filename:
+  // `mock-small-001`. Substring matches on "mock" alone would pass on the raw
+  // form too, so the dashed/lowercased form is the load-bearing assertion.
+  it("csv filename contains the dashed-lowercased slug, not the raw input form", async () => {
+    const res = await call("?placeId=mock_SMALL_001&format=csv");
+    expect(res.status).toBe(200);
+    const cd = res.headers.get("Content-Disposition") ?? "";
+    expect(cd).toMatch(/filename="google-reviews-mock-small-001-\d{8}\.csv"/);
+    // Belt-and-braces: the raw underscore form must NOT appear in the
+    // filename — that would mean the route fed `normalised.raw` or the raw
+    // input through, defeating the slug pipeline.
+    expect(cd).not.toMatch(/mock_small_001/i);
+  });
+
+  it("xlsx filename mirrors the csv filename with only the extension changed", async () => {
+    const res = await call("?placeId=mock_SMALL_001&format=xlsx");
+    expect(res.status).toBe(200);
+    const cd = res.headers.get("Content-Disposition") ?? "";
+    expect(cd).toMatch(/filename="google-reviews-mock-small-001-\d{8}\.xlsx"/);
+    expect(cd).not.toMatch(/mock_small_001/i);
+  });
+});
+
 describe("GET /api/reviews — __testing surface", () => {
   it("statusForCode maps SF error codes to HTTP status, upstream wins", async () => {
     const { __testing } = await import("@/app/api/reviews/route");
