@@ -195,3 +195,131 @@ describe("__testing helpers", () => {
     expect(mapStatusToCode(302)).toBe("unknown");
   });
 });
+
+// Page-boundary slicing — the FixtureClient's `hasMore = nextOffset < length`
+// branch decides whether a `next_cursor` ships. The fallback test walks the
+// 500-review LARGE fixture page-by-page and proves "every id seen exactly
+// once" via set-size, but a regression that emitted a spurious tail cursor
+// (off-by-one `<=`) or swallowed a partial last page (off-by-one `>`) would
+// still satisfy that walk on LARGE because 500 is exactly divisible by 100.
+// Pin the partial-tail and exact-fit boundaries on the SMALL fixture where
+// they're observable in two passes.
+describe("FixtureClient — page-boundary slicing", () => {
+  it("partial tail: limit=5 over 12 reviews → 5, 5, 2 with no cursor on the last page", async () => {
+    const client = createSemanticForceClient();
+    const page1 = await client.getReviews({
+      placeId: "MOCK_SMALL_001",
+      limit: 5,
+    });
+    expect(page1.reviews).toHaveLength(5);
+    expect(page1.next_cursor).toBeTruthy();
+
+    const page2 = await client.getReviews({
+      placeId: "MOCK_SMALL_001",
+      limit: 5,
+      after: page1.next_cursor,
+    });
+    expect(page2.reviews).toHaveLength(5);
+    expect(page2.next_cursor).toBeTruthy();
+    // The cursor must advance — same-cursor on two pages would be an infinite
+    // loop for any caller walking until `next_cursor` is undefined.
+    expect(page2.next_cursor).not.toBe(page1.next_cursor);
+
+    const page3 = await client.getReviews({
+      placeId: "MOCK_SMALL_001",
+      limit: 5,
+      after: page2.next_cursor,
+    });
+    expect(page3.reviews).toHaveLength(2);
+    expect(page3.next_cursor).toBeUndefined();
+  });
+
+  it("exact fit: limit=12 over 12 reviews → one page, no spurious tail cursor", async () => {
+    // `hasMore = nextOffset < length` is the off-by-one switch — at nextOffset
+    // === length we must NOT emit a cursor, or the caller round-trips one more
+    // page just to be told `[]` (or worse, gets an empty page with a cursor
+    // and loops). The exact-fit boundary is the silent-extra-RTT regression.
+    const client = createSemanticForceClient();
+    const page = await client.getReviews({
+      placeId: "MOCK_SMALL_001",
+      limit: 12,
+    });
+    expect(page.reviews).toHaveLength(12);
+    expect(page.next_cursor).toBeUndefined();
+  });
+});
+
+// HTTP wire-shape negatives — the existing HTTP path test pins what IS sent
+// when both `limit` and `after` are supplied; these pin what must NOT be sent
+// in the load-bearing edge cases. Both are silent-SF-rejection regressions
+// with no test signal otherwise (we'd see an opaque 4xx from SF in L4.1).
+describe("HttpClient — URL hygiene", () => {
+  it("clamps user-supplied limit to MAX_LIMIT (100) on the wire, not the raw value", async () => {
+    let seenUrl: URL | undefined;
+    const fetchImpl = (async (url: URL) => {
+      seenUrl = url;
+      return new Response(
+        JSON.stringify({ place: { place_id: "X" }, reviews: [] }),
+        { status: 200 },
+      );
+    }) as unknown as typeof fetch;
+
+    const client = createSemanticForceClient({
+      apiKey: "k",
+      apiBase: "https://sf.example.com",
+      fetchImpl,
+    });
+    await client.getReviews({ placeId: "p", limit: 9999 });
+
+    // A refactor that forwarded `args.limit` directly to the URL (skipping
+    // clampLimit) would emit `limit=9999` and SF would reject the request.
+    expect(seenUrl!.searchParams.get("limit")).toBe("100");
+  });
+
+  it("omits the `after` query param entirely when no cursor is supplied", async () => {
+    let seenUrl: URL | undefined;
+    const fetchImpl = (async (url: URL) => {
+      seenUrl = url;
+      return new Response(
+        JSON.stringify({ place: { place_id: "X" }, reviews: [] }),
+        { status: 200 },
+      );
+    }) as unknown as typeof fetch;
+
+    const client = createSemanticForceClient({
+      apiKey: "k",
+      apiBase: "https://sf.example.com",
+      fetchImpl,
+    });
+    await client.getReviews({ placeId: "p" });
+
+    // Belt-and-braces: assert absence via both `has` and the URL string so a
+    // future refactor that sets `after=undefined` (which serialises to the
+    // literal string "undefined" — a real SF query-parsing footgun) fails.
+    expect(seenUrl!.searchParams.has("after")).toBe(false);
+    expect(seenUrl!.toString()).not.toContain("after=");
+  });
+});
+
+// decodeCursor offset-field guards — the existing helper test pins the
+// outer try/catch (garbage base64 → 0, missing → 0). These pin the inner
+// `typeof parsed.offset === "number" && parsed.offset >= 0` guard against a
+// refactor that loosened it (e.g. `parsed.offset ?? 0` would let -5 through
+// and slice from a negative offset, which Array.slice silently treats as
+// "from the end" — a fixture-page corruption with no error signal). Mirrors
+// the L11.3 pattern-floor pinning approach: bad inputs caught at the edge.
+describe("decodeCursor — offset-field guards", () => {
+  it("falls back to 0 for negative, non-numeric, and missing offset fields", () => {
+    const { decodeCursor } = __testing;
+    // Wire format per D-015: btoa(JSON.stringify({offset:N})).
+    const enc = (payload: unknown) => btoa(JSON.stringify(payload));
+
+    expect(decodeCursor(enc({ offset: -5 }))).toBe(0); // negative rejected
+    expect(decodeCursor(enc({ offset: "12" }))).toBe(0); // string rejected
+    expect(decodeCursor(enc({ offset: null }))).toBe(0); // null rejected
+    expect(decodeCursor(enc({}))).toBe(0); // missing field rejected
+    // Sanity: a valid encoded offset still round-trips through this path,
+    // so the negative assertions can't pass vacuously on a broken decoder.
+    expect(decodeCursor(enc({ offset: 7 }))).toBe(7);
+  });
+});
