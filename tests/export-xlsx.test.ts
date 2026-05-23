@@ -13,6 +13,7 @@ import {
   XLSX_COLUMNS,
   __testing,
 } from "@/lib/export/xlsx";
+import { CSV_COLUMNS } from "@/lib/export/csv";
 import type { CachedReviewsPayload } from "@/lib/cache/reviews-cache";
 
 const { COLUMN_WIDTHS, PHOTO_URL_JOIN, SHEET_NAME } = __testing;
@@ -146,5 +147,180 @@ describe("xlsxFilename", () => {
     expect(xlsxFilename("mock-small-001", "2026-05-16T08:30:00.000Z")).toBe(
       "google-reviews-mock-small-001-20260516.xlsx",
     );
+  });
+
+  // L12.1 (iii): pin the slice ceiling at the year/month/day boundary so a
+  // refactor to slice(0, 8) or slice(0, 11) misnames every download and
+  // fails loudly. Symmetric with the L11.6/D-064 csvFilename pin.
+  it("slices the first 10 chars of dateIso — no more, no less", () => {
+    // Day-30 vs day-31 in the same month makes slice(0, 8) (which would
+    // drop the day) fail because the asserted ymd carries the day; an
+    // hour-prefix in chars 11+ makes slice(0, 11) fail because the trailing
+    // "T" would survive into the filename.
+    expect(xlsxFilename("x", "2026-12-31T23:59:59.999Z")).toBe(
+      "google-reviews-x-20261231.xlsx",
+    );
+    expect(xlsxFilename("x", "2026-01-01T00:00:00.000Z")).toBe(
+      "google-reviews-x-20260101.xlsx",
+    );
+  });
+});
+
+// L12.1 (a): XLSX_COLUMNS exact-order freeze + symmetry with CSV_COLUMNS +
+// per-row arity via XLSX.read. Downstream pipelines read the sheet by
+// column position; a refactor that swapped two columns (or inserted one in
+// the middle) would shift every following cell across every consumer with
+// no runtime signal. The symmetry assertion guards the documented
+// `XLSX_COLUMNS = CSV_COLUMNS` contract (lib/export/xlsx.ts ADR-003: "a
+// user who switches between formats sees the same columns in the same
+// order") — a refactor that decoupled the two arrays would let them drift
+// silently and the round-trip count tests would still pass on each side
+// alone.
+describe("XLSX_COLUMNS — exact-order freeze + CSV symmetry", () => {
+  it("freezes the 14-column tuple in the documented surfaced order", () => {
+    expect(XLSX_COLUMNS).toEqual([
+      "place_name",
+      "place_id",
+      "place_url",
+      "review_id",
+      "author_name",
+      "author_url",
+      "rating",
+      "text",
+      "language",
+      "published_at",
+      "photo_count",
+      "photo_urls",
+      "owner_response_text",
+      "owner_response_at",
+    ]);
+    expect(XLSX_COLUMNS).toHaveLength(14);
+  });
+
+  it("is referentially identical to CSV_COLUMNS (one shared schema, not two)", () => {
+    // A refactor that did `export const XLSX_COLUMNS = [...CSV_COLUMNS]`
+    // (a copy) would pass an `.toEqual` check today but would let the two
+    // arrays drift on the next column edit — pin reference equality so the
+    // single-source-of-truth invariant holds structurally.
+    expect(XLSX_COLUMNS).toBe(CSV_COLUMNS);
+  });
+
+  it("emits every row carrying exactly XLSX_COLUMNS.length cells", () => {
+    const wb = roundTrip(payload());
+    const ws = wb.Sheets[SHEET_NAME];
+    // `header: 1` returns each row as an array (no key-shape coercion), so
+    // a row whose cell count drifted from 14 surfaces here as a length
+    // mismatch rather than being papered over by `sheet_to_json`'s
+    // header-merged shape.
+    const grid = XLSX.utils.sheet_to_json<unknown[]>(ws, { header: 1 });
+    expect(grid).toHaveLength(3); // header + r1 + r2
+    grid.forEach((row) => {
+      expect(row).toHaveLength(XLSX_COLUMNS.length);
+    });
+    // Header row equals XLSX_COLUMNS in surfaced order (the writer's
+    // header-emission path under json_to_sheet({ header })).
+    expect(grid[0]).toEqual([...XLSX_COLUMNS]);
+  });
+});
+
+// L12.1 (b): typed-cell fidelity. Unlike CSV (every field is text), XLSX
+// cells carry types — `rating` and `photo_count` are JS numbers in the
+// row object, and SheetJS should write them as numeric ("n") cells. A
+// refactor that stringified either via `String(rating)` or `.toString()`
+// would silently break Excel's number formatting/sorting on those columns
+// (=SUM, =AVERAGE, numeric sort all fail on text cells), with no visible
+// error in the file. Round-trip preserves the JS `typeof` so the test can
+// pin the type without inspecting raw OOXML.
+describe("formatReviewsAsXlsx — typed-cell fidelity", () => {
+  const wb = roundTrip(payload());
+  const ws = wb.Sheets[SHEET_NAME];
+  const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(ws);
+
+  it("writes rating as a numeric cell (typeof number, value preserved)", () => {
+    expect(typeof rows[0].rating).toBe("number");
+    expect(typeof rows[1].rating).toBe("number");
+    expect(rows[0].rating).toBe(5);
+    expect(rows[1].rating).toBe(3);
+  });
+
+  it("writes photo_count as a numeric cell (including the zero-photo case)", () => {
+    expect(typeof rows[0].photo_count).toBe("number");
+    expect(typeof rows[1].photo_count).toBe("number");
+    expect(rows[0].photo_count).toBe(2);
+    // The no-photos case: zero must round-trip as number 0, not "" — the
+    // rowFor blank-fill is for *string* fields only (D-043-adjacent: types
+    // matter for spreadsheet semantics).
+    expect(rows[1].photo_count).toBe(0);
+  });
+
+  it("writes text-typed fields as strings (review_id/published_at)", () => {
+    // Counterpart to the numeric checks above: a refactor that
+    // accidentally coerced review_id or published_at to a number (e.g. an
+    // all-digit fixture id) must not slip through — XLSX writes whatever
+    // JS type the row object carries.
+    expect(typeof rows[0].review_id).toBe("string");
+    expect(typeof rows[0].published_at).toBe("string");
+    expect(rows[0].published_at).toBe("2026-05-01T00:00:00.000Z");
+  });
+});
+
+// L12.1 (c): empty-reviews shape + single-photo boundary. A brand-new
+// place with zero reviews must still produce a valid workbook (header +
+// freeze + widths intact), and the existing 2-photo case in `payload()`
+// can't distinguish a `url1 | ` (trailing-separator) regression from the
+// correct `url1` bare-URL output — the 1-photo case is the load-bearing
+// boundary. Symmetric with L11.6 (iii) for the CSV writer.
+describe("formatReviewsAsXlsx — empty-reviews + single-photo boundary", () => {
+  it("emits a valid workbook for empty reviews: header only, freeze + widths intact", () => {
+    const p = payload();
+    p.reviews = [];
+    const wb = roundTrip(p);
+    expect(wb.SheetNames).toEqual([SHEET_NAME]);
+    const ws = wb.Sheets[SHEET_NAME];
+    const grid = XLSX.utils.sheet_to_json<unknown[]>(ws, { header: 1 });
+    expect(grid).toHaveLength(1); // header only, no data rows
+    expect(grid[0]).toEqual([...XLSX_COLUMNS]);
+    // The freeze pane and the per-column widths survive into the
+    // empty-reviews path (rendering depends on header + sheet metadata,
+    // not on data rows).
+    const cols = ws["!cols"] as Array<{ wch?: number }> | undefined;
+    expect(cols).toHaveLength(XLSX_COLUMNS.length);
+    const freeze = (ws as Record<string, unknown>)["!freeze"] as
+      | { ySplit?: number }
+      | undefined;
+    const views = (ws as Record<string, unknown>)["!views"] as
+      | Array<{ ySplit?: number }>
+      | undefined;
+    expect(
+      freeze?.ySplit === 1 || (views?.some((v) => v.ySplit === 1) ?? false),
+    ).toBe(true);
+  });
+
+  it("single-photo case: photo_count = 1 and photo_urls is the bare URL (no trailing PHOTO_URL_JOIN)", () => {
+    const p = payload();
+    p.reviews = [
+      {
+        review_id: "solo",
+        author_name: "Solo",
+        rating: 4,
+        text: "one photo",
+        published_at: "2026-05-04T00:00:00.000Z",
+        photos: [{ url: "https://p/only.jpg" }],
+      },
+    ];
+    const wb = roundTrip(p);
+    const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(
+      wb.Sheets[SHEET_NAME],
+    );
+    expect(rows).toHaveLength(1);
+    // Typed: photo_count is a numeric 1, not the string "1".
+    expect(typeof rows[0].photo_count).toBe("number");
+    expect(rows[0].photo_count).toBe(1);
+    // The load-bearing assertion: no trailing separator. A regression to
+    // `photos.map(p => p.url + PHOTO_URL_JOIN).join("")` would emit
+    // `https://p/only.jpg | ` and the existing 2-photo case (which
+    // asserts `url1 | url2`) wouldn't catch it — the 1-photo case does.
+    expect(rows[0].photo_urls).toBe("https://p/only.jpg");
+    expect(rows[0].photo_urls).not.toContain(PHOTO_URL_JOIN);
   });
 });
