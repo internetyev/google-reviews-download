@@ -105,3 +105,193 @@ describe("csvFilename", () => {
     );
   });
 });
+
+// L11.6 deepening — three cross-cutting load-bearing concerns the
+// existing 7-it/3-describe suite never reached. The CSV writer is the
+// project's user-facing data deliverable (the `feedback_csv_ascii_for_excel`
+// memory); a silent regression in column order, delimiter escaping, or
+// edge-case shape would corrupt every downstream pipeline that reads
+// these files in Excel.
+
+// Minimal RFC-4180-style CSV parser for the QUOTE_ALL output. Only the
+// shape `"field"(,"field")*\r\n` need be handled; doubled `""` inside a
+// quoted field decodes to a single `"`. Suite-local helper, not shipped.
+function parseCsv(text: string): string[][] {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let field = "";
+  let inQuotes = false;
+  let i = 0;
+  while (i < text.length) {
+    const c = text[i];
+    if (inQuotes) {
+      if (c === '"') {
+        if (text[i + 1] === '"') {
+          field += '"';
+          i += 2;
+        } else {
+          inQuotes = false;
+          i++;
+        }
+      } else {
+        field += c;
+        i++;
+      }
+    } else if (c === '"') {
+      inQuotes = true;
+      i++;
+    } else if (c === ",") {
+      row.push(field);
+      field = "";
+      i++;
+    } else if (c === "\r" && text[i + 1] === "\n") {
+      row.push(field);
+      rows.push(row);
+      row = [];
+      field = "";
+      i += 2;
+    } else {
+      field += c;
+      i++;
+    }
+  }
+  if (field !== "" || row.length > 0) {
+    row.push(field);
+    rows.push(row);
+  }
+  return rows;
+}
+
+describe("CSV_COLUMNS — schema freeze + per-row arity", () => {
+  // Downstream pipelines read the CSV by column position. A refactor that
+  // silently swapped `rating` and `language` (or added a column in the
+  // middle) would shift every following cell across every existing
+  // consumer with no runtime signal. Pin the exact 14-element ordered
+  // tuple so any change to the schema is a reviewed change.
+  it("freezes the exact 14-column ordered tuple", () => {
+    expect([...CSV_COLUMNS]).toEqual([
+      "place_name",
+      "place_id",
+      "place_url",
+      "review_id",
+      "author_name",
+      "author_url",
+      "rating",
+      "text",
+      "language",
+      "published_at",
+      "photo_count",
+      "photo_urls",
+      "owner_response_text",
+      "owner_response_at",
+    ]);
+    expect(CSV_COLUMNS.length).toBe(14);
+  });
+
+  it("header row parses to exactly CSV_COLUMNS in surfaced order", () => {
+    const out = formatReviewsAsCsv(payload());
+    const rows = parseCsv(out.slice(BOM.length));
+    expect(rows[0]).toEqual([...CSV_COLUMNS]);
+  });
+
+  it("every emitted row carries exactly CSV_COLUMNS.length cells", () => {
+    const out = formatReviewsAsCsv(payload());
+    const rows = parseCsv(out.slice(BOM.length));
+    // header + 2 reviews.
+    expect(rows).toHaveLength(3);
+    for (const row of rows) {
+      expect(row).toHaveLength(CSV_COLUMNS.length);
+    }
+  });
+});
+
+describe("Embedded CSV-danger characters survive QUOTE_ALL escaping", () => {
+  // The QUOTE_ALL contract's whole point: review text containing any of
+  // the four CSV-danger characters (comma, CR, LF, double-quote) must
+  // round-trip intact without splitting the row or shifting columns.
+  // The existing suite proves LF + `"` survive; it does NOT prove that
+  // embedded **comma** (the field delimiter — would split a row under
+  // QUOTE_MINIMAL) or embedded **CR** (half of the row delimiter — would
+  // mid-row terminate under a naive splitter) survive. Pin both, plus
+  // assert alignment via parser round-trip so a refactor to QUOTE_MINIMAL
+  // would fail loudly on a structural cell count rather than silently
+  // depending on whether the test author happened to put a comma in.
+  it("comma + CR + LF + doubled-quote inside text all round-trip intact", () => {
+    const p = payload();
+    const dangerous = 'comma, here\nLF here\rCR here "quote" here';
+    p.reviews = [{ ...p.reviews[0], text: dangerous }];
+    const out = formatReviewsAsCsv(p);
+    const rows = parseCsv(out.slice(BOM.length));
+    // header + 1 review — embedded CR/LF/comma did NOT split into more rows.
+    expect(rows).toHaveLength(2);
+    expect(rows[1]).toHaveLength(CSV_COLUMNS.length);
+    const textCol = CSV_COLUMNS.indexOf("text");
+    expect(rows[1][textCol]).toBe(dangerous);
+  });
+
+  it("a comma-only text doesn't shift downstream column values", () => {
+    // Catastrophic regression class: QUOTE_MINIMAL keeps the surrounding
+    // quotes only on cells that contain a delimiter, so a comma-bearing
+    // `text` would otherwise be the one cell that didn't shift, hiding
+    // the real failure. Pin downstream cells (rating, published_at) by
+    // value so a column shift fails loudly here too.
+    const p = payload();
+    p.reviews = [{ ...p.reviews[0], text: "a, b, c" }];
+    const out = formatReviewsAsCsv(p);
+    const rows = parseCsv(out.slice(BOM.length));
+    const ratingCol = CSV_COLUMNS.indexOf("rating");
+    const publishedCol = CSV_COLUMNS.indexOf("published_at");
+    expect(rows[1][ratingCol]).toBe("5");
+    expect(rows[1][publishedCol]).toBe("2026-05-01T00:00:00.000Z");
+  });
+});
+
+describe("Empty reviews + photo_count boundary + filename slice ceiling", () => {
+  // An empty `payload.reviews` array is the natural state on a brand-new
+  // place with no reviews yet; the writer must still emit a valid Excel
+  // file (BOM + header + trailing CRLF) — a refactor that emitted just
+  // the BOM, or skipped the header on empty, would break import.
+  it("empty reviews array still emits BOM + header + trailing CRLF (no data rows)", () => {
+    const p = payload();
+    p.reviews = [];
+    const out = formatReviewsAsCsv(p);
+    expect(out.startsWith(BOM)).toBe(true);
+    expect(out.endsWith(CRLF)).toBe(true);
+    const rows = parseCsv(out.slice(BOM.length));
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toEqual([...CSV_COLUMNS]);
+  });
+
+  // photo_count is a stringified array length; the join collapses 1
+  // photo to just the URL with no trailing PHOTO_URL_JOIN separator,
+  // which the existing 2-photo case can't distinguish from a regression
+  // that emitted `url1 | ` (trailing separator) on a 1-photo review.
+  it("single-photo review: photo_count='1' and photo_urls is the bare URL", () => {
+    const p = payload();
+    p.reviews = [
+      {
+        ...p.reviews[0],
+        photos: [{ url: "https://only.example/1.jpg" }],
+      },
+    ];
+    const row = __testing.rowFor(p.reviews[0], p);
+    const photoCountCol = CSV_COLUMNS.indexOf("photo_count");
+    const photoUrlsCol = CSV_COLUMNS.indexOf("photo_urls");
+    expect(row[photoCountCol]).toBe("1");
+    expect(row[photoUrlsCol]).toBe("https://only.example/1.jpg");
+    expect(row[photoUrlsCol]).not.toContain(PHOTO_URL_JOIN);
+  });
+
+  // csvFilename uses `dateIso.slice(0, 10)` — a refactor that swapped
+  // it to `slice(0, 8)` (the YMD digit count) or `slice(0, 11)` would
+  // silently misname every download. Pin the slice ceiling at a
+  // year/month/day boundary that fails loudly under either drift.
+  it("csvFilename slices first 10 chars regardless of dateIso tail", () => {
+    expect(csvFilename("slug", "2026-12-31T23:59:59.999Z")).toBe(
+      "google-reviews-slug-20261231.csv",
+    );
+    expect(csvFilename("slug", "2026-01-02")).toBe(
+      "google-reviews-slug-20260102.csv",
+    );
+  });
+});
