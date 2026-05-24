@@ -28,8 +28,8 @@
 // Committed, not run in-routine (no node_modules; `npm install` is a human
 // step — D-039/D-040 posture, same as the other suites).
 
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { GET, __testing } from "@/app/api/healthcheck/route";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { GET, runtime, __testing } from "@/app/api/healthcheck/route";
 import { SemanticForceError } from "@/lib/semanticforce/types";
 
 // SF_API_KEY drives BOTH the client path (unset → FixtureClient) and the
@@ -207,5 +207,133 @@ describe("GET /api/healthcheck — __testing surface", () => {
 
   it("exposes the client-injection handle seam (L8.5)", () => {
     expect(typeof __testing.handle).toBe("function");
+  });
+});
+
+// L13.2 deepening (D-070): the existing suite drives `GET()` and the L8.5
+// seam, but four cross-cutting load-bearing concerns the route's HTTP-contract
+// guard never reached are pinned here — the Phase 13 pattern (D-069) of
+// closing the gap between an internals-only suite and the public default
+// export the Next runtime actually invokes.
+
+describe("/api/healthcheck — runtime export freeze", () => {
+  // Route-level config analogue of the L13.1/D-069 middleware `config.matcher`
+  // pin: the route is documented as edge-runtime, and a refactor that dropped
+  // `export const runtime = "edge"` silently moves the probe to the Node.js
+  // runtime — different cold-start, different fetch semantics, different KV
+  // wiring. None of the helper or seam tests can catch this; the named export
+  // is the contract.
+  it("ships as edge runtime", () => {
+    expect(runtime).toBe("edge");
+  });
+});
+
+describe("/api/healthcheck — response envelope structural shape", () => {
+  // L13.1/D-069 pattern: pin the body shape via Object.keys, not just the
+  // presence of specific fields, so a refactor that added a surplus key
+  // (e.g. `details`, `hint`) or renamed `error.code` → `error_code` fails
+  // loudly. Symmetric with the SemanticForceError envelope D-027 — the UI
+  // and any uptime monitor parsing this body depends on the structural shape.
+  it("ok body keys are exactly the documented five (no surplus, no missing)", async () => {
+    const res = await GET();
+    const body = await res.json();
+    expect(Object.keys(body).sort()).toEqual([
+      "checked_at",
+      "latency_ms",
+      "mode",
+      "place_id",
+      "status",
+    ]);
+    expect("error" in body).toBe(false);
+  });
+
+  it("down body keys are exactly the documented six including the error wrapper", async () => {
+    process.env.SF_API_KEY = "test-key-not-real";
+    delete process.env.SF_API_BASE;
+    const res = await GET();
+    const body = await res.json();
+    expect(Object.keys(body).sort()).toEqual([
+      "checked_at",
+      "error",
+      "latency_ms",
+      "mode",
+      "place_id",
+      "status",
+    ]);
+    expect(Object.keys(body.error).sort()).toEqual(["code", "message"]);
+  });
+});
+
+describe("/api/healthcheck — Content-Type response header freeze", () => {
+  // Uptime monitors and the in-house dashboard parse the JSON body; a
+  // refactor that switched from NextResponse.json to NextResponse text or
+  // dropped the content-type would still pass every status/envelope test
+  // today but break every consumer that does `await res.json()`. Pin both
+  // the ok and down paths so a regression on one is loud, not silent.
+  it("ok path returns application/json", async () => {
+    const res = await GET();
+    expect(res.headers.get("Content-Type")).toMatch(/^application\/json/);
+  });
+
+  it("down path also returns application/json", async () => {
+    process.env.SF_API_KEY = "test-key-not-real";
+    delete process.env.SF_API_BASE;
+    const res = await GET();
+    expect(res.headers.get("Content-Type")).toMatch(/^application\/json/);
+  });
+});
+
+describe("/api/healthcheck — latency_ms is a real measurement", () => {
+  // The existing suite asserts `latency_ms` is finite + `>= 0`. That passes
+  // on a hard-coded `latency_ms: 0` and on a sign-flipped `startedAt -
+  // Date.now()` regression (negative values still satisfy `>= 0` is false,
+  // but a `Math.abs` wrapper would silence it). The monotonic-positive
+  // contract D-069 named: `latency_ms === Date.now() - startedAt`, both the
+  // arithmetic direction and the fact that it is a *measurement* (advances
+  // with wall time between the two reads) — pinned via `vi.spyOn(Date,
+  // "now")` returning a controlled two-value sequence so the assertion is on
+  // an exact integer instead of a flaky real-time window.
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("ok path: latency_ms equals (later Date.now() - earlier Date.now())", async () => {
+    // Two Date.now() calls in handle(): startedAt then latencyMs. new Date()
+    // for checked_at uses a separate internal time source and does not pass
+    // through Date.now, so the spy intercepts exactly those two calls.
+    const nowSpy = vi.spyOn(Date, "now");
+    nowSpy.mockReturnValueOnce(1_000_000); // startedAt
+    nowSpy.mockReturnValueOnce(1_000_500); // post-getReviews
+    const stub = {
+      async getReviews() {
+        return {
+          place: { place_id: "X", name: "X", rating_avg: 5, rating_count: 1 },
+          reviews: [],
+        } as never;
+      },
+    };
+    const res = await __testing.handle(stub);
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.latency_ms).toBe(500);
+  });
+
+  it("down path (throw): latency_ms is still measured against the start tick", async () => {
+    // Distinct values from the ok test (500 vs 750) so a refactor that
+    // hard-coded `latency_ms: 500` would pass the ok spy assertion but fail
+    // here — pinning that the field is *computed*, not a constant.
+    const nowSpy = vi.spyOn(Date, "now");
+    nowSpy.mockReturnValueOnce(2_000_000); // startedAt
+    nowSpy.mockReturnValueOnce(2_000_750); // post-throw
+    const stub = {
+      async getReviews(): Promise<never> {
+        throw new SemanticForceError("upstream_error", "boom");
+      },
+    };
+    const res = await __testing.handle(stub);
+    expect(res.status).toBe(503);
+    const body = await res.json();
+    expect(body.latency_ms).toBe(750);
   });
 });
