@@ -137,3 +137,115 @@ describe("sitemap() — URL enumeration", () => {
     );
   });
 });
+
+// L14.1: deepening describes that pin the contracts the per-module suites
+// above cannot reach on their own (D-071).
+//
+// Cross-module symmetry (D-071 (a)). `app/robots.ts` and `app/sitemap.ts`
+// each carry a *private* copy of `siteUrl()` — same FALLBACK constant, same
+// trim+trailing-slash-strip logic, same blank→fallback path. The describes
+// above pin all four env states on the robots side but only one on the
+// sitemap side. If the two private helpers drift (a copy-edit to the
+// fallback constant in one file; a refactor that adds trim-and-not-strip in
+// the other), the robots `host` directive silently disagrees with every
+// sitemap URL's origin — the canonical-host cross-reference Google relies
+// on breaks with no runtime signal. Pinned symmetrically on the same four
+// env states, asserting `robots().host` equals the sitemap's root-URL
+// origin for every one.
+//
+// `lastModified` freshness (D-071 (b)). The sitemap suite asserts entry
+// shape but never the freshness contract — `new Date()` per call is what
+// makes the `<lastmod>` field track actual deploys. A regression to
+// `new Date("2025-01-01")` (a hardcoded vintage) or a module-level
+// `const now = new Date()` (memoised at import, frozen across calls) would
+// silently stop refreshing — Google would see a permanent stale lastmod and
+// crawl less often. Pinned via both timestamp window (the field is computed
+// inside the call window, not before it) and reference inequality across
+// two calls (`new Date()` returns a fresh object each time).
+//
+// URL uniqueness (D-071 (c)). The sitemap suite counts entries by length
+// and looks up each variant URL with `urls.has(...)`, but never asserts
+// uniqueness — a regression that double-spread `publishedVariants()` would
+// pass `length === 1 + pub.length` only when `pub` is empty (it is
+// pre-L3.1b), and once L3.1b lands the suite would silently accept a
+// sitemap with duplicate variant URLs. Pinned as a Set-size equality so
+// the load-bearing property fires at the L3.1b flip.
+
+describe("siteUrl() — cross-module symmetry (robots vs sitemap)", () => {
+  const cases: ReadonlyArray<{ label: string; env: string | undefined; expected: string }> = [
+    { label: "env unset → fallback", env: undefined, expected: FALLBACK },
+    { label: "trailing slash stripped", env: "https://grd.example.com/", expected: "https://grd.example.com" },
+    { label: "surrounding whitespace trimmed", env: "  https://grd.example.com  ", expected: "https://grd.example.com" },
+    { label: "blank/whitespace-only → fallback", env: "   ", expected: FALLBACK },
+  ];
+
+  for (const { label, env, expected } of cases) {
+    it(`robots.host === sitemap root origin for env "${label}"`, () => {
+      if (env === undefined) {
+        delete process.env.NEXT_PUBLIC_SITE_URL;
+      } else {
+        process.env.NEXT_PUBLIC_SITE_URL = env;
+      }
+
+      const robotsHost = robots().host;
+      // Root URL is always `${base}/` — strip the trailing slash to get the
+      // origin the robots `host` directive carries.
+      const rootEntry = sitemap().find((e) => e.url.endsWith("/"));
+      expect(rootEntry).toBeDefined();
+      const sitemapOrigin = rootEntry!.url.slice(0, -1);
+
+      expect(robotsHost).toBe(expected);
+      expect(sitemapOrigin).toBe(expected);
+      // And the robots `sitemap` URL must point at the same origin too —
+      // a drift here orphans the sitemap from the crawl-policy file.
+      expect(robots().sitemap).toBe(`${expected}/sitemap.xml`);
+    });
+  }
+});
+
+describe("sitemap() — lastModified freshness", () => {
+  it("emits a real Date instance on every entry, computed at call-time", () => {
+    const before = Date.now();
+    const entries = sitemap();
+    const after = Date.now();
+
+    expect(entries.length).toBeGreaterThan(0);
+    for (const e of entries) {
+      expect(e.lastModified).toBeInstanceOf(Date);
+      const ts = (e.lastModified as Date).getTime();
+      // Pinned inside the call window — proves the field is *computed*
+      // when sitemap() runs, not a literal vintage like
+      // `new Date("2025-01-01")` and not a module-load-time constant.
+      expect(ts).toBeGreaterThanOrEqual(before);
+      expect(ts).toBeLessThanOrEqual(after);
+    }
+  });
+
+  it("creates a fresh Date object on each call — not memoised at module load", () => {
+    const first = sitemap()[0].lastModified as Date;
+    const second = sitemap()[0].lastModified as Date;
+
+    // Reference inequality is the load-bearing assertion: a module-level
+    // `const now = new Date()` would return the same instance forever
+    // (timestamps would also coincide, so `.getTime()` equality is silent
+    // about that regression). `new Date()` per call always allocates a
+    // fresh object, so `second !== first` proves the per-call allocation.
+    expect(second).not.toBe(first);
+    expect(second).toBeInstanceOf(Date);
+    expect(first).toBeInstanceOf(Date);
+  });
+});
+
+describe("sitemap() — URL uniqueness", () => {
+  it("emits no duplicate URLs across all entries", () => {
+    const entries = sitemap();
+    const urls = entries.map((e) => e.url);
+    // Pre-L3.1b this is trivially 1 entry; post-L3.1b it is the load-bearing
+    // guard against a regression that double-spread `publishedVariants()`
+    // (which would silently emit the same variant URL twice, splitting the
+    // crawler's link equity and the analytics signal across one canonical
+    // and one duplicate). The `urls.has(...)` checks in the existing
+    // describes are not sensitive to this — a Set lookup hides duplicates.
+    expect(new Set(urls).size).toBe(urls.length);
+  });
+});
