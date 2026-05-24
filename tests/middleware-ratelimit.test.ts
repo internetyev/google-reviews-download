@@ -13,9 +13,9 @@
 // `npm install` is a human step (D-039/D-040/D-042 posture). Runs on
 // `npm install && npm test`.
 
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { NextRequest } from "next/server";
-import { __testing } from "@/middleware";
+import { __testing, middleware, config } from "@/middleware";
 
 const {
   consumeToken,
@@ -24,6 +24,7 @@ const {
   REFILL_PER_SECOND,
   RETRY_AFTER_SECONDS,
   EVICTION_WINDOW_MS,
+  buckets,
 } = __testing;
 
 type Bucket = { tokens: number; updated_at: number };
@@ -176,5 +177,99 @@ describe("consumeToken — opportunistic eviction", () => {
     consumeToken("k", 1_000, store);
     consumeToken("k", 2_000, store);
     expect(deleted).toEqual([]);
+  });
+});
+
+// L13.1 / D-069: the existing suite above tests only `__testing` internals;
+// the public `middleware()` default export the Next runtime actually invokes
+// has no end-to-end coverage. The three describes below pin the HTTP-response
+// contract — `config.matcher` exact scope, the 429 + Retry-After + envelope
+// shape on denial (symmetric with `SemanticForceError` per D-027), and the
+// pass-through on allow — driving the real exported function with a real
+// `NextRequest` and freezing `Date.now()` so the bucket arithmetic stays
+// deterministic across calls. `buckets.clear()` per test isolates the
+// module-level Map the public path reads (the internals suite uses injected
+// stores and is unaffected).
+
+describe("config.matcher — route scope freeze", () => {
+  it("meters /api/reviews only (exact-equals array, no glob, no narrowing)", () => {
+    // A widening to ["/api/(.*)"] silently starts metering /api/healthcheck;
+    // a narrowing to [] silently leaves the abuse surface unmetered; a swap
+    // to a bare string "/api/reviews" is valid Next config but breaks the
+    // array shape this suite documents. Exact-equals pins all three.
+    expect(config.matcher).toEqual(["/api/reviews"]);
+  });
+});
+
+function apiReq(ip = "192.0.2.7"): NextRequest {
+  return new NextRequest("https://example.com/api/reviews", {
+    headers: { "x-real-ip": ip },
+  });
+}
+
+describe("middleware() — denial response contract (429 envelope, Retry-After)", () => {
+  // Freeze Date.now so the (capacity+1)th call lands at exactly the same
+  // tick as the first — the bucket-refill arithmetic adds zero tokens
+  // back, the boundary is unambiguous, and the test cannot flake on a
+  // millisecond of wall-clock drift mid-loop.
+  beforeEach(() => {
+    buckets.clear();
+    vi.spyOn(Date, "now").mockReturnValue(1_700_000_000_000);
+  });
+  afterEach(() => {
+    vi.restoreAllMocks();
+    buckets.clear();
+  });
+
+  it("returns 429 with Retry-After=6 on the (BUCKET_CAPACITY+1)th request from the same IP", async () => {
+    for (let i = 0; i < BUCKET_CAPACITY; i++) {
+      const r = middleware(apiReq());
+      expect(r.status).not.toBe(429);
+    }
+    const res = middleware(apiReq());
+    expect(res.status).toBe(429);
+    // Both forms: the named-constant catches a typo to the constant's value,
+    // the literal "6" catches a refactor that changed RETRY_AFTER_SECONDS
+    // while leaving the header serialisation intact.
+    expect(res.headers.get("Retry-After")).toBe(String(RETRY_AFTER_SECONDS));
+    expect(res.headers.get("Retry-After")).toBe("6");
+  });
+
+  it("denial JSON body is structurally `{error:{code,message}}` (D-027 envelope symmetric with SemanticForceError)", async () => {
+    for (let i = 0; i < BUCKET_CAPACITY; i++) middleware(apiReq());
+    const res = middleware(apiReq());
+    expect(res.status).toBe(429);
+
+    const body = (await res.json()) as { error: { code: string; message: string } };
+    // Exactly the documented envelope — no extra top-level keys, no extra
+    // error-object keys. A refactor that dropped the wrapper (`{code,message}`),
+    // renamed `code` → `error_code`, or returned `{error:"rate_limited"}` (string
+    // form) would still 429-the-user, still pass every internals test, and
+    // silently break every UI consumer that destructures body.error.code.
+    expect(Object.keys(body)).toEqual(["error"]);
+    expect(Object.keys(body.error).sort()).toEqual(["code", "message"]);
+    expect(body.error.code).toBe("rate_limited");
+    expect(typeof body.error.message).toBe("string");
+    expect(body.error.message.length).toBeGreaterThan(0);
+  });
+});
+
+describe("middleware() — pass-through on allow", () => {
+  beforeEach(() => {
+    buckets.clear();
+  });
+  afterEach(() => {
+    buckets.clear();
+  });
+
+  it("first request from a fresh IP returns a non-429 with no Retry-After header", () => {
+    const res = middleware(apiReq("203.0.113.99"));
+    // The contract under test is "the pass-through path does not look like a
+    // denial" — pinning the exact NextResponse.next() sentinel header
+    // (x-middleware-next: 1) is a Next-runtime internal that has moved
+    // across minor versions (D-043 tolerant-pin precedent), so we assert
+    // the load-bearing negatives instead.
+    expect(res.status).not.toBe(429);
+    expect(res.headers.get("Retry-After")).toBeNull();
   });
 });
