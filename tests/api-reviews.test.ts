@@ -225,6 +225,134 @@ describe("GET /api/reviews — Content-Disposition filename uses the normalised 
   });
 });
 
+describe("GET /api/reviews — runtime named-export pin", () => {
+  // The route-config analogue of L13.1's `config.matcher` pin and L13.2's
+  // healthcheck `runtime` pin (D-070): `export const runtime = "edge"` decides
+  // the Vercel execution environment — different cold-start, different fetch
+  // semantics, different CPU/memory tier. A refactor that dropped the named
+  // export silently moves the route to the Node.js runtime; no helper or
+  // success-path response test catches this (a Node-runtime route would still
+  // return identical bodies and headers from this in-process test). Pin the
+  // value exact-equals as its own one-it describe so the regression is loud.
+  it("exports runtime === \"edge\" as a top-level named export", async () => {
+    const mod = await import("@/app/api/reviews/route");
+    expect(mod.runtime).toBe("edge");
+  });
+});
+
+describe("GET /api/reviews — error envelope structural shape (D-027)", () => {
+  // The D-027 envelope contract — `{error: {code, message}}` — is what the form
+  // (review-tool-form.tsx) and any API consumer destructure to surface a user-
+  // facing error. The existing param-validation describe asserts
+  // `body.error.code` and `body.error.message` *exist* but never that they are
+  // the *only* keys: a refactor that added a surplus `details` field, renamed
+  // `error.code` to `error_code`, or returned `{error: "bad_request"}` (string
+  // form, dropping the wrapper object) would still 400-the-user and still pass
+  // every existing assertion that touches `body.error.code` / `.message` —
+  // silent UX regression for anyone destructuring `body.error.code`.
+  //
+  // Pinned end-to-end on the public default export by asserting
+  // `Object.keys(body).sort()` is exactly `["error"]` and
+  // `Object.keys(body.error).sort()` is exactly `["code","message"]` across the
+  // three 400 paths the suite already exercises (missing-placeId, bad-format,
+  // bad-limit) — symmetric with L13.1's middleware envelope and L13.2's
+  // healthcheck envelope (the same "shape of what we ship to the user is the
+  // contract, not the helper that produces it" pattern, D-051).
+  it("missing placeId → top-level keys are exactly [\"error\"]", async () => {
+    const res = await call("");
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(Object.keys(body).sort()).toEqual(["error"]);
+    expect(Object.keys(body.error).sort()).toEqual(["code", "message"]);
+    expect(typeof body.error.code).toBe("string");
+    expect(typeof body.error.message).toBe("string");
+    expect(body.error.message.length).toBeGreaterThan(0);
+  });
+
+  it("unsupported format → top-level keys are exactly [\"error\"]", async () => {
+    const res = await call("?placeId=MOCK_SMALL_001&format=pdf");
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(Object.keys(body).sort()).toEqual(["error"]);
+    expect(Object.keys(body.error).sort()).toEqual(["code", "message"]);
+  });
+
+  it("invalid limit → top-level keys are exactly [\"error\"]", async () => {
+    const res = await call("?placeId=MOCK_SMALL_001&limit=abc");
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(Object.keys(body).sort()).toEqual(["error"]);
+    expect(Object.keys(body.error).sort()).toEqual(["code", "message"]);
+  });
+});
+
+describe("GET /api/reviews — success envelope shape + X-Cache symmetry across formats", () => {
+  // Two cross-cutting load-bearing concerns on the success paths the existing
+  // suite never reached:
+  //
+  // (a) JSON success-envelope structural shape: `Object.keys(body).sort()`
+  // exactly `["fetched_at","place","reviews"]` on the small fixture (which
+  // never trips HARD_CAP, so the optional `truncated: true` is absent). A
+  // refactor that surfaced an internal field (e.g. `partial: []` leaking from
+  // the rate-limit branch, a `meta` debug key, a `cached: false` flag) would
+  // still 200-the-user with `place`/`reviews`/`fetched_at` intact, still pass
+  // every existing assertion, and silently bloat the response surface for
+  // every downstream consumer. The keys-sort form fails loudly on any surplus
+  // or rename — same D-027-style envelope pin as L13.1/L13.2 in their
+  // respective routes.
+  //
+  // (b) JSON Content-Type pin: `NextResponse.json` sets it to
+  // `application/json` today, but a refactor to `new Response(JSON.stringify(...))`
+  // (a common attempted "drop the framework wrapper" cleanup) silently drops
+  // the header — `await res.json()` in every consumer still works, but any
+  // strict middlebox/CDN/proxy that switches on Content-Type breaks. Pinned
+  // belt-and-braces because the json success path is the one with no other
+  // header assertion today.
+  //
+  // (c) `X-Cache: MISS` symmetry on csv and xlsx. The route emits the cache
+  // status on all three formats (route.ts §227, §240, §253), but only the json
+  // path asserts it today (§103). A regression that dropped the header on the
+  // file-download paths (e.g. consolidating headers in respondSuccess and
+  // forgetting one branch) silently breaks any analytics/observability that
+  // watches cache hit-rate per format — the file downloads still arrive, just
+  // unobservably. Pinned on both csv and xlsx so a single-path drop fails on
+  // exactly that path. (HIT path remains deferred per D-060 — unreachable
+  // without an injection seam or a memory-mode singleton.)
+  it("json success body has exactly the documented top-level keys", async () => {
+    const res = await call("?placeId=MOCK_SMALL_001");
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(Object.keys(body).sort()).toEqual([
+      "fetched_at",
+      "place",
+      "reviews",
+    ]);
+    // The small fixture has 12 reviews < HARD_CAP_REVIEWS (5000), so
+    // `truncated` MUST NOT appear; pin its absence explicitly so a refactor
+    // that always-emits `truncated: false` (a common "be explicit" mistake)
+    // fails on the key-sort above AND on this direct check.
+    expect("truncated" in body).toBe(false);
+  });
+
+  it("json success body Content-Type is application/json", async () => {
+    const res = await call("?placeId=MOCK_SMALL_001");
+    expect(res.status).toBe(200);
+    expect(res.headers.get("Content-Type")).toMatch(/^application\/json/);
+  });
+
+  it("csv success carries X-Cache: MISS (symmetry with the json path)", async () => {
+    const res = await call("?placeId=MOCK_SMALL_001&format=csv");
+    expect(res.status).toBe(200);
+    expect(res.headers.get("X-Cache")).toBe("MISS");
+  });
+
+  it("xlsx success carries X-Cache: MISS (symmetry with the json + csv paths)", async () => {
+    const res = await call("?placeId=MOCK_SMALL_001&format=xlsx");
+    expect(res.status).toBe(200);
+    expect(res.headers.get("X-Cache")).toBe("MISS");
+  });
+});
+
 describe("GET /api/reviews — __testing surface", () => {
   it("statusForCode maps SF error codes to HTTP status, upstream wins", async () => {
     const { __testing } = await import("@/app/api/reviews/route");
