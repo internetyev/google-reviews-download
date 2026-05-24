@@ -73,3 +73,119 @@ describe("cn — tailwind-merge conflict resolution", () => {
     expect(cn("flex", "flex")).toBe("flex");
   });
 });
+
+// L12.3 deepening (D-068) — the existing suite proves the *same-class* last-wins
+// rule (`p-2` then `p-4` → `p-4`) and the non-conflicting survival rule, but
+// three load-bearing tailwind-merge behaviours that components actually depend
+// on were unguarded:
+//
+//   (a) directional vs shorthand interaction — `cn("p-4", "px-2")` must keep
+//       both (later more-specific overrides only its axis), `cn("px-2", "p-4")`
+//       collapses to `p-4` (later broader nukes the specific). A regression to
+//       naive same-prefix last-wins would still pass every existing test and
+//       silently break every component using the `cn(base, overrides)` pattern;
+//   (b) variant-aware conflict scoping — `hover:`/`sm:` open independent scopes,
+//       so `cn("p-2", "hover:p-4")` keeps both but `cn("hover:p-2", "hover:p-4")`
+//       collapses to `hover:p-4`. A regression that ignored variants would nuke
+//       every responsive/state-prefixed utility paired with an unprefixed one;
+//   (c) property-aware (not prefix-aware) conflicts — `text-sm` (font-size) and
+//       `text-blue-500` (color) share a *prefix* but target different CSS
+//       properties and must both survive, while `text-red-500` + `text-blue-500`
+//       (same property) collapses last-wins. A "merge by prefix" regression
+//       would silently strip the type-scale class from every coloured-text
+//       element on the site.
+
+describe("cn — directional vs shorthand interaction", () => {
+  it("keeps the later more-specific axis utility alongside the broad one", () => {
+    // `cn(base, overrides)` is the common component pattern: a base `p-4`
+    // followed by a per-call `px-2` must yield "p-4 px-2", not "p-4" or "px-2".
+    expect(cn("p-4", "px-2")).toBe("p-4 px-2");
+  });
+
+  it("collapses when a later broad utility supersedes a specific one", () => {
+    // The reverse direction: a per-call broad `p-4` overrides the prior `px-2`
+    // because the broader utility's axis covers the specific one fully.
+    expect(cn("px-2", "p-4")).toBe("p-4");
+  });
+
+  it("preserves a single-side override against a different broad axis", () => {
+    // `p-4` covers all sides; a later `pt-2` overrides only the top side, so
+    // both must survive (a "same root → drop" regression would nuke `pt-2`).
+    expect(cn("p-4", "pt-2")).toBe("p-4 pt-2");
+  });
+
+  it("collapses a chain of specifics under a trailing shorthand", () => {
+    // The terminal `p-8` covers every axis the prior specifics named, so
+    // tailwind-merge drops them all — pins the multi-step collapse path.
+    expect(cn("pt-2", "pl-4", "p-8")).toBe("p-8");
+  });
+});
+
+describe("cn — variant-aware conflict scoping", () => {
+  it("keeps an unprefixed utility alongside its variant-prefixed conflict", () => {
+    // `p-2` and `hover:p-4` are *different* conflict scopes — the variant
+    // opens an independent merge bucket — so both must ship.
+    expect(cn("p-2", "hover:p-4")).toBe("p-2 hover:p-4");
+  });
+
+  it("collapses two utilities sharing the same variant prefix, last-wins", () => {
+    // Within the `hover:` scope the normal same-class last-wins rule applies.
+    expect(cn("hover:p-2", "hover:p-4")).toBe("hover:p-4");
+  });
+
+  it("treats `sm:` as a distinct scope from unprefixed", () => {
+    // Asserted on a second variant so a regression that only handled `hover:`
+    // correctly (or vice-versa) still fails on one of the two.
+    expect(cn("text-sm", "sm:text-lg")).toBe("text-sm sm:text-lg");
+  });
+
+  it("collapses within a single `sm:` scope and leaves other scopes alone", () => {
+    // Three buckets: unprefixed `p-2`, `sm:` (last wins → `sm:p-8`), `hover:`
+    // (single entry survives). All three coexist; the `sm:` collapse is the
+    // load-bearing assertion that proves the bucketing is real, not coincidental.
+    expect(cn("p-2", "sm:p-4", "sm:p-8", "hover:p-4")).toBe(
+      "p-2 sm:p-8 hover:p-4",
+    );
+  });
+});
+
+describe("cn — property-aware (not prefix-aware) conflicts", () => {
+  it("keeps `text-sm` (font-size) alongside `text-blue-500` (color)", () => {
+    // Both start with `text-` but target distinct CSS properties — the
+    // load-bearing case that proves tailwind-merge groups by *property*, not
+    // by token prefix. A naive prefix-based regression would strip the size.
+    expect(cn("text-sm", "text-blue-500")).toBe("text-sm text-blue-500");
+  });
+
+  it("collapses two text-colors in the same property scope, last-wins", () => {
+    // Same `text-` prefix, same property (color) → last wins.
+    expect(cn("text-red-500", "text-blue-500")).toBe("text-blue-500");
+  });
+
+  it("collapses two font-weights in the same property scope, last-wins", () => {
+    // A second property family (font-weight) so the property-awareness can't
+    // pass vacuously on the color family alone.
+    expect(cn("font-bold", "font-medium")).toBe("font-medium");
+  });
+
+  it("keeps `bg-blue-500` and `text-white` — distinct properties entirely", () => {
+    // Different prefix AND different property — the trivial keep-both case,
+    // pinned so a wholesale "drop on shared substring" regression fails loudly.
+    expect(cn("bg-blue-500", "text-white")).toBe("bg-blue-500 text-white");
+  });
+});
+
+describe("cn — no-arg and pre-joined input edges", () => {
+  it("returns an empty string when called with no arguments", () => {
+    // The zero-arg case the existing "no class survives" test doesn't cover.
+    expect(cn()).toBe("");
+  });
+
+  it("treats a single space-separated string as multiple classes for merging", () => {
+    // `cn("p-2 p-4")` and `cn("p-2", "p-4")` should both collapse to `p-4`:
+    // tailwind-merge tokenises whitespace inside a single arg, not just across
+    // args. A regression that only merged across args would let `p-2 p-4`
+    // through as a literal two-class string.
+    expect(cn("p-2 p-4")).toBe("p-4");
+  });
+});
