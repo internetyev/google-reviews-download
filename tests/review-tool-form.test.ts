@@ -151,3 +151,115 @@ describe("ReviewToolForm — the submit affordance", () => {
     expect(submits).toHaveLength(1);
   });
 });
+
+// --- accessibility: label/input pairing (htmlFor ↔ id) ---------------------
+
+describe("ReviewToolForm — accessibility: label/input pairing", () => {
+  // The placeId <label htmlFor="placeId"> + <input id="placeId"> pair is the
+  // screen-reader contract: AT walks `htmlFor` → `id` to associate the visible
+  // label with the input. A refactor that dropped either side, renamed `id`
+  // to `placeIdInput`, or moved the `htmlFor` to a different label silently
+  // breaks association — sighted users see the same form, AT users see an
+  // unlabelled text field. Pin both sides + the exact pairing.
+  it("has exactly one <label htmlFor='placeId'> pointing at the placeId input", () => {
+    const labels = findAll(tree, (el) => el.type === "label");
+    const placeIdLabels = labels.filter((l) => l.props.htmlFor === "placeId");
+    expect(placeIdLabels).toHaveLength(1);
+  });
+
+  it("the placeId input carries id='placeId' (the label's htmlFor target)", () => {
+    const placeIdInputs = findAll(
+      tree,
+      (el) =>
+        el.type === "input" &&
+        el.props.type === "text" &&
+        el.props.name === "placeId",
+    );
+    expect(placeIdInputs).toHaveLength(1);
+    // A regression that named the id `placeIdInput` (a common refactor target)
+    // would leave `htmlFor="placeId"` pointing at nothing — pin the exact id.
+    expect(placeIdInputs[0].props.id).toBe("placeId");
+  });
+});
+
+// --- input paste-safety attributes (mobile auto-correct kills place_ids) ---
+
+describe("ReviewToolForm — placeId input paste-safety attrs", () => {
+  // Mobile browsers and modern desktop browsers will, by default, offer
+  // autofill suggestions for text inputs (saved addresses, prior values) and
+  // underline typed/pasted content as misspellings, auto-correcting on the
+  // next focus event. Either silently corrupts a pasted place_id like
+  // `ChIJN1t_tDeuEmsRUsoyG83frY4` — autofill may swap it for a saved value,
+  // spellcheck may "correct" `ChIJ` to `Chij` or `CHIJ`. Both are silent
+  // visual UX bugs no other test catches (the form still submits; the value
+  // is just wrong). Pin both attributes; a refactor that dropped either ships
+  // the corruption.
+  const placeIdInput = (() => {
+    const inputs = findAll(
+      tree,
+      (el) =>
+        el.type === "input" &&
+        el.props.type === "text" &&
+        el.props.name === "placeId",
+    );
+    expect(inputs).toHaveLength(1);
+    return inputs[0];
+  })();
+
+  it("has autoComplete='off' so saved-form autofill cannot overwrite a paste", () => {
+    expect(placeIdInput.props.autoComplete).toBe("off");
+  });
+
+  it("has spellCheck={false} so 'ChIJ...' is not silently auto-corrected", () => {
+    // Strictly `false` (the boolean prop value) — a refactor to the string
+    // `"false"` (an easy slip with JSX) still suppresses spellcheck visually
+    // in most browsers but is the legacy attribute form the post-React-17
+    // typings reject; pin the boolean to surface that drift loudly.
+    expect(placeIdInput.props.spellCheck).toBe(false);
+  });
+
+  it("is type='text', not 'email' / 'search' / 'url' (no browser validation)", () => {
+    // type=email/url enforces keyboard validation that rejects valid
+    // place_id chars (no `@` for email; the `ChIJ...` form is not a URL).
+    // type=search adds a UA "x" reset button that visually offsets the input
+    // and changes the placeholder behaviour on some browsers. type=text is
+    // the only correct value here; pin against the three common slips.
+    expect(placeIdInput.props.type).toBe("text");
+  });
+});
+
+// --- placeholder UX: documents every accepted input form -------------------
+
+describe("ReviewToolForm — placeId placeholder documents accepted forms", () => {
+  // Methodology §1 / L1.5 / D-018 documents three accepted input forms: a
+  // Google Maps place URL (`https://maps.google.com/...`), a `place_id`
+  // (`ChIJ...`), and (per docs/methodology.md) numeric CIDs. The placeholder
+  // is the only on-screen affordance that tells the user which forms are
+  // accepted — a regression that narrowed it to URL-only (or ChIJ-only)
+  // silently degrades UX for users pasting the other form: they type/paste,
+  // submit, hit a `bad_request` error card downstream, and bounce.
+  const placeIdInput = (() => {
+    const inputs = findAll(
+      tree,
+      (el) =>
+        el.type === "input" &&
+        el.props.type === "text" &&
+        el.props.name === "placeId",
+    );
+    return inputs[0];
+  })();
+
+  it("placeholder mentions the Google Maps URL form", () => {
+    const ph = String(placeIdInput.props.placeholder ?? "");
+    expect(ph.length).toBeGreaterThan(0);
+    expect(ph.toLowerCase()).toContain("maps.google.com");
+  });
+
+  it("placeholder mentions the ChIJ short-form place_id", () => {
+    const ph = String(placeIdInput.props.placeholder ?? "");
+    // Case-significant: `ChIJ` is the canonical prefix the SF docs name
+    // (D-018 normalisation rules); a placeholder copy of `chij...` would be
+    // user-confusing about what to paste. Strict-substring assertion.
+    expect(ph).toContain("ChIJ");
+  });
+});
