@@ -88,6 +88,50 @@ function countByName(root: unknown, name: string): number {
   return n;
 }
 
+// Anchor walk (L16.1): invoke function components so we can reach the <a>
+// elements that DownloadCta emits past the wrapper, then collect every
+// intrinsic <a> element (type-string equality, distinct from function
+// components by JS type). next/link's Link is a forwardRef object so it is
+// descended structurally; its inner anchor (when rendered by the next
+// runtime) is not reached here, but the DownloadCta hrefs use plain <a>, so
+// every URL under test is reachable.
+function collectAnchors(node: unknown, out: El[] = []): El[] {
+  if (Array.isArray(node)) {
+    for (const n of node) collectAnchors(n, out);
+    return out;
+  }
+  if (!isElement(node)) return out;
+  if (node.type === "a") out.push(node);
+  if (typeof node.type === "function") {
+    try {
+      collectAnchors(
+        (node.type as (p: unknown) => unknown)(node.props),
+        out,
+      );
+    } catch {
+      collectAnchors(node.props?.children, out);
+    }
+    return out;
+  }
+  collectAnchors(node.props?.children, out);
+  return out;
+}
+
+function firstApiReviewsHref(root: unknown): string {
+  const anchors = collectAnchors(root);
+  for (const a of anchors) {
+    const href = a.props?.href;
+    if (typeof href === "string" && href.startsWith("/api/reviews?")) return href;
+  }
+  throw new Error("no /api/reviews anchor found in tree");
+}
+
+function apiReviewsHrefs(root: unknown): string[] {
+  return collectAnchors(root)
+    .map((a) => a.props?.href)
+    .filter((h): h is string => typeof h === "string" && h.startsWith("/api/reviews?"));
+}
+
 // Text flatten: invoke pure, hookless function components so their inner text
 // (place name, totals, error copy) becomes reachable. next/link's Link is a
 // forwardRef object (typeof !== "function") so it is descended structurally,
@@ -127,6 +171,24 @@ const mk = (sp: { placeId?: string; format?: string }) => ({
 describe("preview metadata", () => {
   it("is noindex — a per-query throwaway URL must never be indexed", () => {
     expect(metadata.robots).toEqual({ index: false });
+  });
+});
+
+// L16.1 (a): metadata exact-shape — the surplus-keys threat. A refactor
+// adding metadata.openGraph / metadata.twitter / metadata.alternates would
+// surface the per-query throwaway URL into shared-link previews (still
+// embedded by social-graph crawlers regardless of robots.txt) and into
+// rel=canonical (which overrides the noindex intent for crawlers that
+// honour it above robots). Pin the top-level shape AND the title literal
+// so a "rename the browser tab" change is loud, not silent. Symmetric with
+// L13.2/L15.1's Object.keys(body).sort() envelope pins.
+describe("preview metadata — exact shape (L16.1)", () => {
+  it("Object.keys(metadata).sort() is exactly ['robots','title'] — no surplus OG/Twitter/alternates", () => {
+    expect(Object.keys(metadata).sort()).toEqual(["robots", "title"]);
+  });
+
+  it("metadata.title is exactly 'Review preview' — the documented browser-tab label", () => {
+    expect(metadata.title).toBe("Review preview");
   });
 });
 
@@ -206,5 +268,124 @@ describe("PreviewPage — bad input renders an error card, never throws", () => 
     // error card rendered, zero review rows".
     expect(countByName(tree, "ReviewRow")).toBe(0);
     expect(textOf(tree).length).toBeGreaterThan(0);
+  });
+});
+
+// --- L16.1 (b): DownloadCta deep-link URL contract ------------------------
+//
+// DownloadCta builds `/api/reviews?placeId=<encoded>&format=<fmt>` and
+// orders the anchors as [preferred, ...others]. Two regressions a refactor
+// could land silently without breaking any existing assertion:
+//
+//   (i) primary CTA shows the wrong format — `ordered = [preferred, ...]`
+//       puts the user's preferred format first; flip to "always csv first"
+//       or "preferred always last" and every shared link's primary CTA is
+//       silently downgraded.
+//
+//   (ii) `encodeURIComponent` dropped — a paste like `placeId=ChIJ&format=xlsx`
+//       reaches /api/reviews as two parsed pairs (`malicious=true` style),
+//       breaking the route contract while every preview still "works".
+
+describe("PreviewPage — DownloadCta deep-link URL contract (L16.1)", () => {
+  for (const fmt of ["csv", "json", "xlsx"] as const) {
+    it(`preferred format=${fmt} is the primary anchor, others follow`, async () => {
+      const tree = await PreviewPage(
+        mk({ placeId: "MOCK_SMALL_001", format: fmt }),
+      );
+      const hrefs = apiReviewsHrefs(tree);
+      // expect exactly 3 anchors (one per supported format), preferred first.
+      expect(hrefs.length).toBe(3);
+      expect(hrefs[0]).toContain(`format=${fmt}`);
+      // the two secondary anchors are the remaining formats; each appears
+      // exactly once — pin the "filter doesn't double-emit / doesn't drop"
+      // contract on the secondary slice.
+      const rest = ["csv", "json", "xlsx"].filter((f) => f !== fmt);
+      const secondaryFormats = hrefs.slice(1).map((h) => {
+        const m = /format=([a-z]+)/.exec(h);
+        return m ? m[1] : "";
+      });
+      expect(secondaryFormats.sort()).toEqual([...rest].sort());
+    });
+  }
+
+  it("placeId carrying & and = is percent-encoded — `&format=` paste cannot inject", async () => {
+    // The CTA href uses the RAW original input (the page passes `rawInput`,
+    // not `normalised.raw`, to DownloadCta) so the encoder is the only
+    // thing standing between the paste and the receiving /api/reviews
+    // route. We pick a string that PASSES normalisePlaceId (the regex
+    // finds `MOCK_SMALL_001` inside) AND carries `&` and `=` so the
+    // encoder's effect is visible — the original `&malicious=true` survives
+    // in rawInput, the encoder must turn `&` → `%26` and `=` → `%3D`.
+    const tree = await PreviewPage(
+      mk({ placeId: "MOCK_SMALL_001&malicious=true" }),
+    );
+    const hrefs = apiReviewsHrefs(tree);
+    expect(hrefs.length).toBe(3);
+    // Every emitted href must have its `placeId=` value encoded. A
+    // regression dropping encodeURIComponent would produce
+    // `placeId=MOCK_SMALL_001&malicious=true` (literal `&` and `=`), which
+    // the URL parser at /api/reviews would split into
+    // {placeId: "MOCK_SMALL_001", malicious: "true"} — placeId truncated
+    // silently, the CTA broken, no test signal today.
+    for (const href of hrefs) {
+      expect(href).toContain("placeId=MOCK_SMALL_001%26malicious%3Dtrue");
+      // and the literal-injection form must NOT appear:
+      expect(href).not.toContain("placeId=MOCK_SMALL_001&malicious=true");
+    }
+  });
+});
+
+// --- L16.1 (c): `format` searchParam validation default -------------------
+//
+// `preferred: Format = isFormat(formatRaw) ? formatRaw : "csv"`. The
+// existing 8-it suite never passes a `format` searchParam, so all four
+// branches of this expression are unguarded. A refactor to
+// `formatRaw ?? "csv"` drops the SUPPORTED_FORMATS gate and lets bogus
+// formats reach /api/reviews (which 400s on the click — silent UX
+// regression from "we picked a default" to "you typed a bad format and now
+// the CTA is dead"). Case sensitivity is a documented asymmetry with the
+// /api/reviews route (which lowercases before validating, L15.1); pinning
+// the case-sensitive default here makes a "harmonise to case-insensitive"
+// cleanup loud, not silent.
+
+describe("PreviewPage — format validation default (L16.1)", () => {
+  it("no format searchParam → primary CTA defaults to csv", async () => {
+    const tree = await PreviewPage(mk({ placeId: "MOCK_SMALL_001" }));
+    const primary = firstApiReviewsHref(tree);
+    expect(primary).toContain("format=csv");
+  });
+
+  it("format=garbage → primary CTA falls back to csv (validation, not pass-through)", async () => {
+    const tree = await PreviewPage(
+      mk({ placeId: "MOCK_SMALL_001", format: "garbage" }),
+    );
+    const primary = firstApiReviewsHref(tree);
+    expect(primary).toContain("format=csv");
+    // and the bogus token must not have leaked into the URL anywhere.
+    expect(primary).not.toContain("garbage");
+  });
+
+  it("format=xlsx (valid) → primary CTA passes through as xlsx", async () => {
+    const tree = await PreviewPage(
+      mk({ placeId: "MOCK_SMALL_001", format: "xlsx" }),
+    );
+    const primary = firstApiReviewsHref(tree);
+    expect(primary).toContain("format=xlsx");
+  });
+
+  it("format=CSV (upper-case) → primary CTA falls back to csv (isFormat is case-sensitive)", async () => {
+    // SUPPORTED_FORMATS members are lowercase ("csv"/"json"/"xlsx") and
+    // isFormat checks `.includes(s)` without normalising — so "CSV" is NOT
+    // a valid Format value and falls through to the csv default. This is
+    // the inverse of /api/reviews's case-insensitive `format` handling
+    // (L15.1); the asymmetry is documented, the pin makes a "harmonise
+    // everything" cleanup loud rather than silent.
+    const tree = await PreviewPage(
+      mk({ placeId: "MOCK_SMALL_001", format: "CSV" }),
+    );
+    const primary = firstApiReviewsHref(tree);
+    expect(primary).toContain("format=csv");
+    // and the upper-case form did not leak through:
+    expect(primary).not.toContain("format=CSV");
   });
 });
