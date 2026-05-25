@@ -43,6 +43,7 @@ import VariantPage, {
   generateStaticParams,
   generateMetadata,
 } from "@/app/(seo)/[variant]/page";
+import * as variantRouteModule from "@/app/(seo)/[variant]/page";
 import { SEO_VARIANTS, publishedVariants } from "@/lib/seo/variants";
 
 // A real registry slug. Pre-L3.1b it is `published: false`, so the route must
@@ -177,5 +178,96 @@ describe("variant route — VariantPage is inert pre-L3.1b", () => {
     // through to a render would be caught here).
     expect(countByName(tree, "ReviewToolForm")).toBe(0);
     expect(countByName(tree, "FaqSection")).toBe(0);
+  });
+});
+
+// --- module export surface: no surplus Next route-config exports -----------
+//
+// The route's contract with Next 15 is exactly four named exports: the
+// `dynamicParams` constant, the `generateStaticParams` SSG enumerator, the
+// `generateMetadata` per-slug metadata builder, and the `default` VariantPage
+// component. A refactor that added `export const dynamic = "force-dynamic"`
+// silently overrides `dynamicParams = false` and turns unknown slugs into
+// on-demand SSR renders (a different 404 code path, with the inert-until-L3.1b
+// guarantee weakened to "if the published filter holds" instead of "Next will
+// never reach this route for an unlisted slug"). A surplus
+// `export const revalidate = N` flips the route from pure SSG to ISR — the
+// statically rendered pages would start refreshing on a clock, changing the
+// build-pipeline contract. `export const runtime = "edge"` would move the
+// route off Node — different cold-start, different fetch semantics. None of
+// the existing `dynamicParams`/`generateStaticParams`/`generateMetadata`/
+// VariantPage tests catch any of these because they each still behave as
+// pinned; only the *surface* of the module changes. Pinned via
+// `Object.keys(routeModule).sort()` exact-array equality, mirroring the
+// L13.1/L13.2/L15.1 envelope-shape `Object.keys` pattern (D-027/D-070/D-072)
+// applied to the module's export surface instead of a response body.
+describe("variant route — module export surface", () => {
+  it("exports exactly the four route hooks Next 15 needs — no surplus config", () => {
+    expect(Object.keys(variantRouteModule).sort()).toEqual([
+      "default",
+      "dynamicParams",
+      "generateMetadata",
+      "generateStaticParams",
+    ]);
+  });
+});
+
+// --- freshness: no shared mutable state across calls -----------------------
+//
+// Two adjacent silent-regression threats share one principle: the route's
+// inert-path returns (`generateMetadata` → `{}`, `generateStaticParams` → `[]`
+// pre-L3.1b) must each build a NEW value per invocation, not hand back a
+// memoised module-level constant.
+//
+//   - `generateMetadata` currently does `return {};` (fresh literal). A
+//     refactor to `const EMPTY: Metadata = {}; ... return EMPTY;` (a common
+//     "avoid the allocation" cleanup) would let Next or any downstream caller
+//     mutate the shared instance — a single `meta.title = "..."` write would
+//     then leak into every subsequent call's response. The `.toEqual({})`
+//     pin above cannot catch this because both calls still match the
+//     empty-shape literal; only a reference-inequality assertion proves the
+//     value is freshly built per call.
+//
+//   - `generateStaticParams` currently does
+//     `publishedVariants().map((v) => ({ variant: v.slug }))` — both filter
+//     and map allocate new arrays. A "DRY" refactor to
+//     `const PARAMS = publishedVariants().map(...); export function
+//     generateStaticParams() { return PARAMS; }` (caching at module-load)
+//     would freeze the SSG-params list — when L3.1b lands or the registry
+//     mutates in dev/HMR, the stale module-level constant would be served
+//     forever until the process restarts, and the L3.1b flip's intended
+//     "static-params follow `publishedVariants()`" contract would silently
+//     break in dev workflows. Reference inequality between two calls proves
+//     the function builds fresh each time.
+//
+// Both pins mirror L11.1/D-064's `faqJsonLd()` "is a fresh object each call
+// (no shared mutable state)" and L14.1/D-071's sitemap "two consecutive
+// `sitemap()` calls return reference-unequal Date objects" precedent — same
+// silent-mutation threat, same `!==` reference-inequality remedy.
+describe("variant route — freshness (no shared mutable state)", () => {
+  it("generateMetadata returns a fresh {} each call for an unpublished slug", async () => {
+    const a = await generateMetadata(mkParams(REAL_UNPUBLISHED_SLUG));
+    const b = await generateMetadata(mkParams(REAL_UNPUBLISHED_SLUG));
+    expect(a).not.toBe(b);
+    expect(a).toEqual(b);
+  });
+
+  it("generateMetadata returns a fresh {} each call for a garbage slug", async () => {
+    // Garbage slug exercises the same `if (!variant) return {};` branch but
+    // through a different findPublishedVariant codepath (no registry match at
+    // all, vs. registry match that fails the `published` filter). Pinning the
+    // freshness on both inputs guards both branches against the same
+    // shared-constant regression.
+    const a = await generateMetadata(mkParams(GARBAGE_SLUG));
+    const b = await generateMetadata(mkParams(GARBAGE_SLUG));
+    expect(a).not.toBe(b);
+    expect(a).toEqual(b);
+  });
+
+  it("generateStaticParams returns a fresh array each call (even empty pre-L3.1b)", () => {
+    const a = generateStaticParams();
+    const b = generateStaticParams();
+    expect(a).not.toBe(b);
+    expect(a).toEqual(b);
   });
 });
