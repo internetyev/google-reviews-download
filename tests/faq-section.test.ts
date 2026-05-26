@@ -33,6 +33,7 @@
 
 import { describe, it, expect } from "vitest";
 import { FAQ_ITEMS, FaqSection } from "@/app/_components/faq";
+import * as faqModule from "@/app/_components/faq";
 
 // --- tiny tree utilities (no react-dom; same shape as review-tool-form.test) -
 
@@ -166,5 +167,88 @@ describe("FaqSection — visible body uses rich JSX (item.a), not plain text", (
     expect(flattened).not.toContain("&apos;");
     expect(flattened).not.toContain("&amp;");
     expect(flattened).not.toContain("&quot;");
+  });
+});
+
+// --- module export surface (freeze the named exports) ----------------------
+
+describe("faq module — named-export surface", () => {
+  // Symmetric with L18.1/D-075's `Object.keys(routeModule).sort()` pin on the
+  // variant route: a surplus named export (or a missing one) silently changes
+  // the module's contract with every consumer. Three names today: FAQ_ITEMS
+  // (the data), FaqSection (the visible accordion), faqJsonLd (the structured
+  // -data builder). A refactor that introduced e.g. `export const FAQ_HEADING`
+  // would pass every behavioural test here and in faq-jsonld.test, but ship a
+  // larger public surface than either downstream callsite (`app/page.tsx`,
+  // `app/(seo)/[variant]/page.tsx`) is supposed to depend on.
+  it("exports exactly FAQ_ITEMS, FaqSection, and faqJsonLd", () => {
+    expect(Object.keys(faqModule).sort()).toEqual([
+      "FAQ_ITEMS",
+      "FaqSection",
+      "faqJsonLd",
+    ]);
+  });
+});
+
+// --- per-call freshness (no module-hoisted element tree) -------------------
+
+describe("FaqSection — fresh element tree per call", () => {
+  // Mirrors L18.1/D-075's `generateMetadata` and L19.1/D-076's per-Question /
+  // per-Answer freshness pin one layer up — at the React element-tree level.
+  // The current implementation calls `FAQ_ITEMS.map(...)` inside the JSX, so
+  // every call allocates a fresh tree; a "DRY" refactor that hoisted
+  // `const TREE = (<section>...</section>); export function FaqSection() {
+  // return TREE; }` would freeze the element tree at module-load and let any
+  // downstream React reconciler/dev-tools/test mutation leak across renders.
+  // .toEqual() cannot catch this because both calls still match structurally;
+  // reference inequality (`a !== b`) is the strict-stronger pin.
+
+  it("two FaqSection() calls return reference-unequal root elements", () => {
+    const a = FaqSection();
+    const b = FaqSection();
+    expect(a).not.toBe(b);
+  });
+
+  it("two FaqSection() calls return reference-unequal nth <details>", () => {
+    // The map() inside the section body must also rebuild per call — a
+    // refactor that cached only the inner array (`const ITEMS_JSX = FAQ_ITEMS
+    // .map(...)` at module scope) would re-allocate the root but share every
+    // <details> child across renders.
+    const aDetails = findAll(FaqSection(), (el) => el.type === "details");
+    const bDetails = findAll(FaqSection(), (el) => el.type === "details");
+    expect(aDetails).toHaveLength(FAQ_ITEMS.length);
+    expect(bDetails).toHaveLength(FAQ_ITEMS.length);
+    for (let i = 0; i < aDetails.length; i++) {
+      expect(aDetails[i]).not.toBe(bDetails[i]);
+    }
+  });
+});
+
+// --- per-<details> body-shell shape ----------------------------------------
+
+describe("FaqSection — per-<details> body shell", () => {
+  // The existing "rich JSX vs plain text" describe proves item.a's *contents*
+  // reach the page (via the <code> probe on the rate-limits item). It does not
+  // pin the *shell* — that every <details> has exactly one <summary> and
+  // exactly one <p> body container holding item.a. A refactor that dropped the
+  // <p> wrapper would lose the `mt-3 text-sm text-muted-foreground` styling on
+  // every answer with no other test flagging it; a refactor that emitted a
+  // second <summary> (or none) would break the accordion's click-to-toggle
+  // contract on every entry, again silently from the other suites' POV.
+  const detailsEls = findAll(tree, (el) => el.type === "details");
+
+  it("each <details> contains exactly one <summary>", () => {
+    expect(detailsEls).toHaveLength(FAQ_ITEMS.length);
+    for (const d of detailsEls) {
+      const summaries = findAll(d, (el) => el.type === "summary");
+      expect(summaries).toHaveLength(1);
+    }
+  });
+
+  it("each <details> contains exactly one <p> (the body container)", () => {
+    for (const d of detailsEls) {
+      const ps = findAll(d, (el) => el.type === "p");
+      expect(ps).toHaveLength(1);
+    }
   });
 });
