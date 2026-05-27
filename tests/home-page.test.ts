@@ -198,3 +198,79 @@ describe("HomePage — D-041 placeholder stays gone", () => {
     expect(visibleText).toMatch(/download every\s+review/i);
   });
 });
+
+// --- D-078 (L21.1): module export surface, per-call freshness, main-as-root --
+
+// (a) Pins the `app/page.tsx` module's *exact* named-export surface. The
+//     existing `"metadata" in homePageModule` check catches a `metadata`
+//     shadow but does not catch a surplus `export const dynamic`/`revalidate`/
+//     `runtime`/`fetchCache` — each of which silently changes the home page's
+//     SSG/ISR/runtime contract without altering the rendered output. Symmetric
+//     with L18.1/D-075's variant-route exact-surface pin and L20.1/D-077's
+//     faq-module exact-surface pin, here applied to the home route module.
+describe("HomePage — module's named-export surface is exactly { default }", () => {
+  it("Object.keys(homePageModule).sort() is exactly [\"default\"]", () => {
+    expect(Object.keys(homePageModule).sort()).toEqual(["default"]);
+  });
+});
+
+// (b) Pins that HomePage() returns a *fresh* element tree per call. A `const
+//     TREE = (<main>...</main>); export default function HomePage() { return
+//     TREE; }` "avoid the allocation" refactor would freeze the tree at
+//     module-load and let any downstream reconciler/test/dev-tools mutation
+//     leak across renders. `.toEqual()` cannot catch this because the structures
+//     remain equal; only identity comparison does. Mirrors L20.1/D-077's
+//     `FaqSection` and L19.1/D-076's per-Question/per-Answer freshness pins,
+//     pushed onto the home page's own returned tree.
+//
+//     Two its on purpose: a hoist of the *whole* tree fails the first; a hoist
+//     of just the inner children array (root element re-allocated, children
+//     reused) fails the second.
+describe("HomePage — returns a fresh element tree per call", () => {
+  it("two calls return reference-distinct root <main> elements", () => {
+    const a = HomePage();
+    const b = HomePage();
+    expect(a).not.toBe(b);
+  });
+
+  it("two calls return reference-distinct nth direct children of <main>", () => {
+    const a = HomePage() as El;
+    const b = HomePage() as El;
+    const aChildren = a.props?.children as unknown[];
+    const bChildren = b.props?.children as unknown[];
+    expect(Array.isArray(aChildren)).toBe(true);
+    expect(Array.isArray(bChildren)).toBe(true);
+    expect(aChildren.length).toBe(bChildren.length);
+    expect(aChildren.length).toBeGreaterThan(0);
+    // Identity-inequality on every direct child of <main>: a children-array
+    // hoist that reused the inner nodes would pass the root check above and
+    // fail here. We check each child so a hoist of *any* subset of children
+    // is caught.
+    for (let i = 0; i < aChildren.length; i++) {
+      expect(aChildren[i]).not.toBe(bChildren[i]);
+    }
+  });
+});
+
+// (c) Pins that <main> is the *outermost* returned element, not just *present*.
+//     The existing `mains.length === 1` count passes whether <main> sits at the
+//     root or is wrapped in any <div>/<Fragment>/other landmark — wrapping it
+//     silently weakens the AT-walk-to-outermost-landmark contract and the
+//     Next 15 App-Router "the page IS the main" idiom.
+describe("HomePage — <main> is the outermost returned element", () => {
+  it("the returned root is literally an element (not array/Fragment/string)", () => {
+    // Negative side of the pin: a refactor that returned a Fragment (`<>...</>`)
+    // or a bare array of siblings would still walk fine with eachElement but
+    // would not be an outermost <main>. isElement(tree) catches arrays and
+    // primitives; the next it pins the element's type itself.
+    expect(Array.isArray(tree)).toBe(false);
+    expect(isElement(tree)).toBe(true);
+  });
+
+  it("(tree as El).type === \"main\" (root is the <main> node itself)", () => {
+    // A `<div><main>...</main></div>` or `<><main>...</main></>` wrapper would
+    // still satisfy `mains.length === 1` from the composition describe — only
+    // this identity check pins that the page IS the <main>.
+    expect((tree as El).type).toBe("main");
+  });
+});
