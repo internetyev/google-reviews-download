@@ -40,6 +40,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import Script from "next/script";
 import RootLayout, { metadata } from "@/app/layout";
+import * as rootLayoutModule from "@/app/layout";
 
 // --- tiny tree utilities (no react-dom; same shape as home-page.test) -------
 
@@ -179,5 +180,74 @@ describe("RootLayout — owned static metadata", () => {
     expect(desc as string).toMatch(/CSV/i);
     expect(desc as string).toMatch(/JSON/i);
     expect(desc as string).toMatch(/XLSX/i);
+  });
+});
+
+// --- D-079 (L22.1): module export surface, per-call freshness, html-as-root --
+
+// (a) Pins the `app/layout.tsx` module's *exact* named-export surface. The
+//     existing import of `metadata` proves the named export exists, but does
+//     not catch a surplus `export const dynamic`/`revalidate`/`runtime`/
+//     `fetchCache`/`viewport` — each of which silently changes the root
+//     layout's SSG/ISR/runtime/viewport contract without altering the rendered
+//     output. Symmetric with L18.1/D-075's variant-route exact-surface pin,
+//     L20.1/D-077's faq-module exact-surface pin, and L21.1/D-078's home-route
+//     exact-surface pin, here applied to the root layout module.
+describe("RootLayout — module's named-export surface is exactly { default, metadata }", () => {
+  it("Object.keys(rootLayoutModule).sort() is exactly [\"default\", \"metadata\"]", () => {
+    expect(Object.keys(rootLayoutModule).sort()).toEqual(["default", "metadata"]);
+  });
+});
+
+// (b) Pins that RootLayout() returns a *fresh* element tree per call. A `const
+//     TREE = (<html>...</html>); export default function RootLayout(...) {
+//     return TREE; }` "avoid the allocation" refactor would freeze the tree at
+//     module-load and let any downstream reconciler/test/dev-tools mutation
+//     leak across renders. `.toEqual()` cannot catch this because the structures
+//     remain equal; only identity comparison does. Mirrors L21.1/D-078's
+//     `HomePage` freshness pin pushed onto the root layout's returned tree.
+//
+//     Two its on purpose: a hoist of the *whole* tree fails the first; a hoist
+//     of just the `<body>` subtree (root re-allocated, body reused) fails the
+//     second.
+describe("RootLayout — returns a fresh element tree per call", () => {
+  it("two calls return reference-distinct root <html> elements", () => {
+    const a = RootLayout({ children: childMarker });
+    const b = RootLayout({ children: childMarker });
+    expect(a).not.toBe(b);
+  });
+
+  it("two calls return reference-distinct <body> elements", () => {
+    const a = RootLayout({ children: childMarker });
+    const b = RootLayout({ children: childMarker });
+    const aBody = elementsWhere(a, (el) => el.type === "body")[0];
+    const bBody = elementsWhere(b, (el) => el.type === "body")[0];
+    expect(aBody).not.toBe(bBody);
+  });
+});
+
+// (c) Pins that <html> is the *outermost* returned element, not just *present*.
+//     The existing `html.length === 1` count passes whether <html> sits at the
+//     root or is wrapped in any outer container — wrapping silently breaks the
+//     document-root contract React expects from a Next App-Router root layout
+//     (the root layout MUST return the `<html>` element as the root of the
+//     document tree React feeds to the runtime; SSR + hydration assume it).
+describe("RootLayout — <html> is the outermost returned element", () => {
+  it("the returned root is literally an element (not array/Fragment/string)", () => {
+    // Negative side of the pin: a refactor that returned a Fragment (`<>...</>`)
+    // or a bare array of siblings would still walk fine with eachElement but
+    // would not be an outermost <html>. isElement(tree) catches arrays and
+    // primitives; the next it pins the element's type itself.
+    const tree = RootLayout({ children: childMarker });
+    expect(Array.isArray(tree)).toBe(false);
+    expect(isElement(tree)).toBe(true);
+  });
+
+  it("(tree as El).type === \"html\" (root is the <html> node itself)", () => {
+    // A `<div><html>...</html></div>` or `<><html>...</html></>` wrapper would
+    // still satisfy `html.length === 1` from the document-shell describe — only
+    // this identity check pins that the root layout IS the <html>.
+    const tree = RootLayout({ children: childMarker });
+    expect((tree as El).type).toBe("html");
   });
 });
