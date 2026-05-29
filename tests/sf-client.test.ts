@@ -12,6 +12,7 @@
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { createSemanticForceClient, __testing } from "@/lib/semanticforce/client";
+import * as sfClientModule from "@/lib/semanticforce/client";
 import { SemanticForceError } from "@/lib/semanticforce/types";
 
 // createSemanticForceClient reads process.env when options are omitted; pin a
@@ -321,5 +322,98 @@ describe("decodeCursor — offset-field guards", () => {
     // Sanity: a valid encoded offset still round-trips through this path,
     // so the negative assertions can't pass vacuously on a broken decoder.
     expect(decodeCursor(enc({ offset: 7 }))).toBe(7);
+  });
+});
+
+// --- D-080 (L23.1): module export surface, per-call factory freshness, --------
+//                    __testing exact-key surface ------------------------------
+
+// (a) Pins the `lib/semanticforce/client.ts` module's *exact* named-export
+//     surface. Every downstream importer (the route handler, the preview page,
+//     the healthcheck) is held to whatever this module exports; a surplus
+//     export — even a benign-looking one like `export const VERSION` or
+//     `export const DEFAULT_LIMIT` — silently broadens that contract and
+//     ratchets the surface area future refactors must preserve. Symmetric with
+//     L18.1/D-075's variant-route exact-surface pin, L20.1/D-077's faq-module
+//     exact-surface pin, L21.1/D-078's home-route exact-surface pin, and
+//     L22.1/D-079's root-layout exact-surface pin, here applied to the SF
+//     client module. Type-only exports (`export type { Review }`,
+//     `SemanticForceClientOptions`) are erased at runtime and do not appear in
+//     `Object.keys` — only runtime named exports do.
+describe("createSemanticForceClient — module's named-export surface", () => {
+  it("Object.keys(sfClientModule).sort() is exactly [\"__testing\", \"createSemanticForceClient\"]", () => {
+    expect(Object.keys(sfClientModule).sort()).toEqual([
+      "__testing",
+      "createSemanticForceClient",
+    ]);
+  });
+});
+
+// (b) Pins that `createSemanticForceClient()` returns a *fresh* client per
+//     call. A `const SINGLETON = new FixtureClient(); return SINGLETON;` (or
+//     the HTTP-branch equivalent) "avoid the allocation" refactor would let
+//     request-scoped mutation leak across callers — the route handler runs
+//     per-request and assumes its client is its own. Two `it`s on purpose, one
+//     per code path: a singleton hoist on the fixture branch fails the first
+//     even if the HTTP branch still allocates; a singleton hoist on the HTTP
+//     branch fails the second even if the fixture branch still allocates.
+//     Mirrors L19.1/D-076 per-Question + L20.1/D-077 per-call element-tree +
+//     L21.1/D-078 per-call HomePage tree + L22.1/D-079 per-call RootLayout tree
+//     freshness pins, pushed onto the SF client factory itself.
+describe("createSemanticForceClient — returns a fresh client per call", () => {
+  it("fixture path (no SF_API_KEY): two calls return reference-distinct clients", () => {
+    // beforeEach already deleted SF_API_KEY; both calls take the FixtureClient
+    // branch. A `const SINGLETON = new FixtureClient(); ... return SINGLETON;`
+    // hoist passes structurally (both clients have the same shape) but fails
+    // identity.
+    const a = createSemanticForceClient();
+    const b = createSemanticForceClient();
+    expect(a).not.toBe(b);
+  });
+
+  it("HTTP path (SF_API_KEY + SF_API_BASE set): two calls return reference-distinct clients", () => {
+    // Drive both calls down the HttpClient branch via options (not envs) so the
+    // shared beforeEach env-reset still holds — no env mutation here, no
+    // leakage to other tests.
+    const fetchImpl = (async () =>
+      new Response(JSON.stringify({ place: { place_id: "X" }, reviews: [] }), {
+        status: 200,
+      })) as unknown as typeof fetch;
+    const a = createSemanticForceClient({
+      apiKey: "k",
+      apiBase: "https://sf.example.com",
+      fetchImpl,
+    });
+    const b = createSemanticForceClient({
+      apiKey: "k",
+      apiBase: "https://sf.example.com",
+      fetchImpl,
+    });
+    expect(a).not.toBe(b);
+  });
+});
+
+// (c) Pins the `__testing` namespace's exact key surface. The other suites
+//     destructure individual helpers (`const { clampLimit } = __testing`),
+//     which proves each helper *exists* but tolerates a surplus key (e.g. an
+//     internal `formatHeaders` helper that leaked into the namespace during a
+//     refactor). The namespace is the test-only escape hatch (D-044 / suite
+//     header comment); broadening it silently broadens the test-only contract
+//     and the surface a future refactor must preserve. Symmetric with the
+//     route-module export-surface pins (L18.1/D-075, L20.1/D-077, L21.1/D-078,
+//     L22.1/D-079) applied to a namespace object instead of a module's named
+//     exports. `FIXTURES` is in the surface because `tests/fixtures-contract.test.ts:51`
+//     consumes it; removing it would break that suite, so the pin locks the
+//     actual 6-key surface, not an aspirational helper-only one.
+describe("__testing — exact key surface", () => {
+  it("Object.keys(__testing).sort() is exactly the 5 helpers + FIXTURES", () => {
+    expect(Object.keys(__testing).sort()).toEqual([
+      "FIXTURES",
+      "clampLimit",
+      "decodeCursor",
+      "encodeCursor",
+      "mapStatusToCode",
+      "pickFixture",
+    ]);
   });
 });
