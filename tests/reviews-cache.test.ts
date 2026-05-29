@@ -29,6 +29,7 @@ import {
   __testing,
   type CachedReviewsPayload,
 } from "@/lib/cache/reviews-cache";
+import * as reviewsCacheModule from "@/lib/cache/reviews-cache";
 
 const { MemoryCache, KvRestCache } = __testing;
 
@@ -329,5 +330,80 @@ describe("KvRestCache — error-class fan-in (every documented catch path)", () 
       fetchImpl,
     });
     await expect(cache.set("slug", payload())).resolves.toBeUndefined();
+  });
+});
+
+// L24.1 deepening (D-081): three load-bearing concerns the L12.2 deepening
+// did not reach, mirroring L23.1/D-080's sf-client pattern pushed onto the
+// cache module — module-export-surface + per-call factory-freshness + the
+// `__testing` namespace's exact key surface.
+
+describe("module-export surface — runtime named exports", () => {
+  // `Object.keys(reviewsCacheModule).sort()` exact-array equality pins the
+  // public-API surface every downstream importer is held to. Type-only
+  // exports (`type CachedReviewsPayload`, `interface ReviewsCache`,
+  // `type ReviewsCacheOptions`) are erased at runtime and do not appear.
+  // A surplus `export const CACHE_VERSION` / `export function clearAll`
+  // would pass every behavioural test (every helper still works the same
+  // way) and silently broaden the public contract. Mirrors L23.1/D-080's
+  // sf-client module-surface pin applied to the cache module.
+  it("exposes exactly the five runtime exports", () => {
+    expect(Object.keys(reviewsCacheModule).sort()).toEqual([
+      "CACHE_KEY_PREFIX",
+      "CACHE_TTL_SECONDS",
+      "__testing",
+      "cacheKey",
+      "createReviewsCache",
+    ]);
+  });
+});
+
+describe("createReviewsCache — fresh instance per call (both branches)", () => {
+  // A `const SINGLETON = new MemoryCache(...); return SINGLETON;` "avoid the
+  // allocation" cleanup on either branch silently lets request-scoped state
+  // (MemoryCache's internal store, KvRestCache's `url`/`token`/`fetchImpl`)
+  // leak across callers. The route handler runs per-request and assumes its
+  // cache is its own; a shared MemoryCache across all in-process requests
+  // would let a cache-set from one request silently serve a stale payload
+  // to a different placeId's cache-get. Two `it`s — one per code path —
+  // so a singleton hoist on only one branch fails on its own assertion.
+  // Mirrors L23.1/D-080's per-call factory-freshness pattern.
+  it("returns a fresh MemoryCache per call on the fixture branch", () => {
+    const a = createReviewsCache({ now: () => 0 });
+    const b = createReviewsCache({ now: () => 0 });
+    expect(a).toBeInstanceOf(MemoryCache);
+    expect(b).toBeInstanceOf(MemoryCache);
+    expect(a).not.toBe(b);
+  });
+
+  it("returns a fresh KvRestCache per call on the KV branch", () => {
+    const { fetchImpl } = stubFetch(null);
+    const opts = {
+      kvRestApiUrl: "https://kv.example",
+      kvRestApiToken: "tok",
+      fetchImpl,
+    } as const;
+    const a = createReviewsCache(opts);
+    const b = createReviewsCache(opts);
+    expect(a).toBeInstanceOf(KvRestCache);
+    expect(b).toBeInstanceOf(KvRestCache);
+    expect(a).not.toBe(b);
+  });
+});
+
+describe("__testing namespace — exact key surface", () => {
+  // `Object.keys(__testing).sort()` exact-array equality pins the test-only
+  // escape-hatch surface. The two keys (`MemoryCache`, `KvRestCache`) are
+  // both consumed by this suite via the top-level destructure — a regression
+  // removing either would break the suite, so the pin locks the actual
+  // exported surface. A surplus 3rd helper (e.g. `cacheKey` re-exported into
+  // the namespace, a `now` injection helper) leaking in would silently
+  // broaden the test-only contract. Mirrors L23.1/D-080's `__testing`
+  // exact-key-surface pin.
+  it("exposes exactly the two class-constructor handles", () => {
+    expect(Object.keys(__testing).sort()).toEqual([
+      "KvRestCache",
+      "MemoryCache",
+    ]);
   });
 });
