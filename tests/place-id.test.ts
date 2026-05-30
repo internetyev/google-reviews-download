@@ -8,6 +8,7 @@ import {
   PlaceIdParseError,
   __testing,
 } from "@/lib/semanticforce/place-id";
+import * as placeIdModule from "@/lib/semanticforce/place-id";
 
 const REAL_ID = "ChIJN1t_tDeuEmsRUsoyG83frY4";
 
@@ -190,5 +191,89 @@ describe("PLACE_ID_PATTERN — minimum-length floor", () => {
 
   it("rejects a bare MOCK_ with no body", () => {
     expect(() => normalisePlaceId("MOCK_")).toThrow("could not extract");
+  });
+});
+
+// L25.1 deepening (D-082): three load-bearing concerns the L11.3 deepening
+// did not reach, mirroring L23.1/D-080's sf-client + L24.1/D-081's
+// reviews-cache pattern pushed onto the place-id module — module-export
+// surface + per-call freshness + the `__testing` namespace's exact key
+// surface. The place-id module decides cache keys (D-020
+// `gr:reviews:v1:<slug>`), share-URL segments, and download filenames
+// (D-033); the silent-regression edges of the module's *shape* are as
+// load-bearing as the silent-regression edges of its per-rule semantics.
+
+describe("module-export surface — runtime named exports", () => {
+  // `Object.keys(placeIdModule).sort()` exact-array equality pins the
+  // public-API surface every downstream importer is held to. The type-only
+  // export `type NormalisedPlaceId` is erased at runtime by TypeScript and
+  // does not appear on the runtime namespace object. A surplus
+  // `export const PLACE_ID_REGEX` / `export function isValidPlaceId` (the
+  // kind of "while I'm here" addition a refactor pulls in by default)
+  // would pass every existing behavioural test and silently broaden the
+  // public contract. Mirrors L18.1/D-075's variant-route, L20.1/D-077's
+  // faq-module, L21.1/D-078's home-route, L22.1/D-079's root-layout,
+  // L23.1/D-080's sf-client, and L24.1/D-081's reviews-cache exact-surface
+  // pins, applied to the place-id canonicalisation module.
+  it("exposes exactly the three runtime exports", () => {
+    expect(Object.keys(placeIdModule).sort()).toEqual([
+      "PlaceIdParseError",
+      "__testing",
+      "normalisePlaceId",
+    ]);
+  });
+});
+
+describe("normalisePlaceId — fresh result object per call", () => {
+  // `normalisePlaceId` returns `{ raw, slug }` as a new object literal each
+  // call (the `return { raw, slug };` allocation). A "memoise by input"
+  // refactor — `const RESULTS = new Map<string, NormalisedPlaceId>(); ...
+  // return cached;` — would silently share a single result object across
+  // every call with the same input, and any downstream mutation of `.raw`
+  // or `.slug` (a defensive `.toLowerCase()` mutation on the returned slug,
+  // a UI layer holding onto the object and rewriting `.raw`) would leak
+  // into every subsequent call's result. `.toEqual()` cannot catch this —
+  // both calls still match structurally; reference inequality (`a !== b`)
+  // is the strict-stronger pin. Two `it`s — one for the canonical ChIJ
+  // path, one for the MOCK_ family — so a memoise-on-MOCK refactor
+  // (the most natural "fixtures are static, why re-compute?" target)
+  // fails on its own assertion and is not vacuously covered by the ChIJ
+  // case. Mirrors L19.1/D-076's per-Question + L20.1/D-077's per-call
+  // element-tree + L21.1/D-078's per-call HomePage tree + L22.1/D-079's
+  // per-call RootLayout tree + L23.1/D-080's per-call SF-client +
+  // L24.1/D-081's per-call cache-factory freshness pins, pushed onto a
+  // pure normalisation function whose result object the cache layer
+  // hands around by reference.
+  it("returns a reference-fresh {raw, slug} per call for ChIJ", () => {
+    const a = normalisePlaceId(REAL_ID);
+    const b = normalisePlaceId(REAL_ID);
+    expect(a).toEqual(b);
+    expect(a).not.toBe(b);
+  });
+
+  it("returns a reference-fresh {raw, slug} per call for MOCK_", () => {
+    const a = normalisePlaceId("mock_small_001");
+    const b = normalisePlaceId("mock_small_001");
+    expect(a).toEqual(b);
+    expect(a).not.toBe(b);
+  });
+});
+
+describe("__testing namespace — exact key surface", () => {
+  // `Object.keys(__testing).sort()` exact-array equality pins the test-only
+  // escape-hatch surface. The three keys (`PLACE_ID_PATTERN`,
+  // `canonicalisePrefix`, `slugify`) are all consumed by this suite — a
+  // regression removing any would break it, so the pin locks the actual
+  // exported surface. A surplus 4th helper (e.g. a `SHORT_LINK_HOSTS`
+  // re-export, an `isMockId` predicate, a `stripMapsUrl` helper extracted
+  // mid-refactor) leaking in would silently broaden the test-only
+  // contract. Mirrors L23.1/D-080's + L24.1/D-081's `__testing`
+  // exact-key-surface pins.
+  it("exposes exactly the three helpers", () => {
+    expect(Object.keys(__testing).sort()).toEqual([
+      "PLACE_ID_PATTERN",
+      "canonicalisePrefix",
+      "slugify",
+    ]);
   });
 });
