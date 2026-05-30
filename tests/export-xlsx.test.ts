@@ -7,6 +7,7 @@
 
 import { describe, it, expect } from "vitest";
 import * as XLSX from "xlsx";
+import * as xlsxModule from "@/lib/export/xlsx";
 import {
   formatReviewsAsXlsx,
   xlsxFilename,
@@ -322,5 +323,76 @@ describe("formatReviewsAsXlsx — empty-reviews + single-photo boundary", () => 
     // asserts `url1 | url2`) wouldn't catch it — the 1-photo case does.
     expect(rows[0].photo_urls).toBe("https://p/only.jpg");
     expect(rows[0].photo_urls).not.toContain(PHOTO_URL_JOIN);
+  });
+});
+
+// L26.1 (a): module's named-export surface. A surplus export (e.g.
+// `export const SHEET_NAME` re-exposing the internal sheet name, an
+// `export function buildWorkbook` extracted mid-refactor, an
+// `export const FREEZE_PANE` constant) would silently broaden the public
+// contract every downstream importer is held to. Symmetric with
+// L23.1/D-080 (sf-client), L24.1/D-081 (reviews-cache), L25.1/D-082
+// (place-id) export-surface pins applied to the xlsx writer module.
+// Type-only exports (`XlsxColumn`) are erased at runtime and do not
+// appear in `Object.keys`.
+describe("module export surface — Object.keys(xlsxModule).sort()", () => {
+  it("freezes the runtime export surface at exactly 5 named exports", () => {
+    expect(Object.keys(xlsxModule).sort()).toEqual([
+      "XLSX_COLUMNS",
+      "XLSX_CONTENT_TYPE",
+      "__testing",
+      "formatReviewsAsXlsx",
+      "xlsxFilename",
+    ]);
+  });
+});
+
+// L26.1 (b): per-call freshness of formatReviewsAsXlsx's Uint8Array.
+// SheetJS' XLSX.write returns a fresh buffer per invocation, but a
+// "DRY" refactor that memoised the output by payload reference (or by
+// a content hash) would silently let any downstream mutation of the
+// returned Uint8Array (a defensive trim, a UI layer rewriting bytes)
+// leak across callers. The route handler reads `bytes.byteLength` for
+// the Content-Length header and passes the same buffer to
+// NextResponse — a shared singleton would also mean two concurrent
+// requests with the same payload reference would race on the buffer.
+// Two `it`s — non-empty payload AND empty-reviews payload — so a
+// memoise on either branch fails on its own assertion. Mirrors
+// L23.1/D-080's per-call factory-freshness pin pushed onto the bytes
+// the writer hands to the response.
+describe("formatReviewsAsXlsx — per-call freshness", () => {
+  it("returns reference-unequal Uint8Array instances across two calls (non-empty payload)", () => {
+    const p = payload();
+    const first = formatReviewsAsXlsx(p);
+    const second = formatReviewsAsXlsx(p);
+    expect(first).toBeInstanceOf(Uint8Array);
+    expect(second).toBeInstanceOf(Uint8Array);
+    expect(first).not.toBe(second);
+  });
+
+  it("returns reference-unequal Uint8Array instances across two calls (empty-reviews payload)", () => {
+    const p = payload();
+    p.reviews = [];
+    const first = formatReviewsAsXlsx(p);
+    const second = formatReviewsAsXlsx(p);
+    expect(first).not.toBe(second);
+  });
+});
+
+// L26.1 (c): __testing namespace's exact key surface. A surplus
+// helper leaking in (e.g. a `freezePane` builder extracted mid-refactor,
+// a `widthFor` helper, the unexported `Row` type re-exposed as a
+// runtime sentinel) would silently broaden the test-only contract.
+// Symmetric with L23.1/D-080's, L24.1/D-081's, and L25.1/D-082's
+// __testing exact-key-surface pins, applied to the xlsx writer's
+// test-only escape-hatch namespace.
+describe("__testing namespace — Object.keys(__testing).sort()", () => {
+  it("freezes the test-only escape-hatch surface at exactly 4 keys", () => {
+    expect(Object.keys(__testing).sort()).toEqual([
+      "COLUMN_WIDTHS",
+      "PHOTO_URL_JOIN",
+      "SHEET_NAME",
+      "rowFor",
+    ]);
   });
 });
