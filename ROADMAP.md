@@ -4,6 +4,23 @@ _Last updated: 2026-05-30_ (**Phase 26 — Suite-deepening tranche, export-xlsx 
 
 Leaf-task granularity. Each leaf should fit in **one scheduled run (≤10 commands)**. The routine picks the next unchecked leaf top-down. Mark `[x]` when merged, `[~]` when draft PR open awaiting review, `[!]` when blocked.
 
+> **⛔ STOP TEST-DEEPENING (2026-06-08, D-084).** Phases 11–26 (and the abandoned, never-committed L27.1) were pure test-padding on already-tested modules — the routine had run out of real leaves because every remaining one was human-gated, and it kept "deepening suites" instead of idling. That is now banned. **Do NOT open another suite-deepening phase.** The project was unblocked by switching the data source to **SerpApi** (real creds in `.env.local`), so there is real feature work again. Build Phase 27 below. New tests are allowed ONLY as coverage for new feature code written in the same leaf.
+
+---
+
+## Phase 27 — SerpApi trial integration (REAL DATA — the unblock) 🚀
+
+_Opened 2026-06-08 (D-084). The project stalled because Phases 4/5 (real data, deploy) were all human-gated on SemanticForce creds that never arrived, and the routine degenerated into 15 phases of test-deepening busywork. **The pivot: use SerpApi as the trial data source now** (free-tier keys already wired in `.env.local`, schema captured in `docs/serpapi-reviews.md` + `mocks/serpapi/`). This unblocks the real end goal — a Google-reviews-download service delivered three ways: **web tool, HTTP API, MCP server.** SemanticForce stays the intended production source; both sit behind the existing `ReviewsProvider` contract in `lib/semanticforce/types.ts`, so swapping later is a one-config change. Each leaf below is real, agent-doable, non-gated work. Verify with `npx tsc --noEmit` + `npx vitest run`; tests run against the committed fixtures (no live SerpApi calls in CI — protect the 750/mo quota)._
+
+- [ ] L27.1 Add `lib/serpapi/client.ts` — a SerpApi reviews client implementing the existing `SemanticForceClient` interface (`getReviews({placeId, limit?, after?}) → GetReviewsResponse`). Map `engine=google_maps_reviews` responses into `Review[]`/`PlaceMeta` per the table in `docs/serpapi-reviews.md`. Paginate via `serpapi_pagination.next_page_token` until `limit` is met. Key rotation across `SERPAPI_API_KEY_1..3`. Unit-test the mapper against `mocks/serpapi/maps-reviews-page1.json` (offline — no network).
+- [ ] L27.2 Add name→`data_id` resolution — `engine=google_maps&type=search&q=<name>` → first/best `data_id`, so a user can paste a business name (not just an ID/URL). Extend `lib/semanticforce/place-id.ts` (or a sibling) to also recognise a Google Maps URL / raw `data_id`. Test against `mocks/serpapi/maps-search.json`.
+- [ ] L27.3 Add `lib/reviews/provider.ts` — a factory that returns the right client from `REVIEWS_PROVIDER` (`serpapi` | `semanticforce` | `mock`, default `mock`). Wire `app/api/reviews/route.ts` and the preview/server path to call the factory instead of `createSemanticForceClient` directly. Keep callers depending only on `GetReviewsResponse`.
+- [ ] L27.4 Cache real results — make `lib/cache/reviews-cache.ts` key on the canonical `data_id` and wrap the SerpApi path so repeat downloads don't burn quota (TTL 24h). Test hit/miss with an injected store.
+- [ ] L27.5 End-to-end verify with REAL data (1 live SerpApi call, human-run): `npm install` if needed, run the dev server, submit a real business through the web form, confirm CSV/JSON/XLSX exports carry real reviews. Capture a screenshot + the network call as proof. (This is the leaf that proves the unblock worked.)
+- [ ] L27.6 HTTP API hardening — document the public `/api/reviews` contract (params: `placeId`/name, `format`, `limit`; success + error envelopes; rate-limit headers from the existing middleware). Add an OpenAPI snippet or a `docs/api.md` + a usage section on the site.
+- [ ] L27.7 MCP server — add an MCP server (e.g. `mcp/` or `app/mcp/`) exposing a `download_google_reviews` tool (input: business name or place_id + format + limit; output: the export payload or a download URL), backed by the same `lib/reviews/provider.ts`. README section on wiring it into Claude Desktop / Claude Code.
+- [ ] L27.8 Deploy prep (config only — actual deploy stays human-gated L5.2): Vercel/CF config, env-var manifest documenting `REVIEWS_PROVIDER` + `SERPAPI_API_KEY*` + KV vars, and a pre-deploy checklist update.
+
 ---
 
 ## Phase 0 — Planning bundle (Sprint 0)

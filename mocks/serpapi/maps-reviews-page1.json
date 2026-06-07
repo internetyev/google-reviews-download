@@ -1,0 +1,369 @@
+{
+  "search_metadata": {
+    "id": "6a25e9d417bdbfea871c7c8b",
+    "status": "Success",
+    "json_endpoint": "https://serpapi.com/searches/Ce1kk3AhvLL_VLhCUN50Bw/6a25e9d417bdbfea871c7c8b.json",
+    "created_at": "2026-06-07 21:59:48 UTC",
+    "processed_at": "2026-06-07 21:59:48 UTC",
+    "google_maps_reviews_url": "https://www.google.com/maps/place/data=!4m7!3m6!1s0x80858098babc2d4b:0xbeedd659cc698c92!5m2!4m1!1i2!9m1!1b1?hl=en",
+    "raw_html_file": "https://serpapi.com/searches/Ce1kk3AhvLL_VLhCUN50Bw/6a25e9d417bdbfea871c7c8b.html",
+    "prettify_html_file": "https://serpapi.com/searches/Ce1kk3AhvLL_VLhCUN50Bw/6a25e9d417bdbfea871c7c8b.prettify",
+    "total_time_taken": 1.0
+  },
+  "search_parameters": {
+    "engine": "google_maps_reviews",
+    "data_id": "0x80858098babc2d4b:0xbeedd659cc698c92",
+    "hl": "en"
+  },
+  "place_info": {
+    "title": "Blue Bottle Coffee",
+    "address": "315 Linden St, San Francisco, CA 94102",
+    "rating": 4.6,
+    "reviews": 891,
+    "type": "Coffee shop"
+  },
+  "topics": [
+    {
+      "keyword": "cappuccino",
+      "mentions": 28,
+      "id": "S73I59qGKV0"
+    },
+    {
+      "keyword": "mocha",
+      "mentions": 14,
+      "id": "Jf6Iy9PUIMU"
+    },
+    {
+      "keyword": "calm atmosphere",
+      "mentions": 6,
+      "id": "Le_vDgRUwMY"
+    },
+    {
+      "keyword": "espresso",
+      "mentions": 22,
+      "id": "Deao42MUSVE"
+    },
+    {
+      "keyword": "hole in the wall concept",
+      "mentions": 2,
+      "id": "AkiR_wbjdsY"
+    },
+    {
+      "keyword": "outdoor seating",
+      "mentions": 4,
+      "id": "AEmHqxr-_tg"
+    },
+    {
+      "keyword": "3rd wave coffee shop",
+      "mentions": 2,
+      "id": "Dfmi-1Ika9g"
+    },
+    {
+      "keyword": "waffles",
+      "mentions": 4,
+      "id": "Az8gKBuuP18"
+    },
+    {
+      "keyword": "latte",
+      "mentions": 50,
+      "id": "SXcITUmWE00"
+    },
+    {
+      "keyword": "garage location",
+      "mentions": 8,
+      "id": "SlkjgdOM49A"
+    }
+  ],
+  "reviews": [
+    {
+      "position": 1,
+      "link": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sCi9DQUlRQUNvZENodHljRjlvT20xVGRIaDRiR2xvVEZOQ1VrVlJhRFZoZDJndGFuYxAB!2m1!1s0x0:0xbeedd659cc698c92!3m1!1s2@1:CAIQACodChtycF9oOm1TdHh4bGloTFNCUkVRaDVhd2gtanc%7C%7C?hl=en-US",
+      "rating": 1.0,
+      "date": "5 months ago",
+      "iso_date": "2025-12-25T07:12:42Z",
+      "iso_date_of_last_edit": "2025-12-25T07:13:34Z",
+      "images": [
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn01nRyRIge8gpF_V3j7Nl8vyhFdnGxIfUUvjJAevALCfi4d0Ajg3YSXY-FZmu3W2hSptYe1yx-yFMFwv-LwjAruSQr5gl7hRkUkFfR_tTXzW0HhuaAIu4DAEBhhzqZK8fWgFN_Yf7_waP3Y=k-no"
+      ],
+      "source": "Google",
+      "review_id": "Ci9DQUlRQUNvZENodHljRjlvT20xVGRIaDRiR2xvVEZOQ1VrVlJhRFZoZDJndGFuYxAB",
+      "user": {
+        "name": "Utsav Ahuja",
+        "link": "https://www.google.com/maps/contrib/111525791018435463126?hl=en-US",
+        "contributor_id": "111525791018435463126",
+        "thumbnail": "https://lh3.googleusercontent.com/a-/ALV-UjXRw0qyAX9x0ntRONooXz5DtpBMlqg0SYqTE2A_RHDY-drU0VVH7A=s120-c-rp-mo-br100",
+        "local_guide": true,
+        "reviews": 9,
+        "photos": 1
+      },
+      "snippet": "I ordered a seasonal latte. 8 bucks, one of the highest prices in the city. it was foamy. if you know anything about lattes, foamy is not how the milk should be steamed. that\u2019s a cappuccino. not to mention, their seasonal syrup is really mediocre. the staff is nice though!\n\nI emailed them about my experience weeks ago. no response. they seem to not care about their customer experience anymore, probably since they\u2019ve been bought out by a big corporate.\n\ncheck out third wheel coffee a few blocks away, they pull some of the best shots within a mile radius. skip blue bottle. trust me.",
+      "extracted_snippet": {
+        "original": "I ordered a seasonal latte. 8 bucks, one of the highest prices in the city. it was foamy. if you know anything about lattes, foamy is not how the milk should be steamed. that\u2019s a cappuccino. not to mention, their seasonal syrup is really mediocre. the staff is nice though!\n\nI emailed them about my experience weeks ago. no response. they seem to not care about their customer experience anymore, probably since they\u2019ve been bought out by a big corporate.\n\ncheck out third wheel coffee a few blocks away, they pull some of the best shots within a mile radius. skip blue bottle. trust me."
+      },
+      "likes": 0,
+      "response": {
+        "date": "5 months ago",
+        "iso_date": "2025-12-26T18:28:21Z",
+        "iso_date_of_last_edit": "2025-12-26T18:28:21Z",
+        "snippet": "Hello, sorry to see that. Please reach out to support@bluebottlecoffee.com so that we can assist you further. Thanks ",
+        "extracted_snippet": {
+          "original": "Hello, sorry to see that. Please reach out to support@bluebottlecoffee.com so that we can assist you further. Thanks "
+        }
+      }
+    },
+    {
+      "position": 2,
+      "link": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sCi9DQUlRQUNvZENodHljRjlvT2pCNE5qaFRNRGxJVTFobmFHNHljVWwzVFZOVk0zYxAB!2m1!1s0x0:0xbeedd659cc698c92!3m1!1s2@1:CAIQACodChtycF9oOjB4NjhTMDlIU1hnaG4ycUl3TVNVM3c%7C%7C?hl=en-US",
+      "rating": 5.0,
+      "date": "4 months ago",
+      "iso_date": "2026-02-04T14:31:38Z",
+      "iso_date_of_last_edit": "2026-02-04T14:31:38Z",
+      "images": [
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn0WEuEo3M41LV3hxnIzK8AqvxbgIxl9-Jpo0MPxBS4Xl94aATFxuK1F6Jeu3VC7Mw6JqSoRnfiRlKi6CNrMhHF7NmLr3NyL9bpssbEUHvJvQnk7BLBoX0MlzMWiYXN9gPwT8UuN06-6E5qG=k-no",
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn1IR8EQ3_aYSnIEcBwnTW80AcELRP4trBgHzRDFfTDdEzJPcq7JnL3u5TkxzN4ipryA-raPNwVmsRlbZSabpkqTKfU6OGtiH5pTM6LzHUKAqTgqJenUaLj-q4eOBkEjwtAiaaItbHtX6JyG=k-no"
+      ],
+      "source": "Google",
+      "review_id": "Ci9DQUlRQUNvZENodHljRjlvT2pCNE5qaFRNRGxJVTFobmFHNHljVWwzVFZOVk0zYxAB",
+      "user": {
+        "name": "Trisha Woolley",
+        "link": "https://www.google.com/maps/contrib/103091290318803999614?hl=en-US",
+        "contributor_id": "103091290318803999614",
+        "thumbnail": "https://lh3.googleusercontent.com/a-/ALV-UjXZBywBEtHkb5FV6kQILgZ4vMVqKddvIpcCDtDF---uugHP3XsbNQ=s120-c-rp-mo-ba3-br100",
+        "local_guide": true,
+        "reviews": 31,
+        "photos": 92
+      },
+      "snippet": "What an absolute treasure! Followed my GPS to a different coffee place but my nose led me to blue bottle coffee. My cherry blossom latte was delicious and watching them make it was even better.",
+      "extracted_snippet": {
+        "original": "What an absolute treasure! Followed my GPS to a different coffee place but my nose led me to blue bottle coffee. My cherry blossom latte was delicious and watching them make it was even better."
+      },
+      "details": {
+        "order_type": "Take out",
+        "food": 5,
+        "service": 5,
+        "atmosphere": 5,
+        "wait_time": "No wait"
+      },
+      "likes": 0
+    },
+    {
+      "position": 3,
+      "link": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sCi9DQUlRQUNvZENodHljRjlvT2tST1NVSkxSeTFSYmt0RGMxbHRVRVJuTm04d1VrRRAB!2m1!1s0x0:0xbeedd659cc698c92!3m1!1s2@1:CAIQACodChtycF9oOkROSUJLRy1RbktDc1ltUERnNm8wUkE%7C%7C?hl=en-US",
+      "rating": 5.0,
+      "date": "3 months ago",
+      "iso_date": "2026-02-22T16:34:13Z",
+      "iso_date_of_last_edit": "2026-02-22T16:34:13Z",
+      "source": "Google",
+      "review_id": "Ci9DQUlRQUNvZENodHljRjlvT2tST1NVSkxSeTFSYmt0RGMxbHRVRVJuTm04d1VrRRAB",
+      "user": {
+        "name": "Bridget Acosta",
+        "link": "https://www.google.com/maps/contrib/106044164917199549901?hl=en-US",
+        "contributor_id": "106044164917199549901",
+        "thumbnail": "https://lh3.googleusercontent.com/a-/ALV-UjUyTWniz8jzmoSbyPkGJwucpbBWN9ZjvWdsbjpOFkaRoJSDGLc=s120-c-rp-mo-br100",
+        "local_guide": true,
+        "reviews": 1,
+        "photos": 0
+      },
+      "snippet": "I stopped by Blue Bottle while walking through Hayes Valley, and it honestly turned into one of the highlights of my afternoon. The space feels bright and minimal, but still warm and welcoming. My cappuccino was smooth with just the right amount of foam, and you can really taste the quality of the beans. The staff moved quickly but never made me feel rushed. I ended up sitting by the window longer than I planned, just enjoying the calm atmosphere and watching the neighborhood go by.",
+      "extracted_snippet": {
+        "original": "I stopped by Blue Bottle while walking through Hayes Valley, and it honestly turned into one of the highlights of my afternoon. The space feels bright and minimal, but still warm and welcoming. My cappuccino was smooth with just the right amount of foam, and you can really taste the quality of the beans. The staff moved quickly but never made me feel rushed. I ended up sitting by the window longer than I planned, just enjoying the calm atmosphere and watching the neighborhood go by."
+      },
+      "details": {
+        "food": 5,
+        "service": 5,
+        "atmosphere": 5
+      },
+      "likes": 0
+    },
+    {
+      "position": 4,
+      "link": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sCi9DQUlRQUNvZENodHljRjlvT2xoeU1ETmxTVGczTnpKUWVVdGlUa2RMV1ROZlZsRRAB!2m1!1s0x0:0xbeedd659cc698c92!3m1!1s2@1:CAIQACodChtycF9oOlhyMDNlSTg3NzJQeUtiTkdLWTNfVlE%7C%7C?hl=en-US",
+      "rating": 5.0,
+      "date": "11 months ago",
+      "iso_date": "2025-07-06T20:21:50Z",
+      "iso_date_of_last_edit": "2025-07-06T20:21:50Z",
+      "images": [
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn3Af1fz0AxUxxDXjU4UBeloZy4QBesIy32VBOvEcLXDvDJdduhVOzQ7v4efFp_ZDvyNLKET8Nlv0FgVVHTvkPD4IHEX1-59HT9a2sP9CeGYAT2wQ7rKat6Y3Sc2Dqj5phjz4zSGDoTgiWx8=k-no",
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn1dTJLwo3eyKDmG8kARo_k7pFQ8v203oy7RsgepzA6FV_rGOSp0DtW6Eyag2nVSEwVeac3JeZzl9qwgC_S-lnPerX4BdHHtApyLHlpN29Sg_IJCCGX6uHVm-j-nQpFF562Dqw0jxBwVyGg=k-no",
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn0M0pH-r68uSEmzgxvLCFdFuYwKk-Xt-J393gv_UsQGvSiiDNtDXBGs2a-8x1lEbo3QPOEZ6DSQQyFmWVG0MnBEVz1bNQWNATiseDxKsnHIvkaymoegHYj0hIBKUQpHPlS1rrG9aXdg13Rr=k-no"
+      ],
+      "source": "Google",
+      "review_id": "Ci9DQUlRQUNvZENodHljRjlvT2xoeU1ETmxTVGczTnpKUWVVdGlUa2RMV1ROZlZsRRAB",
+      "user": {
+        "name": "Estela Lee",
+        "link": "https://www.google.com/maps/contrib/109829136754951451622?hl=en-US",
+        "contributor_id": "109829136754951451622",
+        "thumbnail": "https://lh3.googleusercontent.com/a-/ALV-UjUkKY9uuALruJ4-pxbqaMIHRFiyyMPY_zzM9P3kzFoiBznRfepK=s120-c-rp-mo-ba5-br100",
+        "local_guide": true,
+        "reviews": 205,
+        "photos": 1147
+      },
+      "snippet": "There\u2019s something special about visiting the original Blue Bottle kiosk in Hayes Valley. It\u2019s small, simple, and tucked away\u2014but that\u2019s part of its charm. The coffee is excellent, just as you\u2019d expect, and knowing this is where it all began makes every sip feel a little more meaningful. A must-visit spot for coffee lovers and fans of quiet San Francisco corners.",
+      "extracted_snippet": {
+        "original": "There\u2019s something special about visiting the original Blue Bottle kiosk in Hayes Valley. It\u2019s small, simple, and tucked away\u2014but that\u2019s part of its charm. The coffee is excellent, just as you\u2019d expect, and knowing this is where it all began makes every sip feel a little more meaningful. A must-visit spot for coffee lovers and fans of quiet San Francisco corners."
+      },
+      "details": {
+        "order_type": "Take out",
+        "meal_type": "Other",
+        "price_per_person": "$1\u201310",
+        "food": 5,
+        "service": 5,
+        "atmosphere": 5,
+        "group_size": "2 people"
+      },
+      "likes": 0
+    },
+    {
+      "position": 5,
+      "link": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sChZDSUhNMG9nS0VJQ0FnTUNJMW9PUERREAE!2m1!1s0x0:0xbeedd659cc698c92!3m1!1s2@1:CIHM0ogKEICAgMCI1oOPDQ%7C%7C?hl=en-US",
+      "rating": 5.0,
+      "date": "a year ago",
+      "iso_date": "2025-04-01T18:04:33Z",
+      "iso_date_of_last_edit": "2025-04-01T18:04:33Z",
+      "images": [
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn2_yfFZjC50cclVuymmls-sRjLALxi-GrRPBUdbr-_rrzgU3NXeXFTOYwahNasd5x0VMx0vKZgEEk-bbT9q0e0qlpwB1F-ZwiMKPpxjwG9o1qgVSCeUq_ANSvM71JQ9B38BbsqdtQ=k-no",
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn1cpBvA6DxSeM35fxPEgXJTAGeDBltaoGDgPEYBhUKWw1YvRRU-aQHuW50oxiUoV17P2sZiiil504Pok3B6_nJpidicfiWE1LgvP38QL9qIhqRh75HJNAPmAan3EgS1Y0paQhI=k-no",
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn0SqBgZqeRG0STErHgLCT_RN7ccZokhLSdNiUggmW-WN2g1wSxP1481b7c6ue_ho0LJ0NHaQp-VSk3c5hDhRgbtqfLnGuNwU9wgm1BUqWc7c3jHXiMldVVkKRQRcIrlMvuqdpPiWw=k-no",
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn1_RO06zZs20RqUtwJ2TCInmri_7vQKiUqE-X2UMFlEQv-_r8ZJPcBaKrD_Sj1DAMYyYQgLn0yL1o7Bauv5H1bqkn64msJ0uhgoaKPrNgJjFARpUUIOoVQhoZnqevIKYR8tpEk=k-no",
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn3p6uwMba-xkn73kggER--s5darjbav-weO3ccSEsm-SLZTqRmdzEy3s8JCn6_qOP3O2M--8zCdPk70HbfFLu-Uho51FV9-1BtyyVSURY3NtUTzI5ojHG-xj1Jup-PCDM7Jp5tZkQ=k-no"
+      ],
+      "source": "Google",
+      "review_id": "ChZDSUhNMG9nS0VJQ0FnTUNJMW9PUERREAE",
+      "user": {
+        "name": "Wahyu A Harun",
+        "link": "https://www.google.com/maps/contrib/108271969510774310826?hl=en-US",
+        "contributor_id": "108271969510774310826",
+        "thumbnail": "https://lh3.googleusercontent.com/a/ACg8ocIDnYQMKHNhaOGjzQdcFltEn_cdTy3MADEJibKYBTcweHFGcg=s120-c-rp-mo-ba6-br100",
+        "local_guide": true,
+        "reviews": 317,
+        "photos": 1907
+      },
+      "snippet": "The first Blue Bottle outlet. Unique environtment. Clean and art alley. The coffee are stunning. They dont have sitting arrangement inside, but outside is soooo funky. You should come and visit.",
+      "extracted_snippet": {
+        "original": "The first Blue Bottle outlet. Unique environtment. Clean and art alley. The coffee are stunning. They dont have sitting arrangement inside, but outside is soooo funky. You should come and visit."
+      },
+      "likes": 0
+    },
+    {
+      "position": 6,
+      "link": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sCi9DQUlRQUNvZENodHljRjlvT2twNlNYSkJUMk5sYlVkbFFUQmZNVE41YVdOWmRHYxAB!2m1!1s0x0:0xbeedd659cc698c92!3m1!1s2@1:CAIQACodChtycF9oOkp6SXJBT2NlbUdlQTBfMTN5aWNZdGc%7C%7C?hl=en-US",
+      "rating": 5.0,
+      "date": "10 months ago",
+      "iso_date": "2025-07-22T05:17:30Z",
+      "iso_date_of_last_edit": "2025-07-22T05:17:30Z",
+      "images": [
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn02QdT5Og4_vAULoPXh6zYgQW6Jtuqws7q3LoZkP6UjxF6SX8eh7k4KnuUzbrkea9SgbLmNfPiBcXYbKRph6XunZL61PionIzVjHkufHJjHelOYtCQLSq10CQa82wkjbYE8dXs4L7Bkwh3B=k-no"
+      ],
+      "source": "Google",
+      "review_id": "Ci9DQUlRQUNvZENodHljRjlvT2twNlNYSkJUMk5sYlVkbFFUQmZNVE41YVdOWmRHYxAB",
+      "user": {
+        "name": "viviana rose",
+        "link": "https://www.google.com/maps/contrib/111568055133743850490?hl=en-US",
+        "contributor_id": "111568055133743850490",
+        "thumbnail": "https://lh3.googleusercontent.com/a-/ALV-UjWrNzIEEruumCAeHjEKD6FqaK-4VrWhiAtP34_46ltk977TopA=s120-c-rp-mo-ba3-br100",
+        "local_guide": true,
+        "reviews": 35,
+        "photos": 54
+      },
+      "snippet": "Blue bottle coffee has always been one of my go to coffee spots in Los Angeles so we thought we would give this location a try. This location was seriously the best. I always get a oat milk latte and it never disappoints. We got the closing time mixed up and went right before closing but the staff were super welcoming and friendly.",
+      "extracted_snippet": {
+        "original": "Blue bottle coffee has always been one of my go to coffee spots in Los Angeles so we thought we would give this location a try. This location was seriously the best. I always get a oat milk latte and it never disappoints. We got the closing time mixed up and went right before closing but the staff were super welcoming and friendly."
+      },
+      "details": {
+        "price_per_person": "$1\u201310",
+        "food": 5,
+        "service": 5,
+        "atmosphere": 5,
+        "wait_time": "No wait"
+      },
+      "likes": 0
+    },
+    {
+      "position": 7,
+      "link": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sChZDSUhNMG9nS0VJQ0FnSUQxXzh2dVZREAE!2m1!1s0x0:0xbeedd659cc698c92!3m1!1s2@1:CIHM0ogKEICAgID1_8vuVQ%7C%7C?hl=en-US",
+      "rating": 5.0,
+      "date": "2 years ago",
+      "iso_date": "2024-01-11T04:23:13Z",
+      "iso_date_of_last_edit": "2024-01-11T04:23:13Z",
+      "images": [
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn1xIrvZIpnEJSJ95RdRra_GbNh-PpEBjUuQj-CtBlmyNymHd2ZDQ4TfMOh7BZva62RZoLhhBGLr_E76Wab0TnXJtwnNe8LRtesIuB27rCaaIssxz8C2BcZcjnPX6n9-Uj4yRj-UoA=k-no",
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn3uwazUBqb3VoBsVhanxK-hVzbBCUUGncqWkzLL60ebA3-ZcjhAgfuHpoP05LHezenAFWTnE7NbkEnNESn_gUsoIvG25vo1O6PWrw40dUZfaOxgWIdzWKuSpTDB-lzpnNrzx3fG=k-no",
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn314970rQ3zrmiFq5lm9rafA9Z_nLy9M4B7Q5J_MuXy5j6rfyoFzZyQwXCFniqTW0uZLQNDR6IYcl9edE8TUkrNFma0tQJzvisAVO7SSIQwWZ5nH5bYI3mcv2__e5ake6Xe8I_15w=k-no",
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn2y9lwwSK5qxeOeO1Ma1_Hu8BoCuIyTUn4S9gapjHvsqNu8IuNDkQWGal5CekWEPA-Orlwib9LS-mTtUroz88rj5A6QPtp4F6JNSUuetlCGuazvaaifYAsg8LIWwhWg-Ev3vdKU=k-no",
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn1WY7aLj_nqfuYUK4xRKFS8Uf7yFdxoY1qdFiAvY7aMK7Hfx4INQu0VD-PLNEYRqmCXnKt5RZwCObsAGDHznw2AZmxknk5vZxDkdqgVoePYtugUkSekgoU-aWP1Ou_zVap4Ky0s=k-no",
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn1gzxlbQHv9tUGHHpServJB6KOUiJvleKr-Ebo2c4waIJQSS2GSjbgy3ybKkxggFlcRshAmeJrjLDTbeCeQDhNWcdP2B4WoUYsSM2Xx16tEGE-spuPb3PZXFxVzrw7yNiXSDwaq=k-no",
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn1D_8DkxJtmn6IYLkmdi5vepup6cgdbmgahH8vkDsz6LKR_WftPNQHxhpmdBWrN-TtLqAP1u07kxCo6zozXR2PmSmRxFn2bT9ZBa550LjlA9QmnfcU93FpJpyemLU8nrE4SQuHotw=k-no",
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn3ULBCMv28wPtymxBZPagaK04EZIZIyac328Nrp42oTFohzcW4hMuaahdZoIvHKn3qrn12rkdfxMV7uCdLcRuFR73Fq_Si36EjpX3D3DTqK9vfOLFPN-2oNzybe89-xoe-e5bF3=k-no",
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn2uYE81me7k3B3slzM5U5SahB2OOP5PSbcT8wIipl0JPD1AOaKk3xEE9l7uewTaXEHoY9HqaN4f0ZveMSAiO3nCICxq-cwc73w9YGwrQxyvfPXP3DyKVsAldcX84OiSkfzgLTrw=k-no"
+      ],
+      "source": "Google",
+      "review_id": "ChZDSUhNMG9nS0VJQ0FnSUQxXzh2dVZREAE",
+      "user": {
+        "name": "Foo T",
+        "link": "https://www.google.com/maps/contrib/108456183289473508566?hl=en-US",
+        "contributor_id": "108456183289473508566",
+        "thumbnail": "https://lh3.googleusercontent.com/a/ACg8ocICuuliyx6jrPj9Uwg_a-BH-K4Ja55tTtngZgjhwP8ZsGGOzw=s120-c-rp-mo-ba6-br100",
+        "local_guide": true,
+        "reviews": 505,
+        "photos": 2121
+      },
+      "snippet": "Their first brick and mortar location!\nThey are becoming famous in Japan among coffee enthusiasts (I\u2019m not one of them) and I went there so that I have something to talk about.  Didn\u2019t know much about them but their coffee was delicious!!\nI had winter blend, my friend got Nola or spiced nola.  Both were surprisingly good, no wonder they are popular!",
+      "extracted_snippet": {
+        "original": "Their first brick and mortar location!\nThey are becoming famous in Japan among coffee enthusiasts (I\u2019m not one of them) and I went there so that I have something to talk about.  Didn\u2019t know much about them but their coffee was delicious!!\nI had winter blend, my friend got Nola or spiced nola.  Both were surprisingly good, no wonder they are popular!"
+      },
+      "details": {
+        "order_type": "Take out",
+        "meal_type": "Other",
+        "price_per_person": "$1\u201310",
+        "food": 5,
+        "service": 5,
+        "atmosphere": 4
+      },
+      "likes": 1
+    },
+    {
+      "position": 8,
+      "link": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sChZDSUhNMG9nS0VJQ0FnSURyai1HUmV3EAE!2m1!1s0x0:0xbeedd659cc698c92!3m1!1s2@1:CIHM0ogKEICAgIDrj-GRew%7C%7C?hl=en-US",
+      "rating": 5.0,
+      "date": "a year ago",
+      "iso_date": "2024-07-21T08:37:09Z",
+      "iso_date_of_last_edit": "2024-07-21T08:37:09Z",
+      "images": [
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn3X3rgKKdk6TKcxKx5maRO4fKrsyfSgWanoi4jiovZTkR5a4qZFqNePnqFaXEIhuSJAgR5BU3iIAxs131Tf4BY-ZKd8reSeBkYiBt2_VE-jLA23DEllKyGdImpNvXxKGT7YXSV1=k-no",
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn2bTXNbpVZusnhyExdou25O2YHMO26DzyZXarAys2_sdMk-wwGr_qV1aKQn-QJKt0CRhr269itRlYUf0o1H1Fxlnjv0Ur9cV0cbfprtR9-6o-s27kMcVO6gZmSVpo1DVLpR46uB=k-no",
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn3_a5Ng4ypfVqsTyhqw4v2pie1JWx9XNOKyuBPqkzjp1PF5GEKkeuyj8pdJL-YQIvsSB_sn8cpLLGRr42sD95jZOXKt2orqDucJEi9TPsDsWvHMknDHqvvjyg52P1kH6ez8QVo7=k-no",
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn0taYitJS6wce4WS3yblo1xelYBBd7XAbyC5ChSYpi_ad9mf-WSDzQFBts4M0Ad9LRyKo4Ot4Mwoz1bEapcanmfsvOilm8itVWI-sr74as6Bh9Mm5htc1pQ5siMlp-YXGB_s5o=k-no",
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn3WL3ieQKpM1Ehr0M_TI5DclCZ_u0r0Dr8IcX3pxCocT4EQO6GV8gbJYOoiCJfaIX3cwnG80lJAt28mka2fLSiDklV33ezh4lGhxPVzQ1XbagaTQBWbfO0vydCRH2bVveMjGo9Chw=k-no",
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn2aM_P0oyi8eEKCzgCzGugdvzQ8iMR1Q9-fiCza8aPNVQNaDVShg1rBwsjNv9UGHfAd6P2DyWVjdaOSy202aenN6gfgAoEWxmlcdcycr3bM4i-UYD-QdSeFgBnLgGDc-PPpjNa_=k-no",
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn2pwBik2DtvLhEV4BI21TBVWd7eM6OntqRnBWndTIUJK_aRF03dVuPv78jlnnk3liFGxZJInBdujhEO2dmnYnFKNHblsCSZ7kft9rkBztjT7USI4XnDB2ZrU0ExrzWFe2vmxlt_6w=k-no",
+        "https://lh3.googleusercontent.com/grass-cs/ANxoTn0Y8POtpAzI3Euodj9mZkHX9omESbTyliakoDjQTEf3MPKG6w6ZOvXHRfdCzDt9-ANgUgR_R4J2n_3DzScmNNNzu39qzj9MWQlA0DQZUdlUBPgGdmIv9WRgaVHAFaFJkJgrHYBY=k-no"
+      ],
+      "source": "Google",
+      "review_id": "ChZDSUhNMG9nS0VJQ0FnSURyai1HUmV3EAE",
+      "user": {
+        "name": "Barath T",
+        "link": "https://www.google.com/maps/contrib/107524530427937470009?hl=en-US",
+        "contributor_id": "107524530427937470009",
+        "thumbnail": "https://lh3.googleusercontent.com/a/ACg8ocLG3AVXfj0mw69rgLHta15Kb4RXqGvCH1TRO-Nor1BVReKkww=s120-c-rp-mo-ba5-br100",
+        "local_guide": true,
+        "reviews": 261,
+        "photos": 1343
+      },
+      "snippet": "Wonderful taste for coffee, unique taste and smell for ones that are very used to starbucks, a much better alternative to regulars., doesn't have a proper place to dine in but there are a couple of benches outside., its in a very smaller street so park on the near by roadside (have decent paid parking spots).",
+      "extracted_snippet": {
+        "original": "Wonderful taste for coffee, unique taste and smell for ones that are very used to starbucks, a much better alternative to regulars., doesn't have a proper place to dine in but there are a couple of benches outside., its in a very smaller street so park on the near by roadside (have decent paid parking spots)."
+      },
+      "details": {
+        "price_per_person": "$1\u201310",
+        "food": 5,
+        "service": 5,
+        "atmosphere": 4
+      },
+      "likes": 0
+    }
+  ],
+  "serpapi_pagination": {
+    "next": "https://serpapi.com/search.json?data_id=0x80858098babc2d4b%3A0xbeedd659cc698c92&engine=google_maps_reviews&hl=en&next_page_token=CjEIARIpCgoAP7_LAcay____EhDH9U7wAwZ0ITHIuoQAAAAAGgn92TQCbyuP_CUYACIA%3A8",
+    "next_page_token": "CjEIARIpCgoAP7_LAcay____EhDH9U7wAwZ0ITHIuoQAAAAAGgn92TQCbyuP_CUYACIA:8"
+  }
+}
