@@ -14,7 +14,7 @@
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { createSemanticForceClient } from "@/lib/semanticforce/client";
+import { createReviewsProvider } from "@/lib/reviews/provider";
 import {
   normalisePlaceId,
   PlaceIdParseError,
@@ -209,7 +209,7 @@ export default async function PreviewPage({
   let place: PlaceMeta;
   let reviews: Review[];
   try {
-    const client = createSemanticForceClient();
+    const client = createReviewsProvider();
     const res = await client.getReviews({
       placeId: normalised.raw,
       limit: PREVIEW_COUNT,
