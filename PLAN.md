@@ -4,7 +4,9 @@ _Last updated: 2026-04-28_
 
 ## What it is
 
-A web tool that takes a **Google Business name or Place ID** and returns a **downloadable export of that business's Google reviews** in CSV, JSON, or XLSX. One field, one click, one file. Reviews are fetched via the SemanticForce API.
+A web tool that takes a **Google Business name or Place ID** and returns a **downloadable export of that business's Google reviews** in CSV, JSON, or XLSX. One field, one click, one file. The end goal delivers this three ways: **web tool, HTTP API, and MCP server.**
+
+> **Data source (updated 2026-06-08, ADR D-084):** reviews are fetched via **SerpApi** as the *trial* source (real creds wired in `.env.local`, schema in `docs/serpapi-reviews.md`), to be switched to **SemanticForce** later. Both sit behind one `ReviewsProvider` contract (`lib/semanticforce/types.ts`), selected by the `REVIEWS_PROVIDER` env var — so the production swap is a single config change. The original "SemanticForce-only, mock until creds" plan below is superseded on the data-source question; everything else still holds.
 
 ## Why now
 
