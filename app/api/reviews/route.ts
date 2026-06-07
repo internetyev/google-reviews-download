@@ -13,7 +13,7 @@
 // (L2.6) and XLSX (L2.7) are wired through `lib/export/csv.ts` and
 // `lib/export/xlsx.ts` respectively.
 import { NextRequest, NextResponse } from "next/server";
-import { createSemanticForceClient } from "@/lib/semanticforce/client";
+import { createReviewsProvider } from "@/lib/reviews/provider";
 import {
   PlaceMeta,
   Review,
@@ -103,7 +103,7 @@ export async function GET(req: NextRequest) {
     return respondSuccess(cached, format, userLimit, "HIT", normalised.slug);
   }
 
-  const client = createSemanticForceClient();
+  const client = createReviewsProvider();
   const collected: Review[] = [];
   let placeMeta: PlaceMeta | null = null;
   let cursor: string | undefined;
