@@ -217,36 +217,42 @@ class SerpApiClient implements SemanticForceClient {
     url.searchParams.set("hl", "en");
     if (pageToken) url.searchParams.set("next_page_token", pageToken);
     url.searchParams.set("api_key", this.nextKey());
-
-    let res: Response;
-    try {
-      res = await this.fetchImpl(url);
-    } catch (cause) {
-      throw new SemanticForceError(
-        "upstream_error",
-        `Network error calling SerpApi: ${(cause as Error).message}`,
-      );
-    }
-
-    if (!res.ok) {
-      const code = mapStatusToCode(res.status);
-      let message = `SerpApi returned ${res.status}`;
-      try {
-        const body = (await res.json()) as { error?: string };
-        if (body?.error) message = body.error;
-      } catch {
-        // body wasn't JSON; keep status-based message
-      }
-      throw new SemanticForceError(code, message, res.status);
-    }
-
-    const body = (await res.json()) as SerpReviewsRaw;
-    // SerpApi returns HTTP 200 with a top-level `error` for some failures.
-    if (body.error) {
-      throw new SemanticForceError("upstream_error", body.error);
-    }
-    return body;
+    return serpApiGetJson<SerpReviewsRaw>(url, this.fetchImpl);
   }
+}
+
+// Shared SerpApi GET: network-error → upstream_error, non-2xx → status-mapped
+// error (preferring SerpApi's JSON `error` message), and HTTP-200-with-`error`
+// (SerpApi's soft-failure shape) → upstream_error. Reused by the reviews client
+// and the name→data_id resolver (resolve.ts).
+export async function serpApiGetJson<T>(url: URL, fetchImpl: typeof fetch): Promise<T> {
+  let res: Response;
+  try {
+    res = await fetchImpl(url);
+  } catch (cause) {
+    throw new SemanticForceError(
+      "upstream_error",
+      `Network error calling SerpApi: ${(cause as Error).message}`,
+    );
+  }
+
+  if (!res.ok) {
+    const code = mapStatusToCode(res.status);
+    let message = `SerpApi returned ${res.status}`;
+    try {
+      const body = (await res.json()) as { error?: string };
+      if (body?.error) message = body.error;
+    } catch {
+      // body wasn't JSON; keep status-based message
+    }
+    throw new SemanticForceError(code, message, res.status);
+  }
+
+  const body = (await res.json()) as T & { error?: string };
+  if (body.error) {
+    throw new SemanticForceError("upstream_error", body.error);
+  }
+  return body;
 }
 
 // --- helpers --------------------------------------------------------------
@@ -257,7 +263,7 @@ function clampLimit(limit?: number): number {
   return Math.min(Math.floor(limit), MAX_LIMIT);
 }
 
-function collectKeysFromEnv(): string[] {
+export function collectKeysFromEnv(): string[] {
   const keys: string[] = [];
   const primary = process.env.SERPAPI_API_KEY;
   if (primary) keys.push(primary);
