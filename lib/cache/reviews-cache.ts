@@ -27,10 +27,14 @@ export interface ReviewsCache {
 }
 
 export const CACHE_KEY_PREFIX = "gr:reviews:v1:";
+// Preview payloads (first N reviews) live under a SEPARATE namespace so a
+// partial preview can never be served to a full-walk download request — the
+// two key spaces never collide. (L27.4 / D-089)
+export const PREVIEW_KEY_PREFIX = "gr:preview:v1:";
 export const CACHE_TTL_SECONDS = 24 * 60 * 60;
 
-export function cacheKey(slug: string): string {
-  return `${CACHE_KEY_PREFIX}${slug}`;
+export function cacheKey(slug: string, prefix: string = CACHE_KEY_PREFIX): string {
+  return `${prefix}${slug}`;
 }
 
 export type ReviewsCacheOptions = {
@@ -43,6 +47,20 @@ export type ReviewsCacheOptions = {
 export function createReviewsCache(
   options: ReviewsCacheOptions = {},
 ): ReviewsCache {
+  return buildCache(options, CACHE_KEY_PREFIX);
+}
+
+// Preview-scoped cache (first N reviews per place) — same store/TTL as the
+// reviews cache but a distinct key namespace, so repeat previews of a place
+// cost zero upstream calls without ever colliding with the full-walk download
+// cache. (L27.4 / D-089)
+export function createPreviewCache(
+  options: ReviewsCacheOptions = {},
+): ReviewsCache {
+  return buildCache(options, PREVIEW_KEY_PREFIX);
+}
+
+function buildCache(options: ReviewsCacheOptions, keyPrefix: string): ReviewsCache {
   const url = options.kvRestApiUrl ?? process.env.KV_REST_API_URL;
   const token = options.kvRestApiToken ?? process.env.KV_REST_API_TOKEN;
 
@@ -51,10 +69,11 @@ export function createReviewsCache(
       url,
       token,
       fetchImpl: options.fetchImpl ?? fetch,
+      keyPrefix,
     });
   }
 
-  return new MemoryCache(options.now ?? Date.now);
+  return new MemoryCache(options.now ?? Date.now, keyPrefix);
 }
 
 class MemoryCache implements ReviewsCache {
@@ -63,13 +82,15 @@ class MemoryCache implements ReviewsCache {
     { value: CachedReviewsPayload; expires_at: number }
   >();
   private readonly now: () => number;
+  private readonly keyPrefix: string;
 
-  constructor(now: () => number) {
+  constructor(now: () => number, keyPrefix: string = CACHE_KEY_PREFIX) {
     this.now = now;
+    this.keyPrefix = keyPrefix;
   }
 
   async get(slug: string): Promise<CachedReviewsPayload | null> {
-    const key = cacheKey(slug);
+    const key = cacheKey(slug, this.keyPrefix);
     const entry = this.store.get(key);
     if (!entry) return null;
     if (this.now() > entry.expires_at) {
@@ -80,7 +101,7 @@ class MemoryCache implements ReviewsCache {
   }
 
   async set(slug: string, payload: CachedReviewsPayload): Promise<void> {
-    this.store.set(cacheKey(slug), {
+    this.store.set(cacheKey(slug, this.keyPrefix), {
       value: payload,
       expires_at: this.now() + CACHE_TTL_SECONDS * 1000,
     });
@@ -91,11 +112,18 @@ class KvRestCache implements ReviewsCache {
   private readonly url: string;
   private readonly token: string;
   private readonly fetchImpl: typeof fetch;
+  private readonly keyPrefix: string;
 
-  constructor(opts: { url: string; token: string; fetchImpl: typeof fetch }) {
+  constructor(opts: {
+    url: string;
+    token: string;
+    fetchImpl: typeof fetch;
+    keyPrefix?: string;
+  }) {
     this.url = opts.url.replace(/\/$/, "");
     this.token = opts.token;
     this.fetchImpl = opts.fetchImpl;
+    this.keyPrefix = opts.keyPrefix ?? CACHE_KEY_PREFIX;
   }
 
   async get(slug: string): Promise<CachedReviewsPayload | null> {
@@ -104,7 +132,7 @@ class KvRestCache implements ReviewsCache {
       res = await this.fetchImpl(this.url, {
         method: "POST",
         headers: this.headers(),
-        body: JSON.stringify(["GET", cacheKey(slug)]),
+        body: JSON.stringify(["GET", cacheKey(slug, this.keyPrefix)]),
       });
     } catch {
       return null;
@@ -135,7 +163,7 @@ class KvRestCache implements ReviewsCache {
         headers: this.headers(),
         body: JSON.stringify([
           "SET",
-          cacheKey(slug),
+          cacheKey(slug, this.keyPrefix),
           JSON.stringify(payload),
           "EX",
           String(CACHE_TTL_SECONDS),

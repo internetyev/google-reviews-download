@@ -15,6 +15,7 @@ import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { createReviewsProvider } from "@/lib/reviews/provider";
+import { createReviewsCache, createPreviewCache } from "@/lib/cache/reviews-cache";
 import {
   normalisePlaceId,
   PlaceIdParseError,
@@ -209,13 +210,33 @@ export default async function PreviewPage({
   let place: PlaceMeta;
   let reviews: Review[];
   try {
-    const client = createReviewsProvider();
-    const res = await client.getReviews({
-      placeId: normalised.raw,
-      limit: PREVIEW_COUNT,
-    });
-    place = res.place;
-    reviews = res.reviews.slice(0, PREVIEW_COUNT);
+    const slug = normalised.slug;
+    // Three tiers, cheapest first — protect the SerpApi quota:
+    //   1. a completed full download (richest, authoritative) → preview free;
+    //   2. a prior preview of this place → free;
+    //   3. live fetch (1 upstream call) → cache under the preview namespace.
+    const reviewsCache = createReviewsCache();
+    const previewCache = createPreviewCache();
+    const full = await reviewsCache.get(slug);
+    const prior = full ?? (await previewCache.get(slug));
+    if (prior) {
+      place = prior.place;
+      reviews = prior.reviews.slice(0, PREVIEW_COUNT);
+    } else {
+      const client = createReviewsProvider();
+      const res = await client.getReviews({
+        placeId: normalised.raw,
+        limit: PREVIEW_COUNT,
+      });
+      place = res.place;
+      reviews = res.reviews.slice(0, PREVIEW_COUNT);
+      // Best-effort: never write the full-walk key from a partial preview.
+      await previewCache.set(slug, {
+        place,
+        reviews,
+        fetched_at: new Date().toISOString(),
+      });
+    }
   } catch (err) {
     if (err instanceof SemanticForceError) {
       return (
