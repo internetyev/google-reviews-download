@@ -18,8 +18,8 @@ import {
 } from "@/lib/seo/variants";
 
 describe("SEO_VARIANTS — registry shape", () => {
-  it("holds the ten L1.6a candidates", () => {
-    expect(SEO_VARIANTS).toHaveLength(10);
+  it("holds the full candidate set (10 L1.6a + 3 from the 2026-06 keyword pass)", () => {
+    expect(SEO_VARIANTS).toHaveLength(13);
   });
 
   it("has unique ids and unique slugs", () => {
@@ -63,10 +63,23 @@ describe("publishedVariants / findPublishedVariant", () => {
     expect(pub.length).toBeLessThanOrEqual(SEO_VARIANTS.length);
   });
 
-  it("stays inert until L3.1b flips the corgi-picked top 5", () => {
-    // Documents the pre-L3.1b state: nothing is live yet (gated on L1.6b).
-    // When L3.1b lands this assertion is the intended, reviewed change.
-    expect(publishedVariants()).toHaveLength(0);
+  it("publishes the Tier-1 money set (L3.1b — 8 live, one page per intent)", () => {
+    // L3.1b landed: the 2026-06 keyword pass picked the Tier-1 set
+    // (docs/seo/money-keywords.md). Pin the exact live slug set so any
+    // publish/unpublish flip is a reviewed change.
+    const liveSlugs = publishedVariants().map((v) => v.slug).sort();
+    expect(liveSlugs).toEqual(
+      [
+        "backup-google-reviews",
+        "download-all-reviews-from-google",
+        "download-google-maps-reviews",
+        "download-google-reviews-as-excel",
+        "export-google-my-business-reviews",
+        "export-google-reviews-to-csv",
+        "google-business-profile-reviews-download",
+        "google-reviews-to-json",
+      ].sort(),
+    );
   });
 
   it("findPublishedVariant returns undefined for an unknown slug", () => {
@@ -112,6 +125,9 @@ describe("SEO_VARIANTS — slug-id pair freeze (URL contract)", () => {
     ["C1", "download-google-maps-reviews"],
     ["C2", "google-business-profile-reviews-download"],
     ["C3", "download-all-reviews-from-google"],
+    ["D1", "export-google-my-business-reviews"],
+    ["D2", "google-reviews-to-json"],
+    ["D3", "bulk-export-google-reviews"],
   ];
 
   it("registry order matches the expected {id, slug} pairs exactly", () => {
@@ -119,18 +135,16 @@ describe("SEO_VARIANTS — slug-id pair freeze (URL contract)", () => {
     expect(actual).toEqual(EXPECTED_PAIRS);
   });
 
-  it("group balance is 4 A-prefix + 3 B-prefix + 3 C-prefix ids", () => {
-    // Mirrors the docs/seo-variants.md grouping (A format-named, B verb-led,
-    // C surface/source). A refactor that silently dropped a Group A entry and
-    // added a Group B entry would still satisfy length=10 and uniqueness; the
-    // per-prefix count is the load-bearing assertion that catches it.
+  it("group balance is 4 A + 3 B + 3 C + 3 D ids", () => {
+    // A format-named, B verb-led, C surface/source (L1.6a), D the 2026-06
+    // keyword-pass additions. Per-prefix count catches a silent group swap.
     const byPrefix = (p: string) =>
       SEO_VARIANTS.filter((v) => v.id.startsWith(p)).length;
     expect(byPrefix("A")).toBe(4);
     expect(byPrefix("B")).toBe(3);
     expect(byPrefix("C")).toBe(3);
-    // Belt-and-braces: every id is in exactly one of the three groups.
-    expect(byPrefix("A") + byPrefix("B") + byPrefix("C")).toBe(
+    expect(byPrefix("D")).toBe(3);
+    expect(byPrefix("A") + byPrefix("B") + byPrefix("C") + byPrefix("D")).toBe(
       SEO_VARIANTS.length,
     );
   });

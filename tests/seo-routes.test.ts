@@ -120,13 +120,11 @@ describe("sitemap() — URL enumeration", () => {
     }
   });
 
-  it("stays root-only until L3.1b flips the corgi-picked top 5", () => {
-    // Documents the pre-L3.1b state: no variant is published yet (gated on
-    // L1.6b). When L3.1b lands, the sitemap grows by exactly the published
-    // count and this length assertion is the intended, reviewed change —
-    // mirrors the seo-variants suite's pre-L3.1b note (D-044).
-    expect(publishedVariants()).toHaveLength(0);
-    expect(sitemap()).toHaveLength(1);
+  it("includes the live Tier-1 money pages (L3.1b landed)", () => {
+    // L3.1b: the sitemap now carries root + the published variants. Pinned
+    // against publishedVariants() so it tracks the live set automatically.
+    expect(publishedVariants().length).toBeGreaterThan(0);
+    expect(sitemap()).toHaveLength(1 + publishedVariants().length);
   });
 
   it("honours NEXT_PUBLIC_SITE_URL for the root URL too", () => {

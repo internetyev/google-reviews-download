@@ -37,9 +37,13 @@ export interface SeoVariant {
 }
 
 /**
- * All ten L1.6a candidates. Order matches `docs/seo-variants.md`
- * (Group A format-named, Group B verb-led, Group C surface/source).
- * `published` stays `false` for every entry until L3.1b.
+ * SEO money landing pages. L1.6a candidates + the 2026-06-08 corgi/DFS keyword
+ * pass (`docs/seo/money-keywords.md`). `published: true` = Tier-1, live and in
+ * the sitemap (this is L3.1b, unblocked by the funded keyword research). The
+ * Tier-1 set is deliberately one-page-per-intent (CSV, Excel, Maps surface,
+ * GBP surface, GMB surface, "all", backup, JSON) so no two pages cannibalise;
+ * the head terms (`export/download google reviews`) stay on the home page.
+ * `published: false` entries are Tier-2 — shipped next, after Tier-1 indexes.
  */
 export const SEO_VARIANTS: readonly SeoVariant[] = [
   {
@@ -54,7 +58,7 @@ export const SEO_VARIANTS: readonly SeoVariant[] = [
       "Paste a Google Maps place URL or a raw Place ID and get every review back as a CSV file in one click — no account, no spreadsheet import wizard.",
       "The CSV is written UTF-8 BOM, CRLF, fully quoted, so it double-clicks straight into Excel on Windows even when reviews contain emoji or non-Latin text. Most generic tools hand you a file Excel mangles; this one doesn't.",
     ],
-    published: false,
+    published: true,
   },
   {
     id: "A2",
@@ -65,10 +69,10 @@ export const SEO_VARIANTS: readonly SeoVariant[] = [
       "Get a Google business's reviews as a ready-to-open Excel workbook: one row per review, frozen header, tuned columns.",
     h1: "Download Google reviews as Excel",
     intro: [
-      "Pick the XLSX format and you get a real Excel workbook, not a CSV you have to coax into columns: one row per review, a frozen header row, and column widths already tuned for reading.",
+      "Whether you searched for “download as Excel” or “export Google reviews to Excel”, this is the page: pick the XLSX format and you get a real Excel workbook, not a CSV you have to coax into columns — one row per review, a frozen header row, and column widths already tuned for reading.",
       "Paste the place below, choose XLSX, and the file downloads. Nothing to install and no Google account involved.",
     ],
-    published: false,
+    published: true,
   },
   {
     id: "A3",
@@ -138,7 +142,7 @@ export const SEO_VARIANTS: readonly SeoVariant[] = [
       "Reviews are an asset you don't actually control — a profile merge, a suspension, or a flagged review can take them with little warning. This keeps your own copy.",
       "Paste the place, pick a format, and save the file somewhere you control. Run it again any time; same-place pulls within 24 hours are served from cache.",
     ],
-    published: false,
+    published: true,
   },
   {
     id: "C1",
@@ -152,7 +156,7 @@ export const SEO_VARIANTS: readonly SeoVariant[] = [
       "Paste a Google Maps place URL or Place ID and download every review — no Chrome extension to install and no account to create.",
       "You get the full set, not just the handful visible on the Maps panel, capped at a 5,000-review safety limit.",
     ],
-    published: false,
+    published: true,
   },
   {
     id: "C2",
@@ -166,7 +170,7 @@ export const SEO_VARIANTS: readonly SeoVariant[] = [
       "Google Business Profile is the current name for what used to be Google My Business. The reviews are the same; this downloads them as a file.",
       "Paste the profile's place below, pick a format, and the file downloads. No account, no install, no scraping.",
     ],
-    published: false,
+    published: true,
   },
   {
     id: "C3",
@@ -179,6 +183,48 @@ export const SEO_VARIANTS: readonly SeoVariant[] = [
     intro: [
       "“All” means all: the tool walks every page of reviews up to a 5,000-review safety cap, not just the visible first page that extensions and Google Takeout stop at.",
       "Paste the place, choose a format, and download the complete set.",
+    ],
+    published: true,
+  },
+  {
+    id: "D1",
+    slug: "export-google-my-business-reviews",
+    intent: "export",
+    metaTitle: "Export Google My Business Reviews — free tool",
+    metaDescription:
+      "Export your Google My Business (now Business Profile) reviews to CSV, JSON, or XLSX. No signup, no install.",
+    h1: "Export Google My Business reviews",
+    intro: [
+      "Google My Business is now called Google Business Profile, but the reviews are the same and people still search the old name. Either way, this exports them to a file.",
+      "Paste your business below, choose CSV, JSON, or XLSX, and download. No account, no install, no scraping — and same-place pulls within 24 hours come from cache.",
+    ],
+    published: true,
+  },
+  {
+    id: "D2",
+    slug: "google-reviews-to-json",
+    intent: "export",
+    metaTitle: "Google Reviews to JSON — for developers",
+    metaDescription:
+      "Export a Google place's reviews as clean JSON. Stable schema, plus an HTTP API and an MCP server. No signup.",
+    h1: "Google reviews to JSON",
+    intro: [
+      "Pick JSON and you get the raw response envelope — place metadata plus an array of reviews with a stable schema you can script against.",
+      "Prefer to automate it? The same data is available from the HTTP API and from an MCP server you can wire into Claude. Paste a place below to grab a one-off file, or see the API docs to integrate.",
+    ],
+    published: true,
+  },
+  {
+    id: "D3",
+    slug: "bulk-export-google-reviews",
+    intent: "export",
+    metaTitle: "Bulk Export Google Reviews — multiple locations",
+    metaDescription:
+      "Export Google reviews for several business locations, one place at a time, to CSV, JSON, or XLSX. No signup.",
+    h1: "Bulk export Google reviews",
+    intro: [
+      "Managing several locations? Export each one's reviews to a file and combine them in your spreadsheet. The tool runs one place at a time — paste a place, download, repeat — which keeps the data accurate per profile.",
+      "Each export is the complete set for that location (up to a 5,000-review cap), in the format you choose.",
     ],
     published: false,
   },
