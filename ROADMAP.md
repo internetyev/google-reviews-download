@@ -23,6 +23,17 @@ _Opened 2026-06-08 (D-084). The project stalled because Phases 4/5 (real data, d
 
 ---
 
+## Phase 28 — Post-unblock polish (real, agent-doable; NOT test-deepening) 🔧
+
+_Opened 2026-06-08 after Phase 27 completed. Per D-046/D-051 the routine opens a real-work phase rather than idling, and the D-084 STOP banner still bans suite-deepening — every leaf below is genuine feature/repair work that advances the web/API/MCP goal. These are the honest gaps surfaced while building Phase 27. Human-gated leaves (L4.1 SemanticForce, L5.1 domain, L5.2 deploy) remain out of scope for the routine._
+
+- [ ] L28.1 Wire name→`data_id` into `/api/reviews` (`app/api/reviews/route.ts`): when `normalisePlaceId` rejects the input, fall through to `resolveToDataId` (built in L27.2) so users can submit a **business name**, not just an id/URL. Cache the name→data_id resolution (separate namespace, reuse the L27.4 cache infra) so repeat name lookups don't burn a SerpApi search. Then drop the "identifiers only" caveat from `docs/api.md` + `lib/api/openapi.ts`. New-feature tests only (offline, injected resolver).
+- [ ] L28.2 Wire name input through the web form + `app/preview/page.tsx` too, so the paste-a-name UX works end-to-end on the site (the form already posts `placeId`; let it accept a name and preview resolve it via the same path as L28.1).
+- [ ] L28.3 **Fix the pre-existing red suite + tsc errors** (latent since the never-run D-039…D-083 era; surfaced by D-086): `tests/export-xlsx.test.ts` ×3 (SheetJS 0.18.5 freeze-pane `ySplit`/`!cols`), `tests/place-id.test.ts` ×1 (lowercased-ChIJ recase), and `app/api/reviews/route.ts:247` (Uint8Array→BodyInit) + the `home-page`/`root-layout` `El` casts. Goal: `npx tsc --noEmit` and `npx vitest run` fully green. Repair, not deepening. (Mirrored in background task `task_bd326b65`; if the human runs that, mark this `[x]`.)
+- [ ] L28.4 (hardening, optional) KV-backed rate limiter so the 10 req/min/IP limit holds across multiple prod instances (the current token bucket is in-process — noted in `docs/deploy.md`). Reuse the KV REST client pattern from `lib/cache/reviews-cache.ts`.
+
+---
+
 ## Phase 0 — Planning bundle (Sprint 0)
 
 - [x] L0.1 Write `PLAN.md`, `ROADMAP.md`, `ROUTINE.md`, `DECISIONS.md`, `LEDGER.md`
