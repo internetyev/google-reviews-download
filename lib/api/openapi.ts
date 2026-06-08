@@ -35,9 +35,8 @@ export const openApiSpec = {
             required: true,
             description:
               "A Google Place ID (ChIJ…), legacy data_id (0x…:0x…), a MOCK_* " +
-              "fixture id, or a Google Maps URL containing one. (Free-text " +
-              "business-name resolution exists in the library and is planned for " +
-              "this endpoint; today it accepts identifiers/URLs only.)",
+              "fixture id, a Google Maps URL containing one, OR a free-text " +
+              "business name (resolved via Google Maps search — serpapi provider only).",
             schema: { type: "string" },
             example: "0x80858098babc2d4b:0xbeedd659cc698c92",
           },
