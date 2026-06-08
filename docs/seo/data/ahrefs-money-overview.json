@@ -1,0 +1,8 @@
+{
+  "ok": false,
+  "error": {
+    "code": "AUTH_INVALID",
+    "message": "Ahrefs authentication failed",
+    "retry_after": null
+  }
+}
