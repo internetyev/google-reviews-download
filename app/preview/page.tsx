@@ -16,10 +16,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createReviewsProvider } from "@/lib/reviews/provider";
 import { createReviewsCache, createPreviewCache } from "@/lib/cache/reviews-cache";
-import {
-  normalisePlaceId,
-  PlaceIdParseError,
-} from "@/lib/semanticforce/place-id";
+import { resolveInputToNormalised } from "@/lib/reviews/resolve-input";
+import { PlaceIdParseError } from "@/lib/semanticforce/place-id";
 import {
   SemanticForceError,
   type PlaceMeta,
@@ -195,14 +193,19 @@ export default async function PreviewPage({
     );
   }
 
+  // Accept an id/URL or a business name (serpapi-resolved, cached) — same
+  // shared path as /api/reviews so the two surfaces behave identically (L28.2).
   let normalised;
   try {
-    normalised = normalisePlaceId(rawInput);
+    normalised = await resolveInputToNormalised(rawInput);
   } catch (err) {
     if (err instanceof PlaceIdParseError) {
       return (
         <ErrorCard title="That doesn't look like a place" detail={err.message} />
       );
+    }
+    if (err instanceof SemanticForceError) {
+      return <ErrorCard title="Couldn't find that business" detail={err.message} />;
     }
     throw err;
   }
