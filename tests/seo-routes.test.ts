@@ -26,6 +26,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import robots from "@/app/robots";
 import sitemap from "@/app/sitemap";
 import { publishedVariants } from "@/lib/seo/variants";
+import { publishedPosts } from "@/lib/blog/index";
 
 const FALLBACK = "https://googlereviewsdownload.com";
 
@@ -99,32 +100,37 @@ describe("sitemap() — URL enumeration", () => {
     }
   });
 
-  it("enumerates exactly root + publishedVariants() — nothing else", () => {
+  it("enumerates exactly root + money pages + blog index + posts", () => {
     const entries = sitemap();
     const pub = publishedVariants();
-    expect(entries).toHaveLength(1 + pub.length);
+    const posts = publishedPosts();
+    const blogIndex = posts.length > 0 ? 1 : 0;
+    expect(entries).toHaveLength(1 + pub.length + blogIndex + posts.length);
 
     const urls = new Set(entries.map((e) => e.url));
     expect(urls.has(`${FALLBACK}/`)).toBe(true);
-    for (const v of pub) {
-      expect(urls.has(`${FALLBACK}/${v.slug}`)).toBe(true);
-    }
+    for (const v of pub) expect(urls.has(`${FALLBACK}/${v.slug}`)).toBe(true);
+    if (blogIndex) expect(urls.has(`${FALLBACK}/blog`)).toBe(true);
+    for (const p of posts) expect(urls.has(`${FALLBACK}/blog/${p.slug}`)).toBe(true);
   });
 
-  it("variant entries carry monthly/priority-0.8 when present", () => {
-    const entries = sitemap();
-    for (const e of entries) {
-      if (e.url === `${FALLBACK}/`) continue;
+  it("variant entries carry monthly/priority-0.8", () => {
+    const variantUrls = new Set(
+      publishedVariants().map((v) => `${FALLBACK}/${v.slug}`),
+    );
+    for (const e of sitemap()) {
+      if (!variantUrls.has(e.url)) continue;
       expect(e.changeFrequency).toBe("monthly");
       expect(e.priority).toBe(0.8);
     }
   });
 
-  it("includes the live Tier-1 money pages (L3.1b landed)", () => {
-    // L3.1b: the sitemap now carries root + the published variants. Pinned
-    // against publishedVariants() so it tracks the live set automatically.
+  it("includes the live Tier-1 money pages + the blog (L3.1b + blog launch)", () => {
     expect(publishedVariants().length).toBeGreaterThan(0);
-    expect(sitemap()).toHaveLength(1 + publishedVariants().length);
+    const posts = publishedPosts();
+    expect(sitemap()).toHaveLength(
+      1 + publishedVariants().length + (posts.length > 0 ? 1 : 0) + posts.length,
+    );
   });
 
   it("honours NEXT_PUBLIC_SITE_URL for the root URL too", () => {
@@ -210,13 +216,17 @@ describe("sitemap() — lastModified freshness", () => {
     expect(entries.length).toBeGreaterThan(0);
     for (const e of entries) {
       expect(e.lastModified).toBeInstanceOf(Date);
-      const ts = (e.lastModified as Date).getTime();
-      // Pinned inside the call window — proves the field is *computed*
-      // when sitemap() runs, not a literal vintage like
-      // `new Date("2025-01-01")` and not a module-load-time constant.
-      expect(ts).toBeGreaterThanOrEqual(before);
-      expect(ts).toBeLessThanOrEqual(after);
+      // Never a future date for any entry.
+      expect((e.lastModified as Date).getTime()).toBeLessThanOrEqual(after);
     }
+    // The dynamically-dated entries (root + money pages) carry a call-time
+    // `now` — pinned inside the call window so a literal vintage / module-load
+    // constant would fail. Blog entries intentionally carry their own publish
+    // date (a post's lastmod must be its real edit date), so they're exempt.
+    const root = entries.find((e) => e.url === `${FALLBACK}/`)!;
+    const rootTs = (root.lastModified as Date).getTime();
+    expect(rootTs).toBeGreaterThanOrEqual(before);
+    expect(rootTs).toBeLessThanOrEqual(after);
   });
 
   it("creates a fresh Date object on each call — not memoised at module load", () => {
