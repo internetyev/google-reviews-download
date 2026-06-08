@@ -48,8 +48,12 @@ will burn searches. The preview path is cached separately (D-089).
 - Edge routes: `app/api/healthcheck`, `app/api/openapi`, and the rate-limit
   middleware (`middleware.ts`, scoped to `/api/reviews`).
 - `app/api/reviews` runs on the Node runtime (it streams CSV/XLSX bytes).
-- The 10 req/min/IP rate limit is in-process (token bucket); for multi-instance
-  prod, a shared limiter (KV-backed) is a future hardening item.
+- The 10 req/min/IP rate limit uses the same KV store when it's configured
+  (`KV_REST_API_URL`/`KV_REST_API_TOKEN`), so the limit holds across instances
+  (L28.4). Without KV it falls back to an in-process token bucket (per-instance).
+  The KV limiter is best-effort: it fails **open** on a KV outage (never blocks
+  traffic) and the read-modify-write is non-atomic, so it can over-allow
+  slightly under high concurrency — fine for a soft abuse limit.
 
 ## Pre-deploy checklist (config level)
 

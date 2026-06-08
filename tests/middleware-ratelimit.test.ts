@@ -223,10 +223,10 @@ describe("middleware() — denial response contract (429 envelope, Retry-After)"
 
   it("returns 429 with Retry-After=6 on the (BUCKET_CAPACITY+1)th request from the same IP", async () => {
     for (let i = 0; i < BUCKET_CAPACITY; i++) {
-      const r = middleware(apiReq());
+      const r = await middleware(apiReq());
       expect(r.status).not.toBe(429);
     }
-    const res = middleware(apiReq());
+    const res = await middleware(apiReq());
     expect(res.status).toBe(429);
     // Both forms: the named-constant catches a typo to the constant's value,
     // the literal "6" catches a refactor that changed RETRY_AFTER_SECONDS
@@ -236,8 +236,8 @@ describe("middleware() — denial response contract (429 envelope, Retry-After)"
   });
 
   it("denial JSON body is structurally `{error:{code,message}}` (D-027 envelope symmetric with SemanticForceError)", async () => {
-    for (let i = 0; i < BUCKET_CAPACITY; i++) middleware(apiReq());
-    const res = middleware(apiReq());
+    for (let i = 0; i < BUCKET_CAPACITY; i++) await middleware(apiReq());
+    const res = await middleware(apiReq());
     expect(res.status).toBe(429);
 
     const body = (await res.json()) as { error: { code: string; message: string } };
@@ -262,8 +262,8 @@ describe("middleware() — pass-through on allow", () => {
     buckets.clear();
   });
 
-  it("first request from a fresh IP returns a non-429 with no Retry-After header", () => {
-    const res = middleware(apiReq("203.0.113.99"));
+  it("first request from a fresh IP returns a non-429 with no Retry-After header", async () => {
+    const res = await middleware(apiReq("203.0.113.99"));
     // The contract under test is "the pass-through path does not look like a
     // denial" — pinning the exact NextResponse.next() sentinel header
     // (x-middleware-next: 1) is a Next-runtime internal that has moved
