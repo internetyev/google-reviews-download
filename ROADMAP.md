@@ -34,6 +34,14 @@ _Opened 2026-06-08 after Phase 27 completed. Per D-046/D-051 the routine opens a
 
 ---
 
+## Phase 29 — Final loose ends (real; likely the last agent-doable phase) 🪢
+
+_Opened 2026-06-08 after Phase 28. One genuine correctness gap remains from L27.3; after it, the only open leaves are human-gated (L4.1 SemanticForce creds, L5.1 domain, L5.2 deploy, L1.6b/L3.1b corgi cash) and the routine should idle (D-084 STOP banner — do NOT manufacture suite-deepening)._
+
+- [ ] L29.1 Make `/api/healthcheck` provider-aware. Today it always probes SemanticForce via `createSemanticForceClient()` (L27.3 left it so by design, deferred), so when `REVIEWS_PROVIDER=serpapi` the health check reports the WRONG data source's liveness. Switch it to probe the active provider via `createReviewsProvider()` (keep the existing client-injection seam + the fixture-mode/`mode` reporting), and report which provider was probed. New-feature tests only (offline, injected client). After this, the agent backlog is genuinely empty.
+
+---
+
 ## Phase 0 — Planning bundle (Sprint 0)
 
 - [x] L0.1 Write `PLAN.md`, `ROADMAP.md`, `ROUTINE.md`, `DECISIONS.md`, `LEDGER.md`
