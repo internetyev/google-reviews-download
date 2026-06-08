@@ -16,13 +16,14 @@ A machine-readable **OpenAPI 3.1** description of everything below is served at
 
 | Param     | Required | Default | Notes |
 |-----------|----------|---------|-------|
-| `placeId` | yes      | —       | A Google Place ID (`ChIJ…`), legacy `data_id` (`0x…:0x…`), a `MOCK_*` fixture id, or a Google Maps URL containing one. Short `maps.app.goo.gl` links are rejected — paste the long URL or the id. ¹ |
+| `placeId` | yes      | —       | A Google Place ID (`ChIJ…`), legacy `data_id` (`0x…:0x…`), a `MOCK_*` fixture id, a Google Maps URL containing one, **or a free-text business name**. Short `maps.app.goo.gl` links are rejected — paste the long URL or the id. ¹ |
 | `format`  | no       | `json`  | One of `json` \| `csv` \| `xlsx` (case-insensitive). |
 | `limit`   | no       | all     | Positive integer, capped at **5000**. Trims the JSON array and the CSV/XLSX rows. The 24h cache always holds the full walk, so a later larger `limit` is served from cache. |
 
-¹ Free-text **business-name** resolution exists in the library
-(`lib/serpapi/resolve.ts`, `engine=google_maps`) and is planned for this
-endpoint; today the route accepts identifiers/URLs only.
+¹ A free-text **business name** is resolved to a `data_id` via Google Maps
+search (`lib/serpapi/resolve.ts`, `engine=google_maps`) — **serpapi provider
+only** (other providers return `400` for a name). The name→`data_id` mapping is
+cached (24h) so a repeat name lookup doesn't spend another search.
 
 ### Success — `200`
 
