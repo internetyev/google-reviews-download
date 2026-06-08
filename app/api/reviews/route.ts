@@ -260,7 +260,10 @@ function respondSuccess(
   // format === "xlsx" — only branch left after json/csv above.
   const xlsx = formatReviewsAsXlsx(trimmedPayload);
   const xlsxName = xlsxFilename(slug, payload.fetched_at);
-  return new NextResponse(xlsx, {
+  // Wrap the bytes in a Blob: a BodyInit the edge runtime accepts directly.
+  // Copy into a fresh ArrayBuffer-backed view so the type is a concrete
+  // BlobPart (TS 5.7's Uint8Array<ArrayBufferLike> isn't assignable as-is).
+  return new NextResponse(new Blob([new Uint8Array(xlsx)]), {
     status: 200,
     headers: {
       "Content-Type": XLSX_CONTENT_TYPE,

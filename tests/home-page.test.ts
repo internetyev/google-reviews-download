@@ -234,8 +234,8 @@ describe("HomePage — returns a fresh element tree per call", () => {
   });
 
   it("two calls return reference-distinct nth direct children of <main>", () => {
-    const a = HomePage() as El;
-    const b = HomePage() as El;
+    const a = HomePage() as unknown as El;
+    const b = HomePage() as unknown as El;
     const aChildren = a.props?.children as unknown[];
     const bChildren = b.props?.children as unknown[];
     expect(Array.isArray(aChildren)).toBe(true);
@@ -271,6 +271,6 @@ describe("HomePage — <main> is the outermost returned element", () => {
     // A `<div><main>...</main></div>` or `<><main>...</main></>` wrapper would
     // still satisfy `mains.length === 1` from the composition describe — only
     // this identity check pins that the page IS the <main>.
-    expect((tree as El).type).toBe("main");
+    expect((tree as unknown as El).type).toBe("main");
   });
 });

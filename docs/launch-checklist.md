@@ -16,7 +16,7 @@ Items tagged **(routine)** are validated by the autonomous routine's PRs in pass
 - [ ] (human) `npx tsc --noEmit` passes — no type errors.
 - [ ] (human) `npm run lint` passes (`next lint` against the legacy ESLint config per D-024).
 - [ ] (human) `npm run build` succeeds locally. Note the bundle sizes Next prints for `app/api/reviews` and `app/page`.
-- [ ] (human) `npm run dev` smoke: paste a `MOCK_*` Place ID into `app/page.tsx`, confirm JSON downloads, CSV opens in Excel without an import wizard prompt, XLSX opens with a frozen header row. Try all three fixtures (small / mid / large).
+- [ ] (human) `npm run dev` smoke: paste a `MOCK_*` Place ID into `app/page.tsx`, confirm JSON downloads, CSV opens in Excel without an import wizard prompt, XLSX opens with the tuned column widths. (Note: the header row is **not** frozen — SheetJS 0.18.5 CE doesn't serialize freeze panes; the writer requests it for a future upgrade. See D-096.) Try all three fixtures (small / mid / large).
 - [ ] (human) Unicode spot-check: at least one reviewed CSV row contains em-dashes, smart quotes, and a non-Latin script (CJK or Cyrillic) and renders correctly in Excel-on-Windows. This is the entire reason for BOM+CRLF+QUOTE_ALL (ADR-003); if it breaks, do not deploy.
 - [ ] (human) `middleware.ts` rate-limit smoke: hit `/api/reviews?placeId=MOCK_SMALL_001` 12 times in a row from `curl` — the 11th and 12th responses return `429` with `Retry-After: 6` and the `{error:{code:"rate_limited"}}` envelope from D-035.
 

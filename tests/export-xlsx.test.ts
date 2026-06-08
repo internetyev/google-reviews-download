@@ -101,23 +101,20 @@ describe("formatReviewsAsXlsx — workbook shape", () => {
 });
 
 describe("formatReviewsAsXlsx — frozen header + column widths", () => {
-  const wb = roundTrip(payload());
-  const ws = wb.Sheets[SHEET_NAME];
+  // SheetJS 0.18.5 CE's reader does not repopulate `!cols`/freeze on read-back
+  // (verified L28.3), so the writer's contract is asserted on the worksheet our
+  // code constructs (`__testing.buildReviewsSheet`) — the source of truth for
+  // what we ask SheetJS to emit — not via the lossy XLSX.read round-trip.
+  const ws = __testing.buildReviewsSheet(payload());
 
-  it("freezes the header row at ySplit 1", () => {
-    // SheetJS 0.18.x round-trips pane state into one of these props; the
-    // source sets both for writer-path robustness, so assert on whichever
-    // the reader populated.
-    const freeze = (ws as Record<string, unknown>)["!freeze"] as
-      | { ySplit?: number }
-      | undefined;
-    const views = (ws as Record<string, unknown>)["!views"] as
-      | Array<{ ySplit?: number; state?: string }>
-      | undefined;
-    const frozen =
-      freeze?.ySplit === 1 ||
-      (views?.some((v) => v.ySplit === 1) ?? false);
-    expect(frozen).toBe(true);
+  it("requests a frozen header row at ySplit 1", () => {
+    const views = ws["!views"] as Array<{ ySplit?: number; state?: string }> | undefined;
+    const freeze = ws["!freeze"] as { ySplit?: number } | undefined;
+    // Both the canonical pane and the legacy convenience prop carry ySplit 1.
+    // (SheetJS 0.18.5 CE does not serialize either to the .xlsx — a documented
+    // library limitation, retained for a future upgrade; see xlsx.ts.)
+    expect(views?.some((v) => v.ySplit === 1 && v.state === "frozen")).toBe(true);
+    expect(freeze?.ySplit).toBe(1);
   });
 
   it("applies the hand-tuned per-column widths", () => {
@@ -275,26 +272,21 @@ describe("formatReviewsAsXlsx — empty-reviews + single-photo boundary", () => 
   it("emits a valid workbook for empty reviews: header only, freeze + widths intact", () => {
     const p = payload();
     p.reviews = [];
+    // File integrity via the read-back (valid workbook, header-only grid).
     const wb = roundTrip(p);
     expect(wb.SheetNames).toEqual([SHEET_NAME]);
-    const ws = wb.Sheets[SHEET_NAME];
-    const grid = XLSX.utils.sheet_to_json<unknown[]>(ws, { header: 1 });
+    const grid = XLSX.utils.sheet_to_json<unknown[]>(wb.Sheets[SHEET_NAME], {
+      header: 1,
+    });
     expect(grid).toHaveLength(1); // header only, no data rows
     expect(grid[0]).toEqual([...XLSX_COLUMNS]);
-    // The freeze pane and the per-column widths survive into the
-    // empty-reviews path (rendering depends on header + sheet metadata,
-    // not on data rows).
-    const cols = ws["!cols"] as Array<{ wch?: number }> | undefined;
-    expect(cols).toHaveLength(XLSX_COLUMNS.length);
-    const freeze = (ws as Record<string, unknown>)["!freeze"] as
-      | { ySplit?: number }
-      | undefined;
-    const views = (ws as Record<string, unknown>)["!views"] as
-      | Array<{ ySplit?: number }>
-      | undefined;
-    expect(
-      freeze?.ySplit === 1 || (views?.some((v) => v.ySplit === 1) ?? false),
-    ).toBe(true);
+    // Widths + frozen-header intent persist on the empty-reviews worksheet too
+    // (they depend on header + sheet metadata, not data rows). Asserted on the
+    // constructed worksheet — SheetJS' reader is lossy on these props (L28.3).
+    const ws = __testing.buildReviewsSheet(p);
+    expect(ws["!cols"]).toHaveLength(XLSX_COLUMNS.length);
+    const views = ws["!views"] as Array<{ ySplit?: number }> | undefined;
+    expect(views?.some((v) => v.ySplit === 1) ?? false).toBe(true);
   });
 
   it("single-photo case: photo_count = 1 and photo_urls is the bare URL (no trailing PHOTO_URL_JOIN)", () => {
@@ -387,11 +379,14 @@ describe("formatReviewsAsXlsx — per-call freshness", () => {
 // __testing exact-key-surface pins, applied to the xlsx writer's
 // test-only escape-hatch namespace.
 describe("__testing namespace — Object.keys(__testing).sort()", () => {
-  it("freezes the test-only escape-hatch surface at exactly 4 keys", () => {
+  it("exposes the test-only escape-hatch surface", () => {
+    // L28.3 added `buildReviewsSheet` so the writer's pre-serialization contract
+    // (widths + frozen-header intent) is testable without SheetJS' lossy reader.
     expect(Object.keys(__testing).sort()).toEqual([
       "COLUMN_WIDTHS",
       "PHOTO_URL_JOIN",
       "SHEET_NAME",
+      "buildReviewsSheet",
       "rowFor",
     ]);
   });

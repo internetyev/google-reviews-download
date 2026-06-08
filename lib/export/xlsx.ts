@@ -75,7 +75,21 @@ type SheetWithFreeze = XLSX.WorkSheet & {
   "!freeze"?: { xSplit?: number; ySplit?: number };
 };
 
-export function formatReviewsAsXlsx(payload: CachedReviewsPayload): Uint8Array {
+// Build the worksheet our writer hands to SheetJS: one row per review in the
+// fixed column order, hand-tuned column widths (`!cols`), and a frozen header
+// row requested via both the canonical SheetView pane (`!views`) and SheetJS'
+// legacy convenience prop (`!freeze`). Pure + synchronous, so the writer's
+// contract is unit-testable without round-tripping through SheetJS' reader
+// (which is lossy — see below).
+//
+// NOTE (verified L28.3): SheetJS 0.18.5 CE serializes `!cols` (column widths
+// DO reach the file) but does NOT serialize a freeze pane from any of these
+// props — the `!views`/`!freeze` intent is retained here so a future SheetJS
+// upgrade (or Pro build) emits the frozen header with no code change, but the
+// shipped 0.18.5 workbook does not actually freeze. Its reader also does not
+// repopulate `!cols` on read-back, so file inspection must be at the
+// worksheet-construction layer, not via XLSX.read.
+function buildReviewsSheet(payload: CachedReviewsPayload): SheetWithFreeze {
   const rows: Row[] = payload.reviews.map((r) => rowFor(r, payload));
 
   const ws = XLSX.utils.json_to_sheet(rows, {
@@ -83,11 +97,6 @@ export function formatReviewsAsXlsx(payload: CachedReviewsPayload): Uint8Array {
   }) as SheetWithFreeze;
 
   ws["!cols"] = XLSX_COLUMNS.map((col) => ({ wch: COLUMN_WIDTHS[col] }));
-
-  // Freeze the header row. We set both the canonical SheetView pane
-  // (`!views`) and SheetJS' legacy convenience prop (`!freeze`) so the
-  // frozen-row state survives whichever writer path SheetJS selects
-  // internally for this workbook.
   ws["!views"] = [
     {
       state: "frozen",
@@ -98,6 +107,12 @@ export function formatReviewsAsXlsx(payload: CachedReviewsPayload): Uint8Array {
     },
   ];
   ws["!freeze"] = { xSplit: 0, ySplit: 1 };
+
+  return ws;
+}
+
+export function formatReviewsAsXlsx(payload: CachedReviewsPayload): Uint8Array {
+  const ws = buildReviewsSheet(payload);
 
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, SHEET_NAME);
@@ -147,5 +162,6 @@ export const __testing = {
   COLUMN_WIDTHS,
   PHOTO_URL_JOIN,
   SHEET_NAME,
+  buildReviewsSheet,
   rowFor,
 };

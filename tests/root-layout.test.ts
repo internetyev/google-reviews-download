@@ -248,6 +248,6 @@ describe("RootLayout — <html> is the outermost returned element", () => {
     // still satisfy `html.length === 1` from the document-shell describe — only
     // this identity check pins that the root layout IS the <html>.
     const tree = RootLayout({ children: childMarker });
-    expect((tree as El).type).toBe("html");
+    expect((tree as unknown as El).type).toBe("html");
   });
 });
