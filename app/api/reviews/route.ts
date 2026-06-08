@@ -13,23 +13,20 @@
 // (L2.6) and XLSX (L2.7) are wired through `lib/export/csv.ts` and
 // `lib/export/xlsx.ts` respectively.
 import { NextRequest, NextResponse } from "next/server";
-import { createReviewsProvider, resolveProviderName } from "@/lib/reviews/provider";
+import { createReviewsProvider } from "@/lib/reviews/provider";
 import {
   PlaceMeta,
   Review,
   SemanticForceError,
   SemanticForceErrorCode,
 } from "@/lib/semanticforce/types";
-import {
-  normalisePlaceId,
-  PlaceIdParseError,
-} from "@/lib/semanticforce/place-id";
+import { PlaceIdParseError } from "@/lib/semanticforce/place-id";
 import {
   CachedReviewsPayload,
   createReviewsCache,
-  createResolveCache,
 } from "@/lib/cache/reviews-cache";
 import { resolveToDataId } from "@/lib/serpapi/resolve";
+import { resolveInputToNormalised } from "@/lib/reviews/resolve-input";
 import { csvFilename, formatReviewsAsCsv } from "@/lib/export/csv";
 import {
   XLSX_CONTENT_TYPE,
@@ -69,31 +66,6 @@ export async function GET(req: NextRequest) {
   return handleGet(req, { resolve: resolveToDataId });
 }
 
-// Stable cache key for a free-text business name (case/space-insensitive).
-function nameSlug(name: string): string {
-  return name
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-}
-
-// Resolve a business name to a normalised id, caching the name→data_id mapping
-// so a repeat name lookup doesn't burn another SerpApi search. (L28.1)
-async function resolveNameToNormalised(name: string, deps: RouteDeps) {
-  const key = nameSlug(name);
-  const resolveCache = createResolveCache();
-  const hit = await resolveCache.get(key);
-  const dataId = hit
-    ? hit.dataId
-    : await (async () => {
-        const r = await deps.resolve(name);
-        await resolveCache.set(key, { dataId: r.dataId, place: r.place });
-        return r.dataId;
-      })();
-  return normalisePlaceId(dataId);
-}
-
 async function handleGet(req: NextRequest, deps: RouteDeps) {
   const params = req.nextUrl.searchParams;
   const placeIdInput = params.get("placeId");
@@ -126,27 +98,19 @@ async function handleGet(req: NextRequest, deps: RouteDeps) {
     userLimit = Math.min(Math.floor(parsed), HARD_CAP_REVIEWS);
   }
 
+  // Accept an id/URL or a business name (serpapi-resolved, cached) — shared
+  // with the web preview so both surfaces behave identically (L28.1/L28.2).
   let normalised;
   try {
-    normalised = normalisePlaceId(placeIdInput);
+    normalised = await resolveInputToNormalised(placeIdInput, { resolve: deps.resolve });
   } catch (err) {
-    if (!(err instanceof PlaceIdParseError)) throw err;
-    // Not a recognisable id/URL — it may be a business name. Only the SerpApi
-    // provider can resolve names (engine=google_maps); other providers 400.
-    if (resolveProviderName(process.env.REVIEWS_PROVIDER) !== "serpapi") {
+    if (err instanceof SemanticForceError) {
+      return errorJson(err.code, err.message, statusForCode(err.code, err.status));
+    }
+    if (err instanceof PlaceIdParseError) {
       return errorJson("bad_request", err.message, 400);
     }
-    try {
-      normalised = await resolveNameToNormalised(placeIdInput, deps);
-    } catch (rErr) {
-      if (rErr instanceof SemanticForceError) {
-        return errorJson(rErr.code, rErr.message, statusForCode(rErr.code, rErr.status));
-      }
-      if (rErr instanceof PlaceIdParseError) {
-        return errorJson("bad_request", rErr.message, 400);
-      }
-      throw rErr;
-    }
+    throw err;
   }
 
   const cache = createReviewsCache();
@@ -349,7 +313,6 @@ export const __testing = {
   SUPPORTED_FORMATS,
   statusForCode,
   inferRetryAfter,
-  nameSlug,
   // Drive the handler with an injected name resolver (offline tests).
   handleGet,
 };

@@ -47,10 +47,6 @@ describe("/api/reviews — business-name resolution (L28.1)", () => {
     }
   });
 
-  it("nameSlug normalises case/space/punctuation", () => {
-    expect(__testing.nameSlug("  Blue Bottle Coffee!! ")).toBe("blue-bottle-coffee");
-  });
-
   it("resolves a business name, then walks reviews for the resolved id", async () => {
     let seenInput = "";
     const deps = {
