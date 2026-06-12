@@ -272,6 +272,18 @@ _Opened per D-046/D-051/D-074/D-075: with L17.1 merged (#71), every standard Pha
 
 ---
 
+## Phase 30 — Product polish & docs (agent-doable, no creds/deploys)
+
+_Opened to give the routine real, non-test-padding work after the Phase 27–29 unblock. All five are genuinely agent-doable — no creds, no deploy, offline-testable, and NOT suite-deepening on already-tested modules (the banned rut, D-084). They are real product/docs/robustness work the project still lacks. **Note for the next run:** these were authored while `origin/main` and local `main` were SHA-diverged (the pipeline-desync block — see `BLOCKED.md`); L30.1 was built directly on local `main` (which already carries Phases 27–29) and pushed to a backup branch, **not** routed through a squashing `claude/*` PR, so the 19 unpushed commits' history stays intact for the human's rebase. Once the human reconciles per `BLOCKED.md`, the remaining leaves can resume the normal branch-PR flow (D-099)._
+
+- [x] L30.1 Top-level `README.md` quickstart covering all three delivery surfaces (web tool, HTTP API, MCP server) — consolidated the stale doc-index README into a real onboarding doc: one copy-paste example per surface, a `REVIEWS_PROVIDER` provider table (mock/serpapi/semanticforce + quota/creds notes), and a `cp .env.example .env.local` zero-quota-mock quickstart. Sourced from `docs/api.md`, `mcp/README.md`, and `.env.example`; no behavioural change, docs only (D-099).
+- [ ] L30.2 Friendly error-UX pass on the web form: map each `SemanticForceError` case (quota exceeded, place-not-found, rate-limited, upstream 5xx) to a human-readable message + retry hint; offline component test over the mapping.
+- [ ] L30.3 `docs/architecture.md` — the provider-switch design (`REVIEWS_PROVIDER=serpapi|semanticforce|mock`), the `SemanticForceClient` contract boundary, and the two cache namespaces (preview vs. full); diagram in Mermaid.
+- [ ] L30.4 Export-parity invariant: assert CSV and XLSX exporters emit identical column set + ordering from the same `Review[]`; add one offline cross-exporter test (this is a real cross-module contract, not single-module padding).
+- [ ] L30.5 `/api/reviews` input hardening: clamp `limit` to a sane max, reject/normalise malformed `business-name`, return `400` with a typed error body; offline route tests for each branch.
+
+---
+
 ## Out-of-scope parking lot
 
 - Multi-place batch export
