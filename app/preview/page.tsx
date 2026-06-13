@@ -18,6 +18,7 @@ import { createReviewsProvider } from "@/lib/reviews/provider";
 import { createReviewsCache, createPreviewCache } from "@/lib/cache/reviews-cache";
 import { resolveInputToNormalised } from "@/lib/reviews/resolve-input";
 import { PlaceIdParseError } from "@/lib/semanticforce/place-id";
+import { semanticForceErrorToUx } from "@/lib/semanticforce/error-ux";
 import {
   SemanticForceError,
   type PlaceMeta,
@@ -60,12 +61,25 @@ function Shell({ children }: { children: ReactNode }) {
   );
 }
 
-function ErrorCard({ title, detail }: { title: string; detail: string }) {
+function ErrorCard({
+  title,
+  detail,
+  retryHint,
+}: {
+  title: string;
+  detail: string;
+  retryHint?: string;
+}) {
   return (
     <Shell>
       <div className="flex flex-col gap-3 rounded-lg border border-destructive/40 bg-destructive/5 p-6">
         <h1 className="text-xl font-semibold">{title}</h1>
         <p className="text-sm text-muted-foreground">{detail}</p>
+        {retryHint && (
+          <p className="text-sm text-foreground">
+            <span className="font-medium">What to try:</span> {retryHint}
+          </p>
+        )}
       </div>
     </Shell>
   );
@@ -205,7 +219,10 @@ export default async function PreviewPage({
       );
     }
     if (err instanceof SemanticForceError) {
-      return <ErrorCard title="Couldn't find that business" detail={err.message} />;
+      const ux = semanticForceErrorToUx(err);
+      return (
+        <ErrorCard title={ux.title} detail={ux.detail} retryHint={ux.retryHint} />
+      );
     }
     throw err;
   }
@@ -242,11 +259,9 @@ export default async function PreviewPage({
     }
   } catch (err) {
     if (err instanceof SemanticForceError) {
+      const ux = semanticForceErrorToUx(err);
       return (
-        <ErrorCard
-          title="Couldn't load that place"
-          detail={err.message}
-        />
+        <ErrorCard title={ux.title} detail={ux.detail} retryHint={ux.retryHint} />
       );
     }
     throw err;
