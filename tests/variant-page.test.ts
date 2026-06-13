@@ -46,10 +46,12 @@ import VariantPage, {
 import * as variantRouteModule from "@/app/(seo)/[variant]/page";
 import { SEO_VARIANTS, publishedVariants } from "@/lib/seo/variants";
 
-// A real registry slug. Pre-L3.1b it is `published: false`, so the route must
-// treat it as nonexistent exactly like an unknown slug — that equivalence is
-// the whole inert-until-L3.1b contract.
-const REAL_UNPUBLISHED_SLUG = SEO_VARIANTS[0].slug; // "export-google-reviews-to-csv"
+// A real registry slug that is still `published: false` (Tier-2): the route
+// must treat it as nonexistent exactly like an unknown slug. A published
+// (Tier-1) slug must render. Derived from the registry so they stay correct as
+// the published set changes.
+const REAL_UNPUBLISHED_SLUG = SEO_VARIANTS.find((v) => !v.published)!.slug;
+const REAL_PUBLISHED_SLUG = SEO_VARIANTS.find((v) => v.published)!.slug;
 const GARBAGE_SLUG = "not-a-real-variant-xyz";
 
 const mkParams = (slug: string) => ({ params: Promise.resolve({ variant: slug }) });
@@ -124,7 +126,12 @@ describe("variant route — generateStaticParams", () => {
     expect(params).toEqual(pub.map((v) => ({ variant: v.slug })));
   });
 
-  it("is empty pre-L3.1b — nothing is published yet (flips when L3.1b lands)", () => {
+  it("enumerates the live Tier-1 set (L3.1b landed — 8 published)", () => {
+    expect(generateStaticParams().length).toBe(publishedVariants().length);
+    expect(generateStaticParams().length).toBeGreaterThan(0);
+  });
+
+  it.skip("is empty pre-L3.1b — superseded by L3.1b (kept for history)", () => {
     // Paired with the publishedVariants() length, mirroring the seo-variants /
     // seo-routes suites: when L3.1b flips the corgi-picked top-5 to published,
     // BOTH numbers change together and this is the intended, reviewed change.
@@ -149,8 +156,8 @@ describe("variant route — generateMetadata for a non-existent page", () => {
 
 // --- VariantPage 404s every current slug -----------------------------------
 
-describe("variant route — VariantPage is inert pre-L3.1b", () => {
-  it("calls notFound() for a real but unpublished registry slug", async () => {
+describe("variant route — VariantPage publish gate (L3.1b)", () => {
+  it("calls notFound() for a real but unpublished (Tier-2) registry slug", async () => {
     await expectNotFound(REAL_UNPUBLISHED_SLUG);
   });
 
@@ -158,12 +165,24 @@ describe("variant route — VariantPage is inert pre-L3.1b", () => {
     await expectNotFound(GARBAGE_SLUG);
   });
 
-  it("404s EVERY registry slug — none is published before L3.1b", async () => {
-    // The core inert-posture guard: a regression that widened the lookup past
-    // the `published` gate would render one or more of these instead of 404ing.
+  it("404s every UNPUBLISHED slug, renders every PUBLISHED one (the gate)", async () => {
+    // The core gate guard: a regression that widened the lookup past the
+    // `published` flag would render a Tier-2 slug; one that narrowed it would
+    // 404 a live page. Check both sides against the registry's own flags.
     for (const v of SEO_VARIANTS) {
-      await expectNotFound(v.slug);
+      if (v.published) {
+        const tree = await VariantPage(mkParams(v.slug));
+        expect(countByName(tree, "ReviewToolForm")).toBe(1);
+      } else {
+        await expectNotFound(v.slug);
+      }
     }
+  });
+
+  it("renders the shared tool + FAQ for a published slug", async () => {
+    const tree = await VariantPage(mkParams(REAL_PUBLISHED_SLUG));
+    expect(countByName(tree, "ReviewToolForm")).toBe(1);
+    expect(countByName(tree, "FaqSection")).toBe(1);
   });
 
   it("never reaches the render path — zero ReviewToolForm rendered on 404", async () => {

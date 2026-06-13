@@ -14,11 +14,11 @@
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { createSemanticForceClient } from "@/lib/semanticforce/client";
-import {
-  normalisePlaceId,
-  PlaceIdParseError,
-} from "@/lib/semanticforce/place-id";
+import { createReviewsProvider } from "@/lib/reviews/provider";
+import { createReviewsCache, createPreviewCache } from "@/lib/cache/reviews-cache";
+import { resolveInputToNormalised } from "@/lib/reviews/resolve-input";
+import { PlaceIdParseError } from "@/lib/semanticforce/place-id";
+import { semanticForceErrorToUx } from "@/lib/semanticforce/error-ux";
 import {
   SemanticForceError,
   type PlaceMeta,
@@ -61,12 +61,25 @@ function Shell({ children }: { children: ReactNode }) {
   );
 }
 
-function ErrorCard({ title, detail }: { title: string; detail: string }) {
+function ErrorCard({
+  title,
+  detail,
+  retryHint,
+}: {
+  title: string;
+  detail: string;
+  retryHint?: string;
+}) {
   return (
     <Shell>
       <div className="flex flex-col gap-3 rounded-lg border border-destructive/40 bg-destructive/5 p-6">
         <h1 className="text-xl font-semibold">{title}</h1>
         <p className="text-sm text-muted-foreground">{detail}</p>
+        {retryHint && (
+          <p className="text-sm text-foreground">
+            <span className="font-medium">What to try:</span> {retryHint}
+          </p>
+        )}
       </div>
     </Shell>
   );
@@ -194,13 +207,21 @@ export default async function PreviewPage({
     );
   }
 
+  // Accept an id/URL or a business name (serpapi-resolved, cached) — same
+  // shared path as /api/reviews so the two surfaces behave identically (L28.2).
   let normalised;
   try {
-    normalised = normalisePlaceId(rawInput);
+    normalised = await resolveInputToNormalised(rawInput);
   } catch (err) {
     if (err instanceof PlaceIdParseError) {
       return (
         <ErrorCard title="That doesn't look like a place" detail={err.message} />
+      );
+    }
+    if (err instanceof SemanticForceError) {
+      const ux = semanticForceErrorToUx(err);
+      return (
+        <ErrorCard title={ux.title} detail={ux.detail} retryHint={ux.retryHint} />
       );
     }
     throw err;
@@ -209,20 +230,38 @@ export default async function PreviewPage({
   let place: PlaceMeta;
   let reviews: Review[];
   try {
-    const client = createSemanticForceClient();
-    const res = await client.getReviews({
-      placeId: normalised.raw,
-      limit: PREVIEW_COUNT,
-    });
-    place = res.place;
-    reviews = res.reviews.slice(0, PREVIEW_COUNT);
+    const slug = normalised.slug;
+    // Three tiers, cheapest first — protect the SerpApi quota:
+    //   1. a completed full download (richest, authoritative) → preview free;
+    //   2. a prior preview of this place → free;
+    //   3. live fetch (1 upstream call) → cache under the preview namespace.
+    const reviewsCache = createReviewsCache();
+    const previewCache = createPreviewCache();
+    const full = await reviewsCache.get(slug);
+    const prior = full ?? (await previewCache.get(slug));
+    if (prior) {
+      place = prior.place;
+      reviews = prior.reviews.slice(0, PREVIEW_COUNT);
+    } else {
+      const client = createReviewsProvider();
+      const res = await client.getReviews({
+        placeId: normalised.raw,
+        limit: PREVIEW_COUNT,
+      });
+      place = res.place;
+      reviews = res.reviews.slice(0, PREVIEW_COUNT);
+      // Best-effort: never write the full-walk key from a partial preview.
+      await previewCache.set(slug, {
+        place,
+        reviews,
+        fetched_at: new Date().toISOString(),
+      });
+    }
   } catch (err) {
     if (err instanceof SemanticForceError) {
+      const ux = semanticForceErrorToUx(err);
       return (
-        <ErrorCard
-          title="Couldn't load that place"
-          detail={err.message}
-        />
+        <ErrorCard title={ux.title} detail={ux.detail} retryHint={ux.retryHint} />
       );
     }
     throw err;

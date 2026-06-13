@@ -13,21 +13,20 @@
 // (L2.6) and XLSX (L2.7) are wired through `lib/export/csv.ts` and
 // `lib/export/xlsx.ts` respectively.
 import { NextRequest, NextResponse } from "next/server";
-import { createSemanticForceClient } from "@/lib/semanticforce/client";
+import { createReviewsProvider } from "@/lib/reviews/provider";
 import {
   PlaceMeta,
   Review,
   SemanticForceError,
   SemanticForceErrorCode,
 } from "@/lib/semanticforce/types";
-import {
-  normalisePlaceId,
-  PlaceIdParseError,
-} from "@/lib/semanticforce/place-id";
+import { PlaceIdParseError } from "@/lib/semanticforce/place-id";
 import {
   CachedReviewsPayload,
   createReviewsCache,
 } from "@/lib/cache/reviews-cache";
+import { resolveToDataId } from "@/lib/serpapi/resolve";
+import { resolveInputToNormalised } from "@/lib/reviews/resolve-input";
 import { csvFilename, formatReviewsAsCsv } from "@/lib/export/csv";
 import {
   XLSX_CONTENT_TYPE,
@@ -55,7 +54,19 @@ type PartialBody = ErrorBody & {
   retry_after_s?: number;
 };
 
+// Resolver seam: a name → data_id resolver, injectable for offline tests.
+// Production uses the real SerpApi resolver (resolveToDataId).
+type RouteDeps = {
+  resolve: (input: string) => Promise<{ dataId: string; place?: PlaceMeta }>;
+  // Optional reviews client override (offline tests); defaults to the factory.
+  client?: { getReviews: (args: { placeId: string; limit?: number; after?: string }) => Promise<{ place: PlaceMeta; reviews: Review[]; next_cursor?: string }> };
+};
+
 export async function GET(req: NextRequest) {
+  return handleGet(req, { resolve: resolveToDataId });
+}
+
+async function handleGet(req: NextRequest, deps: RouteDeps) {
   const params = req.nextUrl.searchParams;
   const placeIdInput = params.get("placeId");
   const formatRaw = (params.get("format") ?? "json").toLowerCase();
@@ -87,10 +98,15 @@ export async function GET(req: NextRequest) {
     userLimit = Math.min(Math.floor(parsed), HARD_CAP_REVIEWS);
   }
 
+  // Accept an id/URL or a business name (serpapi-resolved, cached) — shared
+  // with the web preview so both surfaces behave identically (L28.1/L28.2).
   let normalised;
   try {
-    normalised = normalisePlaceId(placeIdInput);
+    normalised = await resolveInputToNormalised(placeIdInput, { resolve: deps.resolve });
   } catch (err) {
+    if (err instanceof SemanticForceError) {
+      return errorJson(err.code, err.message, statusForCode(err.code, err.status));
+    }
     if (err instanceof PlaceIdParseError) {
       return errorJson("bad_request", err.message, 400);
     }
@@ -103,7 +119,7 @@ export async function GET(req: NextRequest) {
     return respondSuccess(cached, format, userLimit, "HIT", normalised.slug);
   }
 
-  const client = createSemanticForceClient();
+  const client = deps.client ?? createReviewsProvider();
   const collected: Review[] = [];
   let placeMeta: PlaceMeta | null = null;
   let cursor: string | undefined;
@@ -244,7 +260,10 @@ function respondSuccess(
   // format === "xlsx" — only branch left after json/csv above.
   const xlsx = formatReviewsAsXlsx(trimmedPayload);
   const xlsxName = xlsxFilename(slug, payload.fetched_at);
-  return new NextResponse(xlsx, {
+  // Wrap the bytes in a Blob: a BodyInit the edge runtime accepts directly.
+  // Copy into a fresh ArrayBuffer-backed view so the type is a concrete
+  // BlobPart (TS 5.7's Uint8Array<ArrayBufferLike> isn't assignable as-is).
+  return new NextResponse(new Blob([new Uint8Array(xlsx)]), {
     status: 200,
     headers: {
       "Content-Type": XLSX_CONTENT_TYPE,
@@ -297,4 +316,6 @@ export const __testing = {
   SUPPORTED_FORMATS,
   statusForCode,
   inferRetryAfter,
+  // Drive the handler with an injected name resolver (offline tests).
+  handleGet,
 };

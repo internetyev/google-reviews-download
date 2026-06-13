@@ -20,8 +20,12 @@ describe("normalisePlaceId — accepted inputs", () => {
     });
   });
 
-  it("recases a lowercased chij token back to the canonical prefix", () => {
-    expect(normalisePlaceId(REAL_ID.toLowerCase()).raw).toBe(REAL_ID);
+  it("recases a lowercased ChIJ prefix back to canonical (body case preserved)", () => {
+    // Place IDs are case-SENSITIVE: only the well-known `ChIJ` prefix can be
+    // canonicalised; the body is kept verbatim (lowercasing the whole id is
+    // lossy and unrecoverable). So lowercase just the prefix here.
+    const lowerPrefix = "chij" + REAL_ID.slice(4);
+    expect(normalisePlaceId(lowerPrefix).raw).toBe(REAL_ID);
   });
 
   it("lowercases a legacy 0x:0x hex pair", () => {

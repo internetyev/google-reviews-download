@@ -1,0 +1,1738 @@
+{
+  "search_metadata": {
+    "id": "6a25e9c5304eba307f8900a2",
+    "status": "Success",
+    "json_endpoint": "https://serpapi.com/searches/pTBf-kqKHj3Fxtp4cbQ5ZA/6a25e9c5304eba307f8900a2.json",
+    "created_at": "2026-06-07 21:59:33 UTC",
+    "processed_at": "2026-06-07 21:59:33 UTC",
+    "google_maps_url": "https://www.google.com/maps/search/Blue+Bottle+Coffee+San+Francisco//?hl=en",
+    "raw_html_file": "https://serpapi.com/searches/pTBf-kqKHj3Fxtp4cbQ5ZA/6a25e9c5304eba307f8900a2.html",
+    "prettify_html_file": "https://serpapi.com/searches/pTBf-kqKHj3Fxtp4cbQ5ZA/6a25e9c5304eba307f8900a2.prettify",
+    "total_time_taken": 7.16
+  },
+  "search_parameters": {
+    "engine": "google_maps",
+    "type": "search",
+    "q": "Blue Bottle Coffee San Francisco",
+    "google_domain": "google.com",
+    "hl": "en"
+  },
+  "search_information": {
+    "local_results_state": "Results for exact spelling",
+    "query_displayed": "Blue Bottle Coffee San Francisco"
+  },
+  "local_results": [
+    {
+      "position": 1,
+      "title": "Blue Bottle Coffee",
+      "place_id": "ChIJSy28upiAhYARkoxpzFnW7b4",
+      "data_id": "0x80858098babc2d4b:0xbeedd659cc698c92",
+      "data_cid": "13757888117856636050",
+      "reviews_link": "https://serpapi.com/search.json?data_id=0x80858098babc2d4b%3A0xbeedd659cc698c92&engine=google_maps_reviews&hl=en",
+      "photos_link": "https://serpapi.com/search.json?data_id=0x80858098babc2d4b%3A0xbeedd659cc698c92&engine=google_maps_photos&hl=en",
+      "gps_coordinates": {
+        "latitude": 37.7763342,
+        "longitude": -122.4232375
+      },
+      "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJSy28upiAhYARkoxpzFnW7b4",
+      "provider_id": "/m/03p12r2",
+      "rating": 4.6,
+      "reviews": 891,
+      "price": "$1\u201310",
+      "extracted_price": 1,
+      "type": "Coffee shop",
+      "types": [
+        "Coffee shop"
+      ],
+      "type_id": "coffee_shop",
+      "type_ids": [
+        "coffee_shop"
+      ],
+      "address": "315 Linden St, San Francisco, CA 94102",
+      "country": "United States",
+      "open_state": "Open \u00b7 Closes 6\u202fPM",
+      "hours": "Open \u00b7 Closes 6\u202fPM",
+      "operating_hours": {
+        "sunday": "6:30\u202fAM\u20136\u202fPM",
+        "monday": "6:30\u202fAM\u20136\u202fPM",
+        "tuesday": "6:30\u202fAM\u20136\u202fPM",
+        "wednesday": "6:30\u202fAM\u20136\u202fPM",
+        "thursday": "6:30\u202fAM\u20136\u202fPM",
+        "friday": "6:30\u202fAM\u20136\u202fPM",
+        "saturday": "6:30\u202fAM\u20136\u202fPM"
+      },
+      "phone": "(510) 661-3510",
+      "website": "https://bluebottlecoffee.com/us/eng/northern-california-cafes?utm_source=google&utm_medium=organic&utm_campaign=cafe_business_listing_norcal",
+      "description": "Hip cafe for gourmet coffee & pastries. Trendy cafe chain offering upscale coffee drinks & pastries, plus beans & brewing equipment.",
+      "extensions": [
+        {
+          "service_options": [
+            "Outdoor seating",
+            "Delivery",
+            "Onsite services",
+            "Takeout",
+            "Dine-in"
+          ]
+        },
+        {
+          "highlights": [
+            "Great coffee"
+          ]
+        },
+        {
+          "popular_for": [
+            "Solo dining"
+          ]
+        },
+        {
+          "accessibility": [
+            "Wheelchair accessible entrance"
+          ]
+        },
+        {
+          "offerings": [
+            "Coffee",
+            "Wine"
+          ]
+        },
+        {
+          "dining_options": [
+            "Dessert",
+            "Seating"
+          ]
+        },
+        {
+          "atmosphere": [
+            "Casual",
+            "Trendy"
+          ]
+        },
+        {
+          "crowd": [
+            "Tourists"
+          ]
+        },
+        {
+          "planning": [
+            "Usually a wait"
+          ]
+        },
+        {
+          "payments": [
+            "Credit cards",
+            "Debit cards",
+            "NFC mobile payments"
+          ]
+        },
+        {
+          "pets": [
+            "Dogs allowed",
+            "Dogs allowed outside"
+          ]
+        }
+      ],
+      "unsupported_extensions": [
+        {
+          "accessibility": [
+            "Wheelchair accessible parking lot",
+            "Wheelchair accessible restroom"
+          ]
+        },
+        {
+          "dining_options": [
+            "Table service"
+          ]
+        },
+        {
+          "amenities": [
+            "Restroom"
+          ]
+        },
+        {
+          "planning": [
+            "Accepts reservations"
+          ]
+        }
+      ],
+      "service_options": {
+        "dine_in": true,
+        "takeout": true,
+        "delivery": true
+      },
+      "order_online": "https://www.google.com/searchviewer/42?cvd=CLw_EiQKIuICHzIdEhYiFNLX29IPDgoKL20vMDNwMTJyMhgAOgMI8A0%3D&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=y-klaujMD_3JkPIP6dD0uAo&ei=y-klaujMD_3JkPIP6dD0uAo&fo_s=OA,SOE&opi=79508299&ebb=1&cs=0&foub=mcpp",
+      "thumbnail": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAHwf-ZXheFtoJqoWsmBBxrQiZWsy_4tGSISWUfkuHi2huqJD91YrjMOlwuqFYvTdl79ILNSm8sAkWpXyYJZSZY9KL1NmdIhE5zMhty279QCrwmiCGKz7xBWjuoHEApmMqEHavDiBw=w1000-h1000-c-n",
+      "serpapi_thumbnail": "https://serpapi.com/images/url/yDmd_3icHcTbEkJAAADQL9rQZaSZHohCUUbN4qVphHVZi91t4w_7hP6mmc7D-X4QYx3dSFKDFrOCkKLJOM2GlLQsa9ksJVgqOgpSCqikX_yg1m2RgyRC2Z4RtyeQYsN4D0GZQDrel-wQOiG85TW3yznivWtqSjxU3rkRvN_Hr-uzUTXn5Id4TfUadtEYu0mYxNrxpPj46SBrNXmIjXNVC3aDwOXucJzUtwErTmxL77DXW_bjZZaG2ApFlmWA_qeg_QGsGkco"
+    },
+    {
+      "position": 2,
+      "title": "Blue Bottle Coffee",
+      "place_id": "ChIJ4xOZTZKBhYARUJEVtLq6msQ",
+      "data_id": "0x808581924d9913e3:0xc49ababab4159150",
+      "data_cid": "14166840888895312208",
+      "reviews_link": "https://serpapi.com/search.json?data_id=0x808581924d9913e3%3A0xc49ababab4159150&engine=google_maps_reviews&hl=en",
+      "photos_link": "https://serpapi.com/search.json?data_id=0x808581924d9913e3%3A0xc49ababab4159150&engine=google_maps_photos&hl=en",
+      "gps_coordinates": {
+        "latitude": 37.787127999999996,
+        "longitude": -122.40364249999999
+      },
+      "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJ4xOZTZKBhYARUJEVtLq6msQ",
+      "provider_id": "/g/11fn03c472",
+      "rating": 4,
+      "reviews": 426,
+      "price": "$1\u201310",
+      "extracted_price": 1,
+      "type": "Coffee shop",
+      "types": [
+        "Coffee shop",
+        "Cafe"
+      ],
+      "type_id": "coffee_shop",
+      "type_ids": [
+        "coffee_shop",
+        "cafe"
+      ],
+      "address": "705 Market St, San Francisco, CA 94103",
+      "country": "United States",
+      "open_state": "Open \u00b7 Closes 5:30\u202fPM",
+      "hours": "Open \u00b7 Closes 5:30\u202fPM",
+      "operating_hours": {
+        "sunday": "6:30\u202fAM\u20135:30\u202fPM",
+        "monday": "6:30\u202fAM\u20134\u202fPM",
+        "tuesday": "6:30\u202fAM\u20135:30\u202fPM",
+        "wednesday": "6:30\u202fAM\u20135:30\u202fPM",
+        "thursday": "6:30\u202fAM\u20135:30\u202fPM",
+        "friday": "6:30\u202fAM\u20135:30\u202fPM",
+        "saturday": "6:30\u202fAM\u20135:30\u202fPM"
+      },
+      "phone": "(510) 661-3510",
+      "website": "https://bluebottlecoffee.com/us/eng/northern-california-cafes?utm_source=google&utm_medium=organic&utm_campaign=cafe_business_listing_norcal",
+      "description": "Hip cafe for gourmet coffee & pastries. Trendy cafe chain offering upscale coffee drinks & pastries, plus beans & brewing equipment.",
+      "extensions": [
+        {
+          "service_options": [
+            "Delivery",
+            "Onsite services",
+            "Takeout",
+            "Dine-in"
+          ]
+        },
+        {
+          "highlights": [
+            "Great coffee",
+            "Great tea selection"
+          ]
+        },
+        {
+          "popular_for": [
+            "Breakfast"
+          ]
+        },
+        {
+          "accessibility": [
+            "Wheelchair accessible entrance"
+          ]
+        },
+        {
+          "offerings": [
+            "Coffee",
+            "Prepared foods"
+          ]
+        },
+        {
+          "dining_options": [
+            "Breakfast",
+            "Dessert"
+          ]
+        },
+        {
+          "amenities": [
+            "Wi-Fi"
+          ]
+        },
+        {
+          "atmosphere": [
+            "Casual",
+            "Trendy"
+          ]
+        },
+        {
+          "payments": [
+            "Credit cards",
+            "Debit cards",
+            "NFC mobile payments"
+          ]
+        },
+        {
+          "parking": [
+            "Paid parking garage",
+            "Paid parking lot"
+          ]
+        }
+      ],
+      "unsupported_extensions": [
+        {
+          "accessibility": [
+            "Wheelchair accessible parking lot"
+          ]
+        },
+        {
+          "dining_options": [
+            "Table service"
+          ]
+        },
+        {
+          "planning": [
+            "Accepts reservations"
+          ]
+        }
+      ],
+      "service_options": {
+        "dine_in": true,
+        "takeout": true,
+        "delivery": true
+      },
+      "order_online": "https://www.google.com/searchviewer/42?cvd=CLw_EicKJeICIjIgEhkiF9LX29IPEQoNL2cvMTFmbjAzYzQ3MhgAOgMI8A0%3D&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=y-klaujMD_3JkPIP6dD0uAo&ei=y-klaujMD_3JkPIP6dD0uAo&fo_s=OA,SOE&opi=79508299&ebb=1&cs=0&foub=mcpp",
+      "thumbnail": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAHmwgB0Jo-DCH3Yra0zaOQtZwJLZKBbwU7tuUgJwWg7baZ4Co2rMk1u1dNkhscGqOv5Tqki73GpF7SVFoFAGN5Nl4vMBz751-vR9Zl9H-g2LCOYWPr_lm4cpPROrz-owYOFwLynCuYZlUs2=w1000-h1000-c-n",
+      "serpapi_thumbnail": "https://serpapi.com/images/url/2jxSKXicHcTNboIwAADgJ6qUvzQu2QFYgCBSdDJCLwYrKYZCsS004yV33tuY-B2-_79e61l9WBbv3R0TgvFuUZ2kYtLdpHdUjBabFaAKKCsoi9MQpKNhIcwE-IpSt5Et3Fp80sRkOTmEN1MhvVQsMzVDt5Z4kXDkcbAX-14MvaLJE6_-5Tk8kJvMMfr-iUUcJIVfcG89hhvybbCe94TvU8CcPMJNXcorHz06l2csNyBMg2OT_07R0hBeKefT2BBC0L-nYHoBdb5HBg"
+    },
+    {
+      "position": 3,
+      "title": "Blue Bottle Coffee",
+      "place_id": "ChIJkTp9BlSBhYARQ4Ac1T2twbk",
+      "data_id": "0x80858154067d3a91:0xb9c1ad3dd51c8043",
+      "data_cid": "13385170048601849923",
+      "reviews_link": "https://serpapi.com/search.json?data_id=0x80858154067d3a91%3A0xb9c1ad3dd51c8043&engine=google_maps_reviews&hl=en",
+      "photos_link": "https://serpapi.com/search.json?data_id=0x80858154067d3a91%3A0xb9c1ad3dd51c8043&engine=google_maps_photos&hl=en",
+      "gps_coordinates": {
+        "latitude": 37.7897159,
+        "longitude": -122.4036692
+      },
+      "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJkTp9BlSBhYARQ4Ac1T2twbk",
+      "provider_id": "/g/11fp1lqdx5",
+      "rating": 4.1,
+      "reviews": 339,
+      "price": "$10\u201320",
+      "extracted_price": 10,
+      "type": "Coffee shop",
+      "types": [
+        "Coffee shop",
+        "Cafe"
+      ],
+      "type_id": "coffee_shop",
+      "type_ids": [
+        "coffee_shop",
+        "cafe"
+      ],
+      "address": "199 Sutter St, San Francisco, CA 94104",
+      "country": "United States",
+      "open_state": "Open \u00b7 Closes 5:30\u202fPM",
+      "hours": "Open \u00b7 Closes 5:30\u202fPM",
+      "operating_hours": {
+        "sunday": "6:30\u202fAM\u20135:30\u202fPM",
+        "monday": "6:30\u202fAM\u20135:30\u202fPM",
+        "tuesday": "6:30\u202fAM\u20135:30\u202fPM",
+        "wednesday": "6:30\u202fAM\u20135:30\u202fPM",
+        "thursday": "6:30\u202fAM\u20135:30\u202fPM",
+        "friday": "6:30\u202fAM\u20135:30\u202fPM",
+        "saturday": "6:30\u202fAM\u20135:30\u202fPM"
+      },
+      "phone": "(510) 661-3510",
+      "website": "https://bluebottlecoffee.com/us/eng/northern-california-cafes?utm_source=google&utm_medium=organic&utm_campaign=cafe_business_listing_norcal",
+      "description": "Hip cafe for gourmet coffee & pastries. Trendy cafe chain offering upscale coffee drinks & pastries, plus beans & brewing equipment.",
+      "extensions": [
+        {
+          "service_options": [
+            "Delivery",
+            "Onsite services",
+            "Takeout",
+            "Dine-in"
+          ]
+        },
+        {
+          "highlights": [
+            "Great coffee",
+            "Great tea selection"
+          ]
+        },
+        {
+          "popular_for": [
+            "Solo dining",
+            "Good for working on laptop"
+          ]
+        },
+        {
+          "accessibility": [
+            "Wheelchair accessible entrance",
+            "Wheelchair accessible restroom",
+            "Wheelchair accessible seating"
+          ]
+        },
+        {
+          "offerings": [
+            "Coffee",
+            "Quick bite"
+          ]
+        },
+        {
+          "dining_options": [
+            "Breakfast",
+            "Dessert"
+          ]
+        },
+        {
+          "amenities": [
+            "Restroom",
+            "Wi-Fi"
+          ]
+        },
+        {
+          "atmosphere": [
+            "Casual",
+            "Cozy",
+            "Trendy"
+          ]
+        },
+        {
+          "crowd": [
+            "Tourists"
+          ]
+        },
+        {
+          "payments": [
+            "Credit cards",
+            "Debit cards",
+            "NFC mobile payments"
+          ]
+        },
+        {
+          "parking": [
+            "Usually difficult to find a space"
+          ]
+        }
+      ],
+      "unsupported_extensions": [
+        {
+          "dining_options": [
+            "Table service"
+          ]
+        },
+        {
+          "planning": [
+            "Accepts reservations"
+          ]
+        }
+      ],
+      "service_options": {
+        "dine_in": true,
+        "takeout": true,
+        "delivery": true
+      },
+      "order_online": "https://www.google.com/searchviewer/42?cvd=CLw_EicKJeICIjIgEhkiF9LX29IPEQoNL2cvMTFmcDFscWR4NRgAOgMI8A0%3D&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=y-klaujMD_3JkPIP6dD0uAo&ei=y-klaujMD_3JkPIP6dD0uAo&fo_s=OA,SOE&opi=79508299&ebb=1&cs=0&foub=mcpp",
+      "thumbnail": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAEB9EYt-3XA72SRdka5v2kfWTIj_EfUycunm5gFcZDpXPMgHN6OaJgqzYjLWO3RrMBirh_WRuuDg2NrwAt1C2q3TPx-Xg0RJUU3tZW2NiC7pnv_5-6wcbj5fKkwSUUWPA9iRXTbohfFeQJt=w1000-h1000-c-n",
+      "serpapi_thumbnail": "https://serpapi.com/images/url/mIAAxnicHcTBboIwAADQL6pgGzSaeKiKUTYRK02RC8EKLaAt0iK6n9x5f7PEd3h_v9La1swd5ybRSGgtbkVvio5rZQtlR1zfHdEawA0wDo7CY4P95cw_W4ASPIUncm1y7wmbksW7OvNL-ua9untiw9N1m0R7sQ0nhzwQj59z_c0OiHT7ZdXJjJG-XwsYdgO24xV8oDh6gUS4JKAU2ZTBsFpNW_XMPDAZ-KX2yq9mOFHKIjyrSBJftCw3xTGwi2Hsui6QnzlQ_26cRyQ"
+    },
+    {
+      "position": 4,
+      "title": "Blue Bottle Coffee",
+      "place_id": "ChIJ3UFdD2KAhYARYOHf4j7DshM",
+      "data_id": "0x808580620f5d41dd:0x13b2c33ee2dfe160",
+      "data_cid": "1419411507436839264",
+      "reviews_link": "https://serpapi.com/search.json?data_id=0x808580620f5d41dd%3A0x13b2c33ee2dfe160&engine=google_maps_reviews&hl=en",
+      "photos_link": "https://serpapi.com/search.json?data_id=0x808580620f5d41dd%3A0x13b2c33ee2dfe160&engine=google_maps_photos&hl=en",
+      "gps_coordinates": {
+        "latitude": 37.791306399999996,
+        "longitude": -122.4009679
+      },
+      "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJ3UFdD2KAhYARYOHf4j7DshM",
+      "provider_id": "/g/11b7xjjm26",
+      "rating": 4.4,
+      "reviews": 1280,
+      "price": "$10\u201320",
+      "extracted_price": 10,
+      "type": "Coffee shop",
+      "types": [
+        "Coffee shop"
+      ],
+      "type_id": "coffee_shop",
+      "type_ids": [
+        "coffee_shop"
+      ],
+      "address": "115 Sansome St, San Francisco, CA 94104",
+      "country": "United States",
+      "open_state": "Closed \u00b7 Opens 6:30\u202fAM Mon",
+      "hours": "Closed \u00b7 Opens 6:30\u202fAM Mon",
+      "operating_hours": {
+        "sunday": "8\u202fAM\u20132\u202fPM",
+        "monday": "6:30\u202fAM\u20135:30\u202fPM",
+        "tuesday": "6:30\u202fAM\u20135:30\u202fPM",
+        "wednesday": "6:30\u202fAM\u20135:30\u202fPM",
+        "thursday": "6:30\u202fAM\u20135:30\u202fPM",
+        "friday": "6:30\u202fAM\u20135:30\u202fPM",
+        "saturday": "8\u202fAM\u20132\u202fPM"
+      },
+      "phone": "(510) 661-3510",
+      "website": "https://bluebottlecoffee.com/us/eng/northern-california-cafes?utm_source=google&utm_medium=organic&utm_campaign=cafe_business_listing_norcal",
+      "description": "Hip cafe for gourmet pastries and coffee. Trendy cafe chain offering upscale coffee and pastries, plus coffee beans and brewing equipment.",
+      "extensions": [
+        {
+          "service_options": [
+            "Delivery",
+            "Onsite services",
+            "Takeout",
+            "Dine-in"
+          ]
+        },
+        {
+          "highlights": [
+            "Great coffee",
+            "Great tea selection"
+          ]
+        },
+        {
+          "popular_for": [
+            "Breakfast",
+            "Solo dining",
+            "Good for working on laptop"
+          ]
+        },
+        {
+          "accessibility": [
+            "Wheelchair accessible entrance",
+            "Wheelchair accessible restroom",
+            "Wheelchair accessible seating"
+          ]
+        },
+        {
+          "offerings": [
+            "Coffee",
+            "Quick bite"
+          ]
+        },
+        {
+          "dining_options": [
+            "Breakfast",
+            "Dessert"
+          ]
+        },
+        {
+          "amenities": [
+            "Restroom",
+            "Wi-Fi"
+          ]
+        },
+        {
+          "atmosphere": [
+            "Casual",
+            "Trendy"
+          ]
+        },
+        {
+          "crowd": [
+            "Tourists"
+          ]
+        },
+        {
+          "planning": [
+            "Usually a wait"
+          ]
+        },
+        {
+          "payments": [
+            "Credit cards",
+            "Debit cards",
+            "NFC mobile payments"
+          ]
+        },
+        {
+          "parking": [
+            "Paid street parking"
+          ]
+        }
+      ],
+      "unsupported_extensions": [
+        {
+          "accessibility": [
+            "Wheelchair accessible parking lot"
+          ]
+        },
+        {
+          "dining_options": [
+            "Table service"
+          ]
+        },
+        {
+          "planning": [
+            "Accepts reservations"
+          ]
+        }
+      ],
+      "service_options": {
+        "dine_in": true,
+        "takeout": true,
+        "delivery": true
+      },
+      "order_online": "https://www.google.com/searchviewer/42?cvd=CLw_EicKJeICIjIgEhkiF9LX29IPEQoNL2cvMTFiN3hqam0yNhgAOgMI8A0%3D&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=y-klaujMD_3JkPIP6dD0uAo&ei=y-klaujMD_3JkPIP6dD0uAo&fo_s=OA,SOE&opi=79508299&ebb=1&cs=0&foub=mcpp",
+      "thumbnail": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAHTHcnYr5MEosuG384k634Awi5LNB99ZVy-2YzpBq8UVql0XHed6bQPgDYM-kokfjVldJb_dSI34iuIWaw4q5fmc0cm2-Lj-mygyJd2SZfEFp4xCbx1QkojpHbOAkg6AFerYUOx=w1000-h1000-c-n",
+      "serpapi_thumbnail": "https://serpapi.com/images/url/Ya1uanicHcRdDoIgAADgE5Gk6KqtB-zPWqWusuylJSImKig6tQt2hm7T1vfwfT9p00g107Q8NUZMCJbTVtGaiLKhZTMiotCYVIAooDTsHX2OnbNDyrA2Dyuh2o0xQdwyEO5e5v5oT6f3YAB6-JZ2NbkEVQ5vDo2tyPfYMjwALniSBXm8ix7xaWugV7u9PjtUmUlBICl0sM9AMbBhF-une7JaS9Qvon7sc5FJJ3IxZxZe0zq8uP28G0MIQfqfgPIHBSdEPQ"
+    },
+    {
+      "position": 5,
+      "title": "Blue Bottle Coffee",
+      "place_id": "ChIJ06Hd8sWAhYARxyVxtgXyAks",
+      "data_id": "0x808580c5f2dda1d3:0x4b02f205b67125c7",
+      "data_cid": "5405148609147643335",
+      "reviews_link": "https://serpapi.com/search.json?data_id=0x808580c5f2dda1d3%3A0x4b02f205b67125c7&engine=google_maps_reviews&hl=en",
+      "photos_link": "https://serpapi.com/search.json?data_id=0x808580c5f2dda1d3%3A0x4b02f205b67125c7&engine=google_maps_photos&hl=en",
+      "gps_coordinates": {
+        "latitude": 37.7923343,
+        "longitude": -122.43473399999999
+      },
+      "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJ06Hd8sWAhYARxyVxtgXyAks",
+      "provider_id": "/g/11df79xs_l",
+      "rating": 4.3,
+      "reviews": 729,
+      "price": "$10\u201320",
+      "extracted_price": 10,
+      "type": "Coffee shop",
+      "types": [
+        "Coffee shop"
+      ],
+      "type_id": "coffee_shop",
+      "type_ids": [
+        "coffee_shop"
+      ],
+      "address": "2453 Fillmore St, San Francisco, CA 94115",
+      "country": "United States",
+      "open_state": "Open \u00b7 Closes 7\u202fPM",
+      "hours": "Open \u00b7 Closes 7\u202fPM",
+      "operating_hours": {
+        "sunday": "5:30\u202fAM\u20137\u202fPM",
+        "monday": "5:30\u202fAM\u20137\u202fPM",
+        "tuesday": "5:30\u202fAM\u20137\u202fPM",
+        "wednesday": "5:30\u202fAM\u20137\u202fPM",
+        "thursday": "5:30\u202fAM\u20137\u202fPM",
+        "friday": "5:30\u202fAM\u20137\u202fPM",
+        "saturday": "5:30\u202fAM\u20137\u202fPM"
+      },
+      "phone": "(510) 661-3510",
+      "website": "https://bluebottlecoffee.com/us/eng/northern-california-cafes?utm_source=google&utm_medium=organic&utm_campaign=cafe_business_listing_norcal",
+      "description": "Hip cafe for gourmet coffee & pastries. Trendy cafe chain offering upscale coffee drinks & pastries, plus beans & brewing equipment.",
+      "extensions": [
+        {
+          "service_options": [
+            "Outdoor seating",
+            "Delivery",
+            "Onsite services",
+            "Takeout",
+            "Dine-in"
+          ]
+        },
+        {
+          "highlights": [
+            "Great coffee",
+            "Great tea selection",
+            "Serves local specialty"
+          ]
+        },
+        {
+          "popular_for": [
+            "Breakfast",
+            "Solo dining",
+            "Good for working on laptop"
+          ]
+        },
+        {
+          "accessibility": [
+            "Wheelchair accessible entrance",
+            "Wheelchair accessible restroom",
+            "Wheelchair accessible seating"
+          ]
+        },
+        {
+          "offerings": [
+            "Coffee",
+            "Quick bite",
+            "Vegetarian options"
+          ]
+        },
+        {
+          "dining_options": [
+            "Breakfast",
+            "Dessert",
+            "Seating"
+          ]
+        },
+        {
+          "amenities": [
+            "Restroom",
+            "Wi-Fi"
+          ]
+        },
+        {
+          "atmosphere": [
+            "Casual",
+            "Cozy",
+            "Trendy"
+          ]
+        },
+        {
+          "crowd": [
+            "Tourists"
+          ]
+        },
+        {
+          "planning": [
+            "Usually a wait"
+          ]
+        },
+        {
+          "payments": [
+            "Credit cards",
+            "Debit cards",
+            "NFC mobile payments"
+          ]
+        },
+        {
+          "pets": [
+            "Dogs allowed inside",
+            "Dogs allowed outside"
+          ]
+        }
+      ],
+      "unsupported_extensions": [
+        {
+          "dining_options": [
+            "Table service"
+          ]
+        },
+        {
+          "planning": [
+            "Accepts reservations"
+          ]
+        }
+      ],
+      "service_options": {
+        "dine_in": true,
+        "takeout": true,
+        "delivery": true
+      },
+      "order_online": "https://www.google.com/searchviewer/42?cvd=CLw_EicKJeICIjIgEhkiF9LX29IPEQoNL2cvMTFkZjc5eHNfbBgAOgMI8A0%3D&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=y-klaujMD_3JkPIP6dD0uAo&ei=y-klaujMD_3JkPIP6dD0uAo&fo_s=OA,SOE&opi=79508299&ebb=1&cs=0&foub=mcpp",
+      "thumbnail": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAHivh38NXZ-PQGfGidOeEC5qppC4N53XJpMGPtrfHQG3sBEndIHli6C5JG5bzamGTsjCt_RvNzhBt3LoHPhyEMI6yo1kDNAAXmVIMco6C_pNkxyFiSLax3i8oMGGw0lMNl0R6Vc3Q=w1000-h1000-c-n",
+      "serpapi_thumbnail": "https://serpapi.com/images/url/EUXO9XicHcRRDoIgAADQE5E00rW2PowMbUFarbl-WqEJiUJBmd2wI3Sbtt7H-36Ec8ZOPE8JNKi0rlT5sOWd69aVrRtw3XiVsYBbYL0wZVkdxvIp0JjlB5Bm5EJksS4j7N-MwSPmo3xpKEnd_RJnBNlZ1BZJrGSA_SXxz-9TQ3b2it1x82RvMXNopeNU9BFNgl4P6zkLw7zZJ5TrAB8Nq1_9Qm5XpxeSY00J6aCiTMFNsOcom3ZDCCEQ_zlof6LIRJY"
+    },
+    {
+      "position": 6,
+      "title": "Blue Bottle Coffee",
+      "place_id": "ChIJPzqwj52BhYARVlxV67NnN3M",
+      "data_id": "0x8085819d8fb03a3f:0x733767b3eb555c56",
+      "data_cid": "8302218460525845590",
+      "reviews_link": "https://serpapi.com/search.json?data_id=0x8085819d8fb03a3f%3A0x733767b3eb555c56&engine=google_maps_reviews&hl=en",
+      "photos_link": "https://serpapi.com/search.json?data_id=0x8085819d8fb03a3f%3A0x733767b3eb555c56&engine=google_maps_photos&hl=en",
+      "gps_coordinates": {
+        "latitude": 37.7973773,
+        "longitude": -122.4038434
+      },
+      "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJPzqwj52BhYARVlxV67NnN3M",
+      "provider_id": "/g/11fk13lpx8",
+      "rating": 4.1,
+      "reviews": 208,
+      "price": "$10\u201320",
+      "extracted_price": 10,
+      "type": "Coffee shop",
+      "types": [
+        "Coffee shop",
+        "Cafe"
+      ],
+      "type_id": "coffee_shop",
+      "type_ids": [
+        "coffee_shop",
+        "cafe"
+      ],
+      "address": "909 Montgomery St #105, San Francisco, CA 94133",
+      "country": "United States",
+      "open_state": "Open \u00b7 Closes 5\u202fPM",
+      "hours": "Open \u00b7 Closes 5\u202fPM",
+      "operating_hours": {
+        "sunday": "6\u202fAM\u20135\u202fPM",
+        "monday": "8\u202fAM\u20137\u202fPM",
+        "tuesday": "6\u202fAM\u20137\u202fPM",
+        "wednesday": "6\u202fAM\u20137\u202fPM",
+        "thursday": "6\u202fAM\u20137\u202fPM",
+        "friday": "6\u202fAM\u20137\u202fPM",
+        "saturday": "7\u202fAM\u20137\u202fPM"
+      },
+      "phone": "(510) 661-3510",
+      "website": "https://bluebottlecoffee.com/us/eng/northern-california-cafes?utm_source=google&utm_medium=organic&utm_campaign=cafe_business_listing_norcal",
+      "description": "Hip cafe for gourmet coffee & pastries. Trendy cafe chain offering upscale coffee drinks & pastries, plus beans & brewing equipment.",
+      "extensions": [
+        {
+          "service_options": [
+            "Delivery",
+            "Onsite services",
+            "Takeout",
+            "Dine-in"
+          ]
+        },
+        {
+          "highlights": [
+            "Great coffee",
+            "Great tea selection"
+          ]
+        },
+        {
+          "popular_for": [
+            "Solo dining",
+            "Good for working on laptop"
+          ]
+        },
+        {
+          "accessibility": [
+            "Wheelchair accessible entrance",
+            "Wheelchair accessible restroom",
+            "Wheelchair accessible seating"
+          ]
+        },
+        {
+          "offerings": [
+            "Coffee",
+            "Quick bite"
+          ]
+        },
+        {
+          "dining_options": [
+            "Breakfast",
+            "Dessert"
+          ]
+        },
+        {
+          "amenities": [
+            "Restroom"
+          ]
+        },
+        {
+          "atmosphere": [
+            "Casual",
+            "Cozy",
+            "Trendy"
+          ]
+        },
+        {
+          "crowd": [
+            "Tourists"
+          ]
+        },
+        {
+          "payments": [
+            "Credit cards",
+            "Debit cards",
+            "NFC mobile payments"
+          ]
+        },
+        {
+          "parking": [
+            "Paid street parking",
+            "Usually somewhat difficult to find a space"
+          ]
+        }
+      ],
+      "unsupported_extensions": [
+        {
+          "dining_options": [
+            "Table service"
+          ]
+        },
+        {
+          "planning": [
+            "Accepts reservations"
+          ]
+        }
+      ],
+      "service_options": {
+        "dine_in": true,
+        "takeout": true,
+        "delivery": true
+      },
+      "order_online": "https://www.google.com/searchviewer/42?cvd=CLw_EicKJeICIjIgEhkiF9LX29IPEQoNL2cvMTFmazEzbHB4OBgAOgMI8A0%3D&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=y-klaujMD_3JkPIP6dD0uAo&ei=y-klaujMD_3JkPIP6dD0uAo&fo_s=OA,SOE&opi=79508299&ebb=1&cs=0&foub=mcpp",
+      "thumbnail": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAE1Zrl_Zs_QVID4sH3K9gfRUQ90vEifji9ouVGrxXqxE2OZIQzeGv7gIac1sL_Ivsb7BwzzyacahLS18UK7ylnZLxRy7qQZuYHMrJ3IzbRMS16uVvClQAS0uaWHz5hV1owXzMQ=w1000-h1000-c-n",
+      "serpapi_thumbnail": "https://serpapi.com/images/url/XmEHpXicHcTdboIwGADQJ0LasQ1Z4gVTIp2wWYiovSHYYOvsqPJRfvqAvsPeZsnOxfl9yK67wZvrKunNhNZC1Qbqluumq5tuxvWPK27gcHDADbef9BpGmLWqZFDSgqyeIfY2gThnOxqgPrqcvy-BNsW6HQ_3MXr6YoTaet37glQcQ1KSHk7--2DtVPFKJjme7zb-pBqWjNnk3ykzxzhtPzxiT1ma41dT9EtFwxyZah_bF1lgPRxsShcDRgg58n_uNH9m_EVe"
+    },
+    {
+      "position": 7,
+      "title": "Blue Bottle Coffee",
+      "place_id": "ChIJWTGPjmaAhYAR6c9cUJ1axtM",
+      "data_id": "0x808580668e8f3159:0xd3c65a9d505ccfe9",
+      "data_cid": "15259984019096129513",
+      "reviews_link": "https://serpapi.com/search.json?data_id=0x808580668e8f3159%3A0xd3c65a9d505ccfe9&engine=google_maps_reviews&hl=en",
+      "photos_link": "https://serpapi.com/search.json?data_id=0x808580668e8f3159%3A0xd3c65a9d505ccfe9&engine=google_maps_photos&hl=en",
+      "gps_coordinates": {
+        "latitude": 37.7961181,
+        "longitude": -122.3939851
+      },
+      "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJWTGPjmaAhYAR6c9cUJ1axtM",
+      "provider_id": "/g/1tfx538q",
+      "rating": 4.3,
+      "reviews": 899,
+      "price": "$1\u201320",
+      "extracted_price": 1,
+      "type": "Coffee shop",
+      "types": [
+        "Coffee shop"
+      ],
+      "type_id": "coffee_shop",
+      "type_ids": [
+        "coffee_shop"
+      ],
+      "address": "1 Ferry Building #7, San Francisco, CA 94111",
+      "country": "United States",
+      "open_state": "Open \u00b7 Closes 8\u202fPM",
+      "hours": "Open \u00b7 Closes 8\u202fPM",
+      "operating_hours": {
+        "sunday": "6:30\u202fAM\u20138\u202fPM",
+        "monday": "6:30\u202fAM\u20137\u202fPM",
+        "tuesday": "6:30\u202fAM\u20137\u202fPM",
+        "wednesday": "6:30\u202fAM\u20137\u202fPM",
+        "thursday": "6:30\u202fAM\u20137\u202fPM",
+        "friday": "6:30\u202fAM\u20138\u202fPM",
+        "saturday": "6:30\u202fAM\u20138\u202fPM"
+      },
+      "phone": "(510) 661-3510",
+      "website": "https://bluebottlecoffee.com/us/eng/northern-california-cafes?utm_source=google&utm_medium=organic&utm_campaign=cafe_business_listing_norcal",
+      "description": "Hip cafe for gourmet coffee & pastries. Trendy cafe chain offering upscale coffee drinks & pastries, plus beans & brewing equipment.",
+      "extensions": [
+        {
+          "service_options": [
+            "Outdoor seating",
+            "Delivery",
+            "Onsite services",
+            "Takeout"
+          ]
+        },
+        {
+          "highlights": [
+            "Great coffee",
+            "Great tea selection"
+          ]
+        },
+        {
+          "popular_for": [
+            "Solo dining"
+          ]
+        },
+        {
+          "accessibility": [
+            "Wheelchair accessible entrance",
+            "Wheelchair accessible parking lot",
+            "Wheelchair accessible restroom"
+          ]
+        },
+        {
+          "offerings": [
+            "Coffee"
+          ]
+        },
+        {
+          "dining_options": [
+            "Breakfast",
+            "Lunch",
+            "Dessert",
+            "Seating"
+          ]
+        },
+        {
+          "amenities": [
+            "Bar onsite",
+            "Restroom"
+          ]
+        },
+        {
+          "atmosphere": [
+            "Casual",
+            "Trendy"
+          ]
+        },
+        {
+          "crowd": [
+            "College students",
+            "Tourists"
+          ]
+        },
+        {
+          "planning": [
+            "Usually a wait"
+          ]
+        },
+        {
+          "payments": [
+            "Credit cards",
+            "Debit cards",
+            "NFC mobile payments"
+          ]
+        },
+        {
+          "parking": [
+            "Paid street parking",
+            "Usually somewhat difficult to find a space"
+          ]
+        }
+      ],
+      "unsupported_extensions": [
+        {
+          "dining_options": [
+            "Table service"
+          ]
+        },
+        {
+          "planning": [
+            "Accepts reservations"
+          ]
+        }
+      ],
+      "service_options": {
+        "takeout": true,
+        "delivery": true
+      },
+      "order_online": "https://www.google.com/searchviewer/42?cvd=CLw_EiUKI-ICIDIeEhciFdLX29IPDwoLL2cvMXRmeDUzOHEYADoDCPAN&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=y-klaujMD_3JkPIP6dD0uAo&ei=y-klaujMD_3JkPIP6dD0uAo&fo_s=OA,SOE&opi=79508299&ebb=1&cs=0&foub=mcpp",
+      "thumbnail": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAGJeVqtpwJqitiXcc-ZaEY4ilmFQFJLMolT0-eTivsnabruozDgUF4pEx8TAlx9zPIlvkJhrn6PeNpsU4q48sqM7LdK_wsrfnfFQTtjzTe6GPODFFS6XqBj9C0yQ6By2GUW-7zy5Q=w1000-h1000-c-n",
+      "serpapi_thumbnail": "https://serpapi.com/images/url/qx1hWXicHcRbcoIwFADQFUVii6DO9AOrYcQXmYbW-tOxMTxjHtwowg67hO6mMz0f5_endM7A3PNk-TwqtC6kuIFouVZOKDfi-uoVBhAHBF6U7mkTxYl4t850ia1cdeQcnc6rT7-SV0JJst1pyTASrLqDOn-3Nz0si4z4ZvWYskg-ZkO6lvcmKVsVpGJvIPOtPwW7C7eXzVcHba5yQpmrByaCOD0sCXkLjnZRz15xT4NF_xRnHygc-gl96cYYY1T-z5H6A7IpRps"
+    },
+    {
+      "position": 8,
+      "title": "Blue Bottle Coffee",
+      "place_id": "ChIJAxJVWQB_j4ARQ0sgCyZ8EIY",
+      "data_id": "0x808f7f0059551203:0x86107c260b204b43",
+      "data_cid": "9660357703546981187",
+      "reviews_link": "https://serpapi.com/search.json?data_id=0x808f7f0059551203%3A0x86107c260b204b43&engine=google_maps_reviews&hl=en",
+      "photos_link": "https://serpapi.com/search.json?data_id=0x808f7f0059551203%3A0x86107c260b204b43&engine=google_maps_photos&hl=en",
+      "gps_coordinates": {
+        "latitude": 37.775551,
+        "longitude": -122.3889184
+      },
+      "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJAxJVWQB_j4ARQ0sgCyZ8EIY",
+      "provider_id": "/g/11mlqcx6pp",
+      "rating": 3.5,
+      "reviews": 32,
+      "price": "$1\u201320",
+      "extracted_price": 1,
+      "type": "Coffee shop",
+      "types": [
+        "Coffee shop"
+      ],
+      "type_id": "coffee_shop",
+      "type_ids": [
+        "coffee_shop"
+      ],
+      "address": "300 Toni Stone Xing Suite E, San Francisco, CA 94158",
+      "country": "United States",
+      "open_state": "Open \u00b7 Closes 5:30\u202fPM",
+      "hours": "Open \u00b7 Closes 5:30\u202fPM",
+      "operating_hours": {
+        "sunday": "6:30\u202fAM\u20135:30\u202fPM",
+        "monday": "6:30\u202fAM\u20135:30\u202fPM",
+        "tuesday": "6:30\u202fAM\u20135:30\u202fPM",
+        "wednesday": "6:30\u202fAM\u20135:30\u202fPM",
+        "thursday": "6:30\u202fAM\u20135:30\u202fPM",
+        "friday": "6:30\u202fAM\u20135:30\u202fPM",
+        "saturday": "6:30\u202fAM\u20135:30\u202fPM"
+      },
+      "website": "https://bluebottlecoffee.com/us/eng/cafes/mission-rock",
+      "description": "Hip cafe for gourmet coffee & pastries. Trendy cafe chain offering upscale coffee drinks & pastries, plus beans & brewing equipment.",
+      "extensions": [
+        {
+          "service_options": [
+            "Onsite services",
+            "Takeout"
+          ]
+        },
+        {
+          "popular_for": [
+            "Solo dining"
+          ]
+        },
+        {
+          "accessibility": [
+            "Wheelchair accessible entrance"
+          ]
+        },
+        {
+          "offerings": [
+            "Coffee"
+          ]
+        },
+        {
+          "atmosphere": [
+            "Casual"
+          ]
+        },
+        {
+          "payments": [
+            "Credit cards",
+            "Debit cards"
+          ]
+        }
+      ],
+      "service_options": {
+        "takeout": true
+      },
+      "order_online": "https://www.google.com/searchviewer/42?cvd=CLw_EicKJeICIjIgEhkiF9LX29IPEQoNL2cvMTFtbHFjeDZwcBgAOgMI8A0%3D&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=y-klaujMD_3JkPIP6dD0uAo&ei=y-klaujMD_3JkPIP6dD0uAo&fo_s=OA,SOE&opi=79508299&ebb=1&cs=0&foub=mcpp",
+      "thumbnail": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAHx43bHqxTSEXptHeiJY2NPMd9Jt4lhsZQzgdsgRKSxzTTbs2MqgPc5a9PLgGAz7yDqOhDaWDP9nRs7j-tueqZsoDT0FTvWdOZ7rsVoLzXygZ3Kn1a4gVPq1Sugj4UR3tpMZy1YimEhnfDK=w1000-h1000-c-n",
+      "serpapi_thumbnail": "https://serpapi.com/images/url/SLdPc3icHcTdboIwGADQJ0JAWAhLdkFSNyKiFTp_eoel-6rDlvqVDXjJXe9tluxcnN8f5VyPz77fqWgBxkAnB5QPYbST2i2EufvQoyfQQz-j2_1nlo9xdMntyOrVqXe5vK7Pyy0t23Tt4k4h38_QIlRFPc6MXXBZWqDiqUnpBt6yOZmI3SnSHAlNdYXJzXODtBwNYcEr-zq2O5488GA282kCHhU6bGI4UBvWA9zi9ypyfcmn8Hy9r5T-IMXLdxgEgaf-F57-Ax-vSNE"
+    },
+    {
+      "position": 9,
+      "title": "Blue Bottle Coffee",
+      "place_id": "ChIJ1VGyjmCBhYAR_pOL0q5shVs",
+      "data_id": "0x808581608eb251d5:0x5b856caed28b93fe",
+      "data_cid": "6594796727466431486",
+      "reviews_link": "https://serpapi.com/search.json?data_id=0x808581608eb251d5%3A0x5b856caed28b93fe&engine=google_maps_reviews&hl=en",
+      "photos_link": "https://serpapi.com/search.json?data_id=0x808581608eb251d5%3A0x5b856caed28b93fe&engine=google_maps_photos&hl=en",
+      "gps_coordinates": {
+        "latitude": 37.773877399999996,
+        "longitude": -122.41855819999999
+      },
+      "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJ1VGyjmCBhYAR_pOL0q5shVs",
+      "provider_id": "/g/11szc9nqx1",
+      "rating": 3.7,
+      "reviews": 91,
+      "price": "$1\u201310",
+      "extracted_price": 1,
+      "type": "Coffee shop",
+      "types": [
+        "Coffee shop"
+      ],
+      "type_id": "coffee_shop",
+      "type_ids": [
+        "coffee_shop"
+      ],
+      "address": "55 S Van Ness Ave, San Francisco, CA 94103",
+      "country": "United States",
+      "open_state": "Open \u00b7 Closes 4:30\u202fPM",
+      "hours": "Open \u00b7 Closes 4:30\u202fPM",
+      "operating_hours": {
+        "sunday": "6:30\u202fAM\u20134:30\u202fPM",
+        "monday": "6\u202fAM\u20135\u202fPM",
+        "tuesday": "6\u202fAM\u20135\u202fPM",
+        "wednesday": "6\u202fAM\u20135\u202fPM",
+        "thursday": "6\u202fAM\u20135\u202fPM",
+        "friday": "6\u202fAM\u20135\u202fPM",
+        "saturday": "7\u202fAM\u20132:30\u202fPM"
+      },
+      "phone": "(510) 661-3510",
+      "website": "https://bluebottlecoffee.com/us/eng/northern-california-cafes?utm_source=google&utm_medium=organic&utm_campaign=cafe_business_listing_norcal",
+      "description": "Hip cafe for gourmet coffee & pastries. Trendy cafe chain offering upscale coffee drinks & pastries, plus beans & brewing equipment.",
+      "extensions": [
+        {
+          "service_options": [
+            "Delivery",
+            "Onsite services",
+            "Takeout",
+            "Dine-in"
+          ]
+        },
+        {
+          "highlights": [
+            "Great coffee",
+            "Great tea selection"
+          ]
+        },
+        {
+          "popular_for": [
+            "Solo dining",
+            "Good for working on laptop"
+          ]
+        },
+        {
+          "accessibility": [
+            "Wheelchair accessible entrance",
+            "Wheelchair accessible seating"
+          ]
+        },
+        {
+          "offerings": [
+            "Coffee",
+            "Quick bite"
+          ]
+        },
+        {
+          "dining_options": [
+            "Breakfast",
+            "Dessert"
+          ]
+        },
+        {
+          "amenities": [
+            "Restroom",
+            "Wi-Fi"
+          ]
+        },
+        {
+          "atmosphere": [
+            "Casual",
+            "Quiet",
+            "Trendy"
+          ]
+        },
+        {
+          "payments": [
+            "Credit cards",
+            "Debit cards",
+            "NFC mobile payments"
+          ]
+        }
+      ],
+      "unsupported_extensions": [
+        {
+          "dining_options": [
+            "Table service"
+          ]
+        },
+        {
+          "planning": [
+            "Accepts reservations"
+          ]
+        }
+      ],
+      "service_options": {
+        "dine_in": true,
+        "takeout": true,
+        "delivery": true
+      },
+      "order_online": "https://www.google.com/searchviewer/42?cvd=CLw_EicKJeICIjIgEhkiF9LX29IPEQoNL2cvMTFzemM5bnF4MRgAOgMI8A0%3D&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=y-klaujMD_3JkPIP6dD0uAo&ei=y-klaujMD_3JkPIP6dD0uAo&fo_s=OA,SOE&opi=79508299&ebb=1&cs=0&foub=mcpp",
+      "thumbnail": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAE4FL6gzvhxl8GKds5EocRtBQE8_4JBmW26QEuMD4gmqobKNjg9aBYH4fD8zSkzP3YKJYuJtz9v6wAq6kd-qVo1aGf95bOxBtxkBT6ICH5FwAnU7uelWR-mbNenXXzvYCXuKQ1OCg=w1000-h1000-c-n",
+      "serpapi_thumbnail": "https://serpapi.com/images/url/6DOWT3icHcRdboIwAADgE1VgQoUle6AIKjgU5w88Gai1RKAV2wLpDXeE3cZk38P391tL-RSfhtHW8xnlnLZECfLCnEnC5AzzzqBPAbAAwvD3adb4oR1tIdVDPbXuKrkJJ-T4IFEWulc7Rt3lA2ah-l7atOt5laQP6pWoWNv3pat_Gr2fF0lcqFhqb4Cj38PmBvozt8rV3XOq3YTk1KAj3ARrJxp9dloo0l4OoKtSwvJcD0WQqySzdgH9Gi3TNEH9PwbsDbV5RO8"
+    },
+    {
+      "position": 10,
+      "title": "Blue Bottle Coffee",
+      "place_id": "ChIJa4tL_niAhYARQsVEo2ROicI",
+      "data_id": "0x80858078fe4b8b6b:0xc2894e64a344c542",
+      "data_cid": "14017821509310268738",
+      "reviews_link": "https://serpapi.com/search.json?data_id=0x80858078fe4b8b6b%3A0xc2894e64a344c542&engine=google_maps_reviews&hl=en",
+      "photos_link": "https://serpapi.com/search.json?data_id=0x80858078fe4b8b6b%3A0xc2894e64a344c542&engine=google_maps_photos&hl=en",
+      "gps_coordinates": {
+        "latitude": 37.7824756,
+        "longitude": -122.3931157
+      },
+      "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJa4tL_niAhYARQsVEo2ROicI",
+      "provider_id": "/g/11c27gk9b0",
+      "rating": 4.4,
+      "reviews": 814,
+      "price": "$10\u201320",
+      "extracted_price": 10,
+      "type": "Coffee shop",
+      "types": [
+        "Coffee shop"
+      ],
+      "type_id": "coffee_shop",
+      "type_ids": [
+        "coffee_shop"
+      ],
+      "address": "2 S Park St, San Francisco, CA 94107",
+      "country": "United States",
+      "open_state": "Open \u00b7 Closes 6\u202fPM",
+      "hours": "Open \u00b7 Closes 6\u202fPM",
+      "operating_hours": {
+        "sunday": "6:30\u202fAM\u20136\u202fPM",
+        "monday": "6\u202fAM\u20136\u202fPM",
+        "tuesday": "6\u202fAM\u20136\u202fPM",
+        "wednesday": "6\u202fAM\u20136\u202fPM",
+        "thursday": "6\u202fAM\u20136\u202fPM",
+        "friday": "6\u202fAM\u20136\u202fPM",
+        "saturday": "6:30\u202fAM\u20136\u202fPM"
+      },
+      "phone": "(510) 661-3510",
+      "website": "https://bluebottlecoffee.com/us/eng/northern-california-cafes?utm_source=google&utm_medium=organic&utm_campaign=cafe_business_listing_norcal",
+      "description": "Hip cafe for gourmet coffee & pastries. Trendy cafe chain offering upscale coffee drinks & pastries, plus beans & brewing equipment.",
+      "extensions": [
+        {
+          "service_options": [
+            "Delivery",
+            "Onsite services",
+            "Takeout",
+            "Dine-in"
+          ]
+        },
+        {
+          "highlights": [
+            "Great coffee",
+            "Great tea selection"
+          ]
+        },
+        {
+          "popular_for": [
+            "Breakfast",
+            "Solo dining",
+            "Good for working on laptop"
+          ]
+        },
+        {
+          "accessibility": [
+            "Wheelchair accessible seating"
+          ]
+        },
+        {
+          "offerings": [
+            "Coffee",
+            "Prepared foods",
+            "Quick bite"
+          ]
+        },
+        {
+          "dining_options": [
+            "Breakfast",
+            "Dessert"
+          ]
+        },
+        {
+          "amenities": [
+            "Restroom"
+          ]
+        },
+        {
+          "atmosphere": [
+            "Casual",
+            "Trendy"
+          ]
+        },
+        {
+          "crowd": [
+            "Tourists"
+          ]
+        },
+        {
+          "planning": [
+            "Usually a wait"
+          ]
+        },
+        {
+          "payments": [
+            "Credit cards",
+            "Debit cards",
+            "NFC mobile payments"
+          ]
+        },
+        {
+          "parking": [
+            "Free street parking"
+          ]
+        },
+        {
+          "pets": [
+            "Dogs allowed inside"
+          ]
+        }
+      ],
+      "unsupported_extensions": [
+        {
+          "accessibility": [
+            "Wheelchair accessible parking lot"
+          ]
+        },
+        {
+          "dining_options": [
+            "Table service"
+          ]
+        },
+        {
+          "planning": [
+            "Accepts reservations"
+          ]
+        }
+      ],
+      "service_options": {
+        "dine_in": true,
+        "takeout": true,
+        "delivery": true
+      },
+      "order_online": "https://www.google.com/searchviewer/42?cvd=CLw_EicKJeICIjIgEhkiF9LX29IPEQoNL2cvMTFjMjdnazliMBgAOgMI8A0%3D&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=y-klaujMD_3JkPIP6dD0uAo&ei=y-klaujMD_3JkPIP6dD0uAo&fo_s=OA,SOE&opi=79508299&ebb=1&cs=0&foub=mcpp",
+      "thumbnail": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAGR8oHlHuxUs1sNOlX6mu2YpG9DsR0rkTFagFvut2IT0b4nlzxMYOeNVcqyPHUvtP8FXTB4vIoRPA6d9z91MqwtHs3nsJW-DVNlYCu2o_TGOVok8Pp0WQrIVi5zM05-prM7dc8s2Q=w1000-h1000-c-n",
+      "serpapi_thumbnail": "https://serpapi.com/images/url/KaDI4HicHcRLDoIwFADAE1UK_sDEBWr4mACFIMjKaCVgqG3ltajc0CN4GxNnMd9Pq5SElWGwdjpphGhYraHuqeCq5mpCxd1oJCAKCAyXxGnn-pktAhbo1wFMiBN2XNy1VUnf2UGG-y73zo03aGWFOb7MOBtfUZXUcUEfbxIcBkVs75hvZkMoMuIurs7omNHjqQKYctiXaFfErNpqS5xyPylEZxOJy7QPi9t8jPAcyT5aXqkNVrp-mhhj1P6niP8AGJZFPQ"
+    },
+    {
+      "position": 11,
+      "title": "Blue Bottle Coffee",
+      "place_id": "ChIJ1YkFRvl_j4ARiwPDFJeDq5g",
+      "data_id": "0x808f7ff9460589d5:0x98ab839714c3038b",
+      "data_cid": "11001031199694193547",
+      "reviews_link": "https://serpapi.com/search.json?data_id=0x808f7ff9460589d5%3A0x98ab839714c3038b&engine=google_maps_reviews&hl=en",
+      "photos_link": "https://serpapi.com/search.json?data_id=0x808f7ff9460589d5%3A0x98ab839714c3038b&engine=google_maps_photos&hl=en",
+      "gps_coordinates": {
+        "latitude": 37.7711043,
+        "longitude": -122.3910746
+      },
+      "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJ1YkFRvl_j4ARiwPDFJeDq5g",
+      "provider_id": "/g/11htv5l_vx",
+      "rating": 4.1,
+      "reviews": 164,
+      "price": "$10\u201320",
+      "extracted_price": 10,
+      "type": "Coffee shop",
+      "types": [
+        "Coffee shop",
+        "Cafe"
+      ],
+      "type_id": "coffee_shop",
+      "type_ids": [
+        "coffee_shop",
+        "cafe"
+      ],
+      "address": "1385 4th St, San Francisco, CA 94158",
+      "country": "United States",
+      "open_state": "Open \u00b7 Closes 5:30\u202fPM",
+      "hours": "Open \u00b7 Closes 5:30\u202fPM",
+      "operating_hours": {
+        "sunday": "6:30\u202fAM\u20135:30\u202fPM",
+        "monday": "6:30\u202fAM\u20135:30\u202fPM",
+        "tuesday": "6:30\u202fAM\u20135:30\u202fPM",
+        "wednesday": "6:30\u202fAM\u20135:30\u202fPM",
+        "thursday": "6:30\u202fAM\u20135:30\u202fPM",
+        "friday": "6:30\u202fAM\u20135:30\u202fPM",
+        "saturday": "6:30\u202fAM\u20135:30\u202fPM"
+      },
+      "phone": "(510) 661-3510",
+      "website": "https://bluebottlecoffee.com/us/eng/northern-california-cafes?utm_source=google&utm_medium=organic&utm_campaign=cafe_business_listing_norcal",
+      "description": "Hip cafe for gourmet coffee & pastries. Trendy cafe chain offering upscale coffee drinks & pastries, plus beans & brewing equipment.",
+      "extensions": [
+        {
+          "service_options": [
+            "Outdoor seating",
+            "Delivery",
+            "Onsite services",
+            "Takeout",
+            "Dine-in"
+          ]
+        },
+        {
+          "highlights": [
+            "Great coffee",
+            "Great tea selection"
+          ]
+        },
+        {
+          "popular_for": [
+            "Breakfast",
+            "Solo dining",
+            "Good for working on laptop"
+          ]
+        },
+        {
+          "accessibility": [
+            "Wheelchair accessible entrance",
+            "Wheelchair accessible seating"
+          ]
+        },
+        {
+          "offerings": [
+            "Coffee",
+            "Quick bite"
+          ]
+        },
+        {
+          "dining_options": [
+            "Breakfast",
+            "Dessert",
+            "Seating"
+          ]
+        },
+        {
+          "amenities": [
+            "Restroom"
+          ]
+        },
+        {
+          "atmosphere": [
+            "Casual",
+            "Trendy"
+          ]
+        },
+        {
+          "payments": [
+            "Credit cards",
+            "Debit cards",
+            "NFC mobile payments"
+          ]
+        },
+        {
+          "pets": [
+            "Dogs allowed inside",
+            "Dogs allowed outside"
+          ]
+        }
+      ],
+      "unsupported_extensions": [
+        {
+          "accessibility": [
+            "Wheelchair accessible parking lot"
+          ]
+        },
+        {
+          "dining_options": [
+            "Table service"
+          ]
+        },
+        {
+          "planning": [
+            "Accepts reservations"
+          ]
+        }
+      ],
+      "service_options": {
+        "dine_in": true,
+        "takeout": true,
+        "delivery": true
+      },
+      "order_online": "https://www.google.com/searchviewer/42?cvd=CLw_EicKJeICIjIgEhkiF9LX29IPEQoNL2cvMTFodHY1bF92eBgAOgMI8A0%3D&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=y-klaujMD_3JkPIP6dD0uAo&ei=y-klaujMD_3JkPIP6dD0uAo&fo_s=OA,SOE&opi=79508299&ebb=1&cs=0&foub=mcpp",
+      "thumbnail": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAErgdJ-lomWC5sxNfTBhlQxVnsw1-RYAqqkKA_YbQ0qn0dvsT4u71lvyWCVnZQ_738oxQ4fOnpxgrdsZRC9p-tC9GxJS8unPX_1Qh90uxx2Ag6IBsUssE_JqRsnbSp_SL92qItEhQ=w1000-h1000-c-n",
+      "serpapi_thumbnail": "https://serpapi.com/images/url/SS3XUXicHcTRboIwFADQL6oUdSome6iELOLiLDgdvDQRsE2sty23aP1EP8G_WeJ5OK-n8t7iMoq0moykMVJ3A3Z9Y8B34EeNuUbSImmQYMR2W35hWS_bnGhzPaYfGLbn_UppHg6A95gUFXPusmGiOnHqgLY33E-Heaxvj2N6gJqL-WRhAp-ef8AG2bdYF2liiU-Tr5CXiwF2fyLmKqFDCGMmZ-sV_iJmIncFwqm0ovxOxm7tM8U_7zGllKj3DYF_Z9NGfw"
+    },
+    {
+      "position": 12,
+      "title": "Blue Bottle Coffee",
+      "place_id": "ChIJKyGeO8uBhYARGBl0pZptD8c",
+      "data_id": "0x808581cb3b9e212b:0xc70f6d9aa5741918",
+      "data_cid": "14343803849166559512",
+      "reviews_link": "https://serpapi.com/search.json?data_id=0x808581cb3b9e212b%3A0xc70f6d9aa5741918&engine=google_maps_reviews&hl=en",
+      "photos_link": "https://serpapi.com/search.json?data_id=0x808581cb3b9e212b%3A0xc70f6d9aa5741918&engine=google_maps_photos&hl=en",
+      "gps_coordinates": {
+        "latitude": 37.7870063,
+        "longitude": -122.39889749999999
+      },
+      "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJKyGeO8uBhYARGBl0pZptD8c",
+      "provider_id": "/g/11fhlv3yyf",
+      "rating": 4.4,
+      "reviews": 361,
+      "price": "$10\u201320",
+      "extracted_price": 10,
+      "type": "Coffee shop",
+      "types": [
+        "Coffee shop",
+        "Cafe"
+      ],
+      "type_id": "coffee_shop",
+      "type_ids": [
+        "coffee_shop",
+        "cafe"
+      ],
+      "address": "168 2nd St, San Francisco, CA 94105",
+      "country": "United States",
+      "open_state": "Closed \u00b7 Opens 6:30\u202fAM Mon",
+      "hours": "Closed \u00b7 Opens 6:30\u202fAM Mon",
+      "operating_hours": {
+        "sunday": "7:30\u202fAM\u20132\u202fPM",
+        "monday": "6:30\u202fAM\u20135:30\u202fPM",
+        "tuesday": "6:30\u202fAM\u20135:30\u202fPM",
+        "wednesday": "6:30\u202fAM\u20135:30\u202fPM",
+        "thursday": "6:30\u202fAM\u20135\u202fPM",
+        "friday": "7:30\u202fAM\u20135:30\u202fPM",
+        "saturday": "7:30\u202fAM\u20132\u202fPM"
+      },
+      "phone": "(510) 661-3510",
+      "website": "https://bluebottlecoffee.com/us/eng/northern-california-cafes?utm_source=google&utm_medium=organic&utm_campaign=cafe_business_listing_norcal",
+      "description": "Hip cafe chain for coffee and pastries. Trendy coffee chain offering upscale coffee drinks and pastries, plus beans and brewing equipment.",
+      "extensions": [
+        {
+          "service_options": [
+            "Delivery",
+            "Onsite services",
+            "Takeout",
+            "Dine-in"
+          ]
+        },
+        {
+          "highlights": [
+            "Great coffee",
+            "Great tea selection"
+          ]
+        },
+        {
+          "popular_for": [
+            "Solo dining",
+            "Good for working on laptop"
+          ]
+        },
+        {
+          "accessibility": [
+            "Wheelchair accessible entrance",
+            "Wheelchair accessible restroom",
+            "Wheelchair accessible seating"
+          ]
+        },
+        {
+          "offerings": [
+            "Coffee",
+            "Quick bite"
+          ]
+        },
+        {
+          "dining_options": [
+            "Breakfast",
+            "Dessert"
+          ]
+        },
+        {
+          "amenities": [
+            "Restroom",
+            "Wi-Fi"
+          ]
+        },
+        {
+          "atmosphere": [
+            "Casual",
+            "Cozy",
+            "Trendy"
+          ]
+        },
+        {
+          "crowd": [
+            "Tourists"
+          ]
+        },
+        {
+          "payments": [
+            "Credit cards",
+            "Debit cards",
+            "NFC mobile payments"
+          ]
+        }
+      ],
+      "unsupported_extensions": [
+        {
+          "accessibility": [
+            "Wheelchair accessible parking lot"
+          ]
+        },
+        {
+          "dining_options": [
+            "Table service"
+          ]
+        },
+        {
+          "planning": [
+            "Accepts reservations"
+          ]
+        }
+      ],
+      "service_options": {
+        "dine_in": true,
+        "takeout": true,
+        "delivery": true
+      },
+      "order_online": "https://www.google.com/searchviewer/42?cvd=CLw_EicKJeICIjIgEhkiF9LX29IPEQoNL2cvMTFmaGx2M3l5ZhgAOgMI8A0%3D&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=y-klaujMD_3JkPIP6dD0uAo&ei=y-klaujMD_3JkPIP6dD0uAo&fo_s=OA,SOE&opi=79508299&ebb=1&cs=0&foub=mcpp",
+      "thumbnail": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAHY0YzvG9B03v7eE7y0VT4Z6NADaSdRo6-OwdSV9q023QiKzYg5R6nZmMi80d3k8hjsvocYMcTE0zpYzdpPWtLaaDfEgfJV0b1Z86M_b4Lmo7dfzJ4Ci88ptGjdLLkOlVMnrEAv=w1000-h1000-c-n",
+      "serpapi_thumbnail": "https://serpapi.com/images/url/YCu1x3icHcTdboIwGADQJ6p8DgZ1iRdMCQuC_2EpNwZbKAi0ne0w9gV9Bt_GxHNxno_GGKW_HKdv3AmXkvfVv66uVApTCTOhcnC40ohqpJ1wu9514Q8BYsd49g3uGFRRcIf86BX-OlyWB7aXPtrc2CGf_cGHu2tXlvDPvS-KIWsxMLfDzUWPkpKMHiOwilimtr8mLctlHfE6yeE8LbCfnc5eOsiA1TbxFi3GysQXlqbdps8zcY3CcX6bAgBq3lMkXsZMQ6U"
+    },
+    {
+      "position": 13,
+      "title": "Blue Bottle Coffee",
+      "place_id": "ChIJ_0lRJTmBhYARl3CWKZiY4G0",
+      "data_id": "0x80858139255149ff:0x6de0989829967097",
+      "data_cid": "7917495924217507991",
+      "reviews_link": "https://serpapi.com/search.json?data_id=0x80858139255149ff%3A0x6de0989829967097&engine=google_maps_reviews&hl=en",
+      "photos_link": "https://serpapi.com/search.json?data_id=0x80858139255149ff%3A0x6de0989829967097&engine=google_maps_photos&hl=en",
+      "gps_coordinates": {
+        "latitude": 37.7904264,
+        "longitude": -122.39465229999999
+      },
+      "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJ_0lRJTmBhYARl3CWKZiY4G0",
+      "provider_id": "/g/11ng369wnd",
+      "rating": 3.9,
+      "reviews": 56,
+      "price": "$1\u201310",
+      "extracted_price": 1,
+      "type": "Coffee shop",
+      "types": [
+        "Coffee shop",
+        "Cafe"
+      ],
+      "type_id": "coffee_shop",
+      "type_ids": [
+        "coffee_shop",
+        "cafe"
+      ],
+      "address": "250 Howard St Suite 2B, San Francisco, CA 94105",
+      "country": "United States",
+      "open_state": "Closed \u00b7 Opens 6\u202fAM Mon",
+      "hours": "Closed \u00b7 Opens 6\u202fAM Mon",
+      "operating_hours": {
+        "sunday": "Closed",
+        "monday": "6\u202fAM\u20135:30\u202fPM",
+        "tuesday": "6\u202fAM\u20135:30\u202fPM",
+        "wednesday": "6\u202fAM\u20135:30\u202fPM",
+        "thursday": "6\u202fAM\u20135:30\u202fPM",
+        "friday": "6\u202fAM\u20135:30\u202fPM",
+        "saturday": "8\u202fAM\u20132\u202fPM"
+      },
+      "website": "https://bluebottlecoffee.com/us/eng/northern-california-cafes?utm_source=google&utm_medium=organic&utm_campaign=cafe_business_listing_norcal",
+      "description": "Hip cafe for gourmet coffee & pastries. Trendy cafe chain offering upscale coffee drinks & pastries, plus beans & brewing equipment.",
+      "extensions": [
+        {
+          "service_options": [
+            "Delivery",
+            "Takeout",
+            "Dine-in"
+          ]
+        },
+        {
+          "highlights": [
+            "Great coffee",
+            "Great tea selection"
+          ]
+        },
+        {
+          "popular_for": [
+            "Good for working on laptop"
+          ]
+        },
+        {
+          "accessibility": [
+            "Wheelchair accessible entrance"
+          ]
+        },
+        {
+          "offerings": [
+            "Coffee",
+            "Quick bite"
+          ]
+        },
+        {
+          "dining_options": [
+            "Dessert"
+          ]
+        },
+        {
+          "atmosphere": [
+            "Casual",
+            "Cozy",
+            "Trendy"
+          ]
+        },
+        {
+          "payments": [
+            "Credit cards",
+            "Debit cards",
+            "NFC mobile payments"
+          ]
+        }
+      ],
+      "unsupported_extensions": [
+        {
+          "accessibility": [
+            "Wheelchair accessible parking lot"
+          ]
+        },
+        {
+          "dining_options": [
+            "Table service"
+          ]
+        }
+      ],
+      "service_options": {
+        "dine_in": true,
+        "takeout": true,
+        "delivery": true
+      },
+      "order_online": "https://www.google.com/searchviewer/42?cvd=CLw_EicKJeICIjIgEhkiF9LX29IPEQoNL2cvMTFuZzM2OXduZBgAOgMI8A0%3D&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=y-klaujMD_3JkPIP6dD0uAo&ei=y-klaujMD_3JkPIP6dD0uAo&fo_s=OA,SOE&opi=79508299&ebb=1&cs=0&foub=mcpp",
+      "thumbnail": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAHv70skbvENTHC1YdWEykfu-Lbid1rUn60q0ueUdBA60q7z5TkXvldUbmrP4K-In79FVtNgDMrRC2-3mZf7sdUThb7nxBPmLNhvaTYn1sB4Jqu8BUBtiG3IQHoIpTv8TVYIu3U1Ig=w1000-h1000-c-n",
+      "serpapi_thumbnail": "https://serpapi.com/images/url/Rfbt-XicHcZLcoIwAADQE0WSYhvbGRfE2hJrGewkKu4KwcQBEiQfPzfsEXobHTdv3v-fcq63b1HUqngkjZFt7W09VEa7WrtRZbpI9hZUFtgoybNVk6QBQ9uUYZ6xdIYKsZlfmr0Hy_Ig0MD1CzxCX3NBkvvw9Zk129AKXnZDPv4CVOPXj7XL5Pv38DN7AnG322MrOFMl1meSd8tMhV9WaGTJeHH0E8KJO3zGdJUa2rMwYeuC-pgjKqcnBCEE6mEF9A27DESN"
+    }
+  ]
+}

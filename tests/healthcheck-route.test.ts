@@ -35,7 +35,12 @@ import { SemanticForceError } from "@/lib/semanticforce/types";
 // SF_API_KEY drives BOTH the client path (unset → FixtureClient) and the
 // route's `mode` field, so each test pins it explicitly. SF_API_BASE matters
 // only when a key is present; we clear it by default and set it per-test.
-const ENV_KEYS = ["SF_API_KEY", "SF_API_BASE"] as const;
+const ENV_KEYS = [
+  "SF_API_KEY",
+  "SF_API_BASE",
+  "REVIEWS_PROVIDER",
+  "SERPAPI_API_KEY",
+] as const;
 const saved: Record<string, string | undefined> = {};
 
 beforeEach(() => {
@@ -86,13 +91,49 @@ describe("GET /api/healthcheck — ok path (fixture, no SF_API_KEY)", () => {
     const res = await GET();
     expect(res.headers.get("Cache-Control")).toBe("no-store");
   });
+
+  it("reports provider:mock when REVIEWS_PROVIDER is unset", async () => {
+    const res = await GET();
+    const body = await res.json();
+    expect(body.provider).toBe("mock");
+  });
 });
 
-describe("GET /api/healthcheck — down path (misconfig: key set, base missing)", () => {
-  // SF_API_KEY present + SF_API_BASE absent → createSemanticForceClient()
-  // throws SemanticForceError("bad_request", ...), caught at init. This is the
-  // only env-reachable SF-throw → down branch; it also pins mode: "live".
+describe("GET /api/healthcheck — provider-aware (L29.1)", () => {
+  it("serpapi with a key → ok/live WITHOUT a live fetch (quota guard)", async () => {
+    // A real getReviews(MOCK_SMALL_001) through the SerpApi client would make a
+    // live call and fail on this fake key → down. Getting ok PROVES the probe
+    // did not fetch: a constructed (creds-present) live client is reported ok.
+    process.env.REVIEWS_PROVIDER = "serpapi";
+    process.env.SERPAPI_API_KEY = "fake-but-present";
+    const res = await GET();
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.status).toBe("ok");
+    expect(body.provider).toBe("serpapi");
+    expect(body.mode).toBe("live");
+    expect(body.error).toBeUndefined();
+  });
+
+  it("serpapi with NO key → down (provider can't construct)", async () => {
+    process.env.REVIEWS_PROVIDER = "serpapi";
+    delete process.env.SERPAPI_API_KEY;
+    const res = await GET();
+    expect(res.status).toBe(503);
+    const body = await res.json();
+    expect(body.status).toBe("down");
+    expect(body.provider).toBe("serpapi");
+    expect(body.mode).toBe("live");
+    expect(body.error?.code).toBe("unauthorized");
+  });
+});
+
+describe("GET /api/healthcheck — down path (misconfig: semanticforce key set, base missing)", () => {
+  // REVIEWS_PROVIDER=semanticforce + SF_API_KEY present + SF_API_BASE absent →
+  // createReviewsProvider() → createSemanticForceClient() throws
+  // SemanticForceError("bad_request", ...), caught at init → down/live.
   beforeEach(() => {
+    process.env.REVIEWS_PROVIDER = "semanticforce";
     process.env.SF_API_KEY = "test-key-not-real";
     delete process.env.SF_API_BASE;
   });
@@ -234,7 +275,7 @@ describe("/api/healthcheck — response envelope structural shape", () => {
   // (e.g. `details`, `hint`) or renamed `error.code` → `error_code` fails
   // loudly. Symmetric with the SemanticForceError envelope D-027 — the UI
   // and any uptime monitor parsing this body depends on the structural shape.
-  it("ok body keys are exactly the documented five (no surplus, no missing)", async () => {
+  it("ok body keys are exactly the documented set (no surplus, no missing)", async () => {
     const res = await GET();
     const body = await res.json();
     expect(Object.keys(body).sort()).toEqual([
@@ -242,12 +283,14 @@ describe("/api/healthcheck — response envelope structural shape", () => {
       "latency_ms",
       "mode",
       "place_id",
+      "provider",
       "status",
     ]);
     expect("error" in body).toBe(false);
   });
 
-  it("down body keys are exactly the documented six including the error wrapper", async () => {
+  it("down body keys are exactly the documented set including the error wrapper", async () => {
+    process.env.REVIEWS_PROVIDER = "semanticforce";
     process.env.SF_API_KEY = "test-key-not-real";
     delete process.env.SF_API_BASE;
     const res = await GET();
@@ -258,6 +301,7 @@ describe("/api/healthcheck — response envelope structural shape", () => {
       "latency_ms",
       "mode",
       "place_id",
+      "provider",
       "status",
     ]);
     expect(Object.keys(body.error).sort()).toEqual(["code", "message"]);
@@ -276,6 +320,7 @@ describe("/api/healthcheck — Content-Type response header freeze", () => {
   });
 
   it("down path also returns application/json", async () => {
+    process.env.REVIEWS_PROVIDER = "semanticforce";
     process.env.SF_API_KEY = "test-key-not-real";
     delete process.env.SF_API_BASE;
     const res = await GET();

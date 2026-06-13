@@ -347,12 +347,19 @@ describe("module-export surface — runtime named exports", () => {
   // would pass every behavioural test (every helper still works the same
   // way) and silently broaden the public contract. Mirrors L23.1/D-080's
   // sf-client module-surface pin applied to the cache module.
-  it("exposes exactly the five runtime exports", () => {
+  it("exposes exactly the runtime exports", () => {
+    // L27.4 (D-089) added the preview namespace; L28.1 (D-094) added the
+    // resolution namespace (RESOLVE_KEY_PREFIX + createResolveCache) — real
+    // public-surface additions, reflected here.
     expect(Object.keys(reviewsCacheModule).sort()).toEqual([
       "CACHE_KEY_PREFIX",
       "CACHE_TTL_SECONDS",
+      "PREVIEW_KEY_PREFIX",
+      "RESOLVE_KEY_PREFIX",
       "__testing",
       "cacheKey",
+      "createPreviewCache",
+      "createResolveCache",
       "createReviewsCache",
     ]);
   });

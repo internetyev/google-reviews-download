@@ -13,13 +13,24 @@
 // our-rate-limited identically.
 
 import { NextRequest, NextResponse } from "next/server";
+import {
+  BUCKET_CAPACITY,
+  REFILL_PER_SECOND,
+  RETRY_AFTER_SECONDS,
+  EVICTION_WINDOW_MS,
+  applyConsume,
+  type Bucket,
+  type RateLimiter,
+} from "@/lib/ratelimit/token-bucket";
+import { createKvRateLimiter } from "@/lib/ratelimit/kv-bucket";
 
-export const BUCKET_CAPACITY = 10;
-export const REFILL_PER_SECOND = 10 / 60; // 10 tokens/min → ~0.1667 tokens/s
-export const RETRY_AFTER_SECONDS = 6; // one token's worth (1 / REFILL_PER_SECOND)
-export const EVICTION_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
-
-type Bucket = { tokens: number; updated_at: number };
+// Re-export the bucket constants so existing importers/tests keep their source.
+export {
+  BUCKET_CAPACITY,
+  REFILL_PER_SECOND,
+  RETRY_AFTER_SECONDS,
+  EVICTION_WINDOW_MS,
+};
 
 const buckets = new Map<string, Bucket>();
 
@@ -50,30 +61,31 @@ export function consumeToken(
     store.delete(key);
   }
 
-  const prior = store.get(key);
-  const tokens = prior
-    ? Math.min(
-        BUCKET_CAPACITY,
-        prior.tokens + ((now - prior.updated_at) / 1000) * REFILL_PER_SECOND,
-      )
-    : BUCKET_CAPACITY;
-
-  if (tokens < 1) {
-    // Record the refilled state but do not spend — next retry computes
-    // off this updated_at, not the original empty timestamp.
-    store.set(key, { tokens, updated_at: now });
-    return false;
-  }
-
-  store.set(key, { tokens: tokens - 1, updated_at: now });
-  return true;
+  const { allowed, next } = applyConsume(store.get(key) ?? null, now);
+  store.set(key, next);
+  return allowed;
 }
 
-export function middleware(req: NextRequest): NextResponse {
+// The in-process limiter wraps consumeToken so a single instance keeps working
+// with zero config. When Vercel KV is wired, the KV-backed limiter takes over
+// so the limit holds across instances (L28.4). Chosen once, lazily.
+let limiter: RateLimiter | null = null;
+function getLimiter(): RateLimiter {
+  if (limiter) return limiter;
+  const url = process.env.KV_REST_API_URL;
+  const token = process.env.KV_REST_API_TOKEN;
+  limiter =
+    url && token
+      ? createKvRateLimiter({ url, token })
+      : { consume: async (key, now) => consumeToken(key, now) };
+  return limiter;
+}
+
+export async function middleware(req: NextRequest): Promise<NextResponse> {
   const route = req.nextUrl.pathname;
   const key = identify(req, route);
 
-  if (consumeToken(key, Date.now())) return NextResponse.next();
+  if (await getLimiter().consume(key, Date.now())) return NextResponse.next();
 
   return NextResponse.json(
     {
