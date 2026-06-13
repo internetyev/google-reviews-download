@@ -328,11 +328,14 @@ describe("formatReviewsAsXlsx — empty-reviews + single-photo boundary", () => 
 // Type-only exports (`XlsxColumn`) are erased at runtime and do not
 // appear in `Object.keys`.
 describe("module export surface — Object.keys(xlsxModule).sort()", () => {
-  it("freezes the runtime export surface at exactly 5 named exports", () => {
+  it("freezes the runtime export surface at exactly 6 named exports", () => {
+    // L31.1 added `formatBatchAsXlsx` (multi-place batch export) — a real,
+    // reviewed surface change, reflected here so the pin stays accurate.
     expect(Object.keys(xlsxModule).sort()).toEqual([
       "XLSX_COLUMNS",
       "XLSX_CONTENT_TYPE",
       "__testing",
+      "formatBatchAsXlsx",
       "formatReviewsAsXlsx",
       "xlsxFilename",
     ]);
@@ -386,6 +389,7 @@ describe("__testing namespace — Object.keys(__testing).sort()", () => {
       "COLUMN_WIDTHS",
       "PHOTO_URL_JOIN",
       "SHEET_NAME",
+      "buildBatchSheet",
       "buildReviewsSheet",
       "rowFor",
     ]);

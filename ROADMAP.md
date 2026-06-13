@@ -284,9 +284,18 @@ _Opened to give the routine real, non-test-padding work after the Phase 27–29 
 
 ---
 
+## Phase 31 — Multi-place batch export (real feature, agent-doable; promoted from the parking lot) 📦
+
+_Opened 2026-06-14 (D-105). With Phases 27–30 all `[x]` and every remaining roadmap leaf human/corgi-gated (L1.6b, L3.1b, L4.1, L5.1, L5.2), the routine had no standard leaf. Per the routine's "open a real-work phase rather than idle" rule (D-046/D-051) and the D-084 STOP banner (no suite-deepening — build real features), this promotes the parking-lot "Multi-place batch export" item: a genuine product extension that lets a user download the reviews of several businesses as ONE file. It is design-aligned, not scope-creep — `lib/export/csv.ts` already emits `place_name`/`place_id`/`place_url` on every row with the explicit comment "so users who concat multiple exports can group by `place_id` later". Offline-testable against fixtures; net-new code so tests are legitimate coverage, not deepening. The route + web-form wiring are separate follow-up leaves (L31.2/L31.3) the human can approve or re-park._
+
+- [x] L31.1 Add the pure batch-export layer: `formatBatchAsCsv`/`formatBatchAsXlsx` that concatenate several `CachedReviewsPayload`s into one combined export (single header, all places' rows, per-row place columns keep them distinguishable), plus `lib/export/batch.ts` as the single batch entry point (`batchFilename`, `batchReviewCount`). Offline tests over fixtures. **DONE 2026-06-14:** batch writers added to `csv.ts`/`xlsx.ts` (reuse the existing `rowFor`/`CSV_COLUMNS`/`COLUMN_WIDTHS` so the combined output can never drift from the single-place column contract; extracted a shared `writeWorkbook` in xlsx.ts); `lib/export/batch.ts` re-exports both + adds `batchFilename` (`google-reviews-batch-<N>-places-<YYYYMMDD>.<ext>`) and `batchReviewCount`. New `tests/export-batch.test.ts` (8: single-header row-sum, place-distinguishability, BOM/CRLF preserved, empty-batch header-only, XLSX round-trip, per-call freshness, helpers). Updated the xlsx module/`__testing` surface pins for the two new exports (a real reviewed surface change, not deepening). tsc clean; 48/48 export suites green (D-105). Purely additive — no existing single-place path changes.
+- [ ] L31.2 Wire batch export into `/api/reviews` (accept a comma/newline-separated list of place inputs; resolve + fetch each via the provider, cache per-place; return the combined CSV/XLSX). New-feature route tests only. **(direction pending human OK — promoted from parking lot in L31.1; safe to re-park.)**
+- [ ] L31.3 Wire batch input through the web form + preview (paste multiple businesses; preview shows per-place counts; one combined download). **(depends on L31.2; direction pending human OK.)**
+
+---
+
 ## Out-of-scope parking lot
 
-- Multi-place batch export
 - Sentiment analysis / summarisation
 - Browser extension
 - Competitor monitoring

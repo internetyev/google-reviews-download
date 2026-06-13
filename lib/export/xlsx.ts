@@ -112,8 +112,46 @@ function buildReviewsSheet(payload: CachedReviewsPayload): SheetWithFreeze {
 }
 
 export function formatReviewsAsXlsx(payload: CachedReviewsPayload): Uint8Array {
-  const ws = buildReviewsSheet(payload);
+  return writeWorkbook(buildReviewsSheet(payload));
+}
 
+// Multi-place batch export (Phase 31): one "Reviews" sheet whose rows are the
+// reviews of every place concatenated in order, header frozen, same column
+// widths. The per-row place columns (from `rowFor`) keep places
+// distinguishable — mirrors `formatBatchAsCsv` so CSV and XLSX batch exports
+// carry identical rows. Reuses `rowFor`/`XLSX_COLUMNS`/`COLUMN_WIDTHS` so the
+// batch sheet can never drift from the single-place writer's contract.
+function buildBatchSheet(payloads: CachedReviewsPayload[]): SheetWithFreeze {
+  const rows: Row[] = payloads.flatMap((payload) =>
+    payload.reviews.map((r) => rowFor(r, payload)),
+  );
+
+  const ws = XLSX.utils.json_to_sheet(rows, {
+    header: [...XLSX_COLUMNS],
+  }) as SheetWithFreeze;
+
+  ws["!cols"] = XLSX_COLUMNS.map((col) => ({ wch: COLUMN_WIDTHS[col] }));
+  ws["!views"] = [
+    {
+      state: "frozen",
+      xSplit: 0,
+      ySplit: 1,
+      topLeftCell: "A2",
+      activePane: "bottomLeft",
+    },
+  ];
+  ws["!freeze"] = { xSplit: 0, ySplit: 1 };
+
+  return ws;
+}
+
+export function formatBatchAsXlsx(payloads: CachedReviewsPayload[]): Uint8Array {
+  return writeWorkbook(buildBatchSheet(payloads));
+}
+
+// Shared workbook serialisation so the single-place and batch writers emit
+// byte-identical wrapping (one "Reviews" sheet, edge-safe Uint8Array).
+function writeWorkbook(ws: SheetWithFreeze): Uint8Array {
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, SHEET_NAME);
 
@@ -162,6 +200,7 @@ export const __testing = {
   COLUMN_WIDTHS,
   PHOTO_URL_JOIN,
   SHEET_NAME,
+  buildBatchSheet,
   buildReviewsSheet,
   rowFor,
 };
