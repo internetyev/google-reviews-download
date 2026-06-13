@@ -44,6 +44,24 @@ export function formatReviewsAsCsv(payload: CachedReviewsPayload): string {
   return BOM + lines.join(CRLF) + CRLF;
 }
 
+// Multi-place batch export (Phase 31): concatenate the reviews of several
+// places into ONE CSV with a single header. The per-row `place_name`/
+// `place_id`/`place_url` columns (already emitted by `rowFor`) keep each
+// place distinguishable, so a downstream `GROUP BY place_id` recovers the
+// per-place split — the exact use case the row schema was designed for
+// (see the file header). Reuses `rowFor`/`quote`/`CSV_COLUMNS` so the batch
+// output can never drift from the single-place writer's column contract.
+export function formatBatchAsCsv(payloads: CachedReviewsPayload[]): string {
+  const lines: string[] = [];
+  lines.push(CSV_COLUMNS.map(quote).join(","));
+  for (const payload of payloads) {
+    for (const review of payload.reviews) {
+      lines.push(rowFor(review, payload).map(quote).join(","));
+    }
+  }
+  return BOM + lines.join(CRLF) + CRLF;
+}
+
 function rowFor(review: Review, payload: CachedReviewsPayload): string[] {
   const photos = review.photos ?? [];
   return [
