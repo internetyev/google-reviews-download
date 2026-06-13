@@ -39,6 +39,21 @@ export const runtime = "edge";
 const PAGE_SIZE = 100;
 const HARD_CAP_REVIEWS = 5_000;
 const HARD_CAP_PAGES = 50;
+// The largest `limit` a single request may ask for. Equal to the assembled-walk
+// hard cap (a request can never receive more rows than we ever assemble), and
+// used as the clamp ceiling so `?limit=9999999` is silently bounded rather than
+// rejected — over-asking is benign, we just return everything we have.
+const MAX_LIMIT = HARD_CAP_REVIEWS;
+// Input-hardening bound on the free-text `placeId` param (which doubles as a
+// business-name on the serpapi provider). A real Place ID, a Google Maps URL,
+// or a business name all fit comfortably under this; a multi-kilobyte string is
+// a malformed/abusive input we reject at the edge BEFORE it reaches the
+// quota-metered SerpApi name resolver.
+const MAX_INPUT_LENGTH = 2_048;
+// Raw control characters (incl. NUL, tab, newline, DEL) never appear in a
+// legitimate id/URL/name once the querystring is decoded; their presence is a
+// malformed input (or an injection probe) we reject rather than forward.
+const CONTROL_CHARS = /[\u0000-\u001f\u007f]/;
 const SUPPORTED_FORMATS = ["json", "csv", "xlsx"] as const;
 type Format = (typeof SUPPORTED_FORMATS)[number];
 
@@ -76,6 +91,15 @@ async function handleGet(req: NextRequest, deps: RouteDeps) {
     return errorJson("bad_request", "Missing required query param: placeId", 400);
   }
 
+  // Harden the free-text input BEFORE the quota-metered resolver sees it: a
+  // blank/whitespace-only, over-long, or control-char-laden `placeId` is a
+  // malformed business-name we reject at the edge (L30.5).
+  const inputCheck = validateInput(placeIdInput);
+  if (!inputCheck.ok) {
+    return errorJson("bad_request", inputCheck.message, 400);
+  }
+  const cleanInput = inputCheck.value;
+
   if (!isFormat(formatRaw)) {
     return errorJson(
       "bad_request",
@@ -85,24 +109,17 @@ async function handleGet(req: NextRequest, deps: RouteDeps) {
   }
   const format: Format = formatRaw;
 
-  let userLimit: number | undefined;
-  if (limitRaw != null) {
-    const parsed = Number(limitRaw);
-    if (!Number.isFinite(parsed) || parsed < 1) {
-      return errorJson(
-        "bad_request",
-        `Invalid limit "${limitRaw}" — must be a positive integer.`,
-        400,
-      );
-    }
-    userLimit = Math.min(Math.floor(parsed), HARD_CAP_REVIEWS);
+  const limit = parseLimit(limitRaw);
+  if (!limit.ok) {
+    return errorJson("bad_request", limit.message, 400);
   }
+  const userLimit = limit.value;
 
   // Accept an id/URL or a business name (serpapi-resolved, cached) — shared
   // with the web preview so both surfaces behave identically (L28.1/L28.2).
   let normalised;
   try {
-    normalised = await resolveInputToNormalised(placeIdInput, { resolve: deps.resolve });
+    normalised = await resolveInputToNormalised(cleanInput, { resolve: deps.resolve });
   } catch (err) {
     if (err instanceof SemanticForceError) {
       return errorJson(err.code, err.message, statusForCode(err.code, err.status));
@@ -277,6 +294,59 @@ function isFormat(s: string): s is Format {
   return (SUPPORTED_FORMATS as readonly string[]).includes(s);
 }
 
+// Result of validating/normalising a free-text `placeId` (id, URL, or name).
+type InputCheck =
+  | { ok: true; value: string }
+  | { ok: false; message: string };
+
+// Edge-side hardening for the `placeId` param. Runs before the quota-metered
+// SerpApi name resolver so a malformed/abusive value never burns a search:
+//  - trims surrounding whitespace (the resolver/normaliser trim too, but we
+//    reject on the trimmed length so "   " is caught here, not downstream);
+//  - blank-after-trim → 400 (distinct from the missing-param 400 above);
+//  - over MAX_INPUT_LENGTH → 400 (a multi-KB string is never a real id/URL/name);
+//  - any raw control character → 400 (NUL/newline/DEL etc. are malformed input).
+function validateInput(raw: string): InputCheck {
+  const value = raw.trim();
+  if (value.length === 0) {
+    return { ok: false, message: "Query param placeId must not be blank." };
+  }
+  if (value.length > MAX_INPUT_LENGTH) {
+    return {
+      ok: false,
+      message: `Query param placeId is too long (max ${MAX_INPUT_LENGTH} characters).`,
+    };
+  }
+  if (CONTROL_CHARS.test(value)) {
+    return {
+      ok: false,
+      message: "Query param placeId contains invalid control characters.",
+    };
+  }
+  return { ok: true, value };
+}
+
+// Result of parsing the optional `limit` param.
+type LimitCheck =
+  | { ok: true; value: number | undefined }
+  | { ok: false; message: string };
+
+// Parse + clamp the `limit` param. Absent → undefined (no slice, return all).
+// Non-numeric / NaN / Infinity / < 1 → 400. Otherwise floored to an integer and
+// clamped to MAX_LIMIT so an absurd `?limit=9999999` is bounded, not rejected
+// (over-asking is benign — the user just gets everything we assembled).
+function parseLimit(limitRaw: string | null): LimitCheck {
+  if (limitRaw == null) return { ok: true, value: undefined };
+  const parsed = Number(limitRaw);
+  if (!Number.isFinite(parsed) || parsed < 1) {
+    return {
+      ok: false,
+      message: `Invalid limit "${limitRaw}" — must be a positive integer.`,
+    };
+  }
+  return { ok: true, value: Math.min(Math.floor(parsed), MAX_LIMIT) };
+}
+
 function errorJson(code: string, message: string, status: number) {
   const body: ErrorBody = { error: { code, message } };
   return NextResponse.json(body, { status });
@@ -313,9 +383,13 @@ export const __testing = {
   PAGE_SIZE,
   HARD_CAP_REVIEWS,
   HARD_CAP_PAGES,
+  MAX_LIMIT,
+  MAX_INPUT_LENGTH,
   SUPPORTED_FORMATS,
   statusForCode,
   inferRetryAfter,
+  validateInput,
+  parseLimit,
   // Drive the handler with an injected name resolver (offline tests).
   handleGet,
 };
