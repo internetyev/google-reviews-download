@@ -33,6 +33,12 @@ import {
   formatReviewsAsXlsx,
   xlsxFilename,
 } from "@/lib/export/xlsx";
+import {
+  batchFilename,
+  batchReviewCount,
+  formatBatchAsCsv,
+  formatBatchAsXlsx,
+} from "@/lib/export/batch";
 
 export const runtime = "edge";
 
@@ -50,6 +56,10 @@ const MAX_LIMIT = HARD_CAP_REVIEWS;
 // a malformed/abusive input we reject at the edge BEFORE it reaches the
 // quota-metered SerpApi name resolver.
 const MAX_INPUT_LENGTH = 2_048;
+// Upper bound on places in one batch download. A batch resolves+walks each
+// place upstream, so the count directly caps quota spend per request; 25 is a
+// generous "paste a list" ceiling that still bounds a single request's cost.
+const MAX_BATCH_PLACES = 25;
 // Raw control characters (incl. NUL, tab, newline, DEL) never appear in a
 // legitimate id/URL/name once the querystring is decoded; their presence is a
 // malformed input (or an injection probe) we reject rather than forward.
@@ -69,12 +79,20 @@ type PartialBody = ErrorBody & {
   retry_after_s?: number;
 };
 
+type ReviewsClient = {
+  getReviews: (args: {
+    placeId: string;
+    limit?: number;
+    after?: string;
+  }) => Promise<{ place: PlaceMeta; reviews: Review[]; next_cursor?: string }>;
+};
+
 // Resolver seam: a name → data_id resolver, injectable for offline tests.
 // Production uses the real SerpApi resolver (resolveToDataId).
 type RouteDeps = {
   resolve: (input: string) => Promise<{ dataId: string; place?: PlaceMeta }>;
   // Optional reviews client override (offline tests); defaults to the factory.
-  client?: { getReviews: (args: { placeId: string; limit?: number; after?: string }) => Promise<{ place: PlaceMeta; reviews: Review[]; next_cursor?: string }> };
+  client?: ReviewsClient;
 };
 
 export async function GET(req: NextRequest) {
@@ -83,6 +101,12 @@ export async function GET(req: NextRequest) {
 
 async function handleGet(req: NextRequest, deps: RouteDeps) {
   const params = req.nextUrl.searchParams;
+  // Batch mode: a `places` param (comma/newline-separated list) downloads
+  // several businesses as one combined file (L31.2). It is purely additive —
+  // the single-place `placeId` path below is unchanged when `places` is absent.
+  if (params.get("places") != null) {
+    return handleBatch(req, deps);
+  }
   const placeIdInput = params.get("placeId");
   const formatRaw = (params.get("format") ?? "json").toLowerCase();
   const limitRaw = params.get("limit");
@@ -137,19 +161,78 @@ async function handleGet(req: NextRequest, deps: RouteDeps) {
   }
 
   const client = deps.client ?? createReviewsProvider();
+  const outcome = await walkAndAssemble(client, normalised.raw);
+
+  if (outcome.kind === "partial") {
+    // Methodology §3: partial walks caused by mid-walk rate-limit are NOT
+    // cached — the next request should retry against SF, not inherit the
+    // partial. We slice with userLimit for the response only.
+    const partialTrimmed =
+      userLimit != null ? outcome.partial.slice(0, userLimit) : outcome.partial;
+    const body: PartialBody = {
+      error: { code: "rate_limited", message: outcome.message },
+      partial: partialTrimmed,
+    };
+    if (outcome.retryAfterS != null) body.retry_after_s = outcome.retryAfterS;
+    const headers: Record<string, string> = {};
+    if (outcome.retryAfterS != null)
+      headers["Retry-After"] = String(outcome.retryAfterS);
+    return NextResponse.json(body, { status: 429, headers });
+  }
+  if (outcome.kind === "no_place") {
+    return errorJson(
+      "not_found",
+      "No place metadata returned for that placeId.",
+      404,
+    );
+  }
+  if (outcome.kind === "error") {
+    return errorJson(outcome.code, outcome.message, outcome.status);
+  }
+  if (outcome.kind === "unknown") {
+    return errorJson("unknown", outcome.message, 500);
+  }
+
+  // Cache the full assembled walk (pre-limit) so a later request with a
+  // different `limit` reuses the same entry. Truncation from HARD_CAP is
+  // a stable outcome and IS cacheable (methodology §3); only the partial-
+  // from-rate-limit branch above is excluded.
+  await cache.set(normalised.slug, outcome.payload);
+
+  return respondSuccess(outcome.payload, format, userLimit, "MISS", normalised.slug);
+}
+
+// One place's assemble-walk: paginate the provider in PAGE_SIZE pages up to the
+// HARD_CAP_* ceilings, returning a discriminated outcome the single-place and
+// batch paths both interpret. Single source of truth for the walk so the two
+// surfaces can never drift (mirrors the L31.1 batch-export "reuse the single
+// column contract" posture, applied to the fetch path).
+type WalkOutcome =
+  | { kind: "ok"; payload: CachedReviewsPayload }
+  | {
+      kind: "partial";
+      partial: Review[];
+      message: string;
+      retryAfterS?: number;
+    }
+  | { kind: "no_place" }
+  | { kind: "error"; code: SemanticForceErrorCode; message: string; status: number }
+  | { kind: "unknown"; message: string };
+
+async function walkAndAssemble(
+  client: ReviewsClient,
+  rawId: string,
+): Promise<WalkOutcome> {
   const collected: Review[] = [];
   let placeMeta: PlaceMeta | null = null;
   let cursor: string | undefined;
   let pages = 0;
   let truncated = false;
-  let rateLimited = false;
-  let rateLimitMessage = "Upstream rate-limited mid-walk; returning partial result.";
-  let retryAfterS: number | undefined;
 
   try {
     do {
       const page = await client.getReviews({
-        placeId: normalised.raw,
+        placeId: rawId,
         limit: PAGE_SIZE,
         after: cursor,
       });
@@ -175,59 +258,257 @@ async function handleGet(req: NextRequest, deps: RouteDeps) {
   } catch (err) {
     if (err instanceof SemanticForceError) {
       if (err.code === "rate_limited") {
-        rateLimited = true;
-        rateLimitMessage = err.message || rateLimitMessage;
-        retryAfterS = inferRetryAfter(err);
-      } else {
-        return errorJson(err.code, err.message, statusForCode(err.code, err.status));
+        return {
+          kind: "partial",
+          partial: collected,
+          message:
+            err.message ||
+            "Upstream rate-limited mid-walk; returning partial result.",
+          retryAfterS: inferRetryAfter(err),
+        };
       }
-    } else {
-      return errorJson(
-        "unknown",
-        `Unexpected error: ${(err as Error).message}`,
-        500,
-      );
+      return {
+        kind: "error",
+        code: err.code,
+        message: err.message,
+        status: statusForCode(err.code, err.status),
+      };
     }
+    return { kind: "unknown", message: `Unexpected error: ${(err as Error).message}` };
   }
 
-  if (!placeMeta) {
-    return errorJson(
-      "not_found",
-      "No place metadata returned for that placeId.",
-      404,
-    );
-  }
+  if (!placeMeta) return { kind: "no_place" };
 
-  if (rateLimited) {
-    // Methodology §3: partial walks caused by mid-walk rate-limit are NOT
-    // cached — the next request should retry against SF, not inherit the
-    // partial. We slice with userLimit for the response only.
-    const partialTrimmed =
-      userLimit != null ? collected.slice(0, userLimit) : collected;
-    const body: PartialBody = {
-      error: { code: "rate_limited", message: rateLimitMessage },
-      partial: partialTrimmed,
-    };
-    if (retryAfterS != null) body.retry_after_s = retryAfterS;
-    const headers: Record<string, string> = {};
-    if (retryAfterS != null) headers["Retry-After"] = String(retryAfterS);
-    return NextResponse.json(body, { status: 429, headers });
-  }
-
-  // Cache the full assembled walk (pre-limit) so a later request with a
-  // different `limit` reuses the same entry. Truncation from HARD_CAP is
-  // a stable outcome and IS cacheable (methodology §3); only the partial-
-  // from-rate-limit branch above is excluded.
   const payload: CachedReviewsPayload = {
     place: placeMeta,
     reviews: collected,
     fetched_at: new Date().toISOString(),
   };
   if (truncated) payload.truncated = true;
+  return { kind: "ok", payload };
+}
 
-  await cache.set(normalised.slug, payload);
+// Batch download: resolve + walk several places, combine into ONE file. Each
+// place is cached individually (same `gr:reviews:v1:<slug>` entries the single
+// path writes, so a batch warms — and reuses — the single-place cache). A batch
+// is all-or-nothing: any place that errors or rate-limits fails the whole
+// request, because a silently-short combined file is worse than a clear error.
+async function handleBatch(req: NextRequest, deps: RouteDeps) {
+  const params = req.nextUrl.searchParams;
+  const placesRaw = params.get("places") ?? "";
+  const formatRaw = (params.get("format") ?? "csv").toLowerCase();
+  const limitRaw = params.get("limit");
 
-  return respondSuccess(payload, format, userLimit, "MISS", normalised.slug);
+  if (!isFormat(formatRaw)) {
+    return errorJson(
+      "bad_request",
+      `Unsupported format "${formatRaw}". Use one of: ${SUPPORTED_FORMATS.join(", ")}`,
+      400,
+    );
+  }
+  const format: Format = formatRaw;
+
+  const limit = parseLimit(limitRaw);
+  if (!limit.ok) return errorJson("bad_request", limit.message, 400);
+  const userLimit = limit.value;
+
+  // Split on comma or newline, trim, drop blanks, dedupe by raw text
+  // (preserving first-seen order).
+  const rawItems = placesRaw
+    .split(/[,\n]/)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0);
+  const seenInput = new Set<string>();
+  const inputs: string[] = [];
+  for (const item of rawItems) {
+    if (seenInput.has(item)) continue;
+    seenInput.add(item);
+    inputs.push(item);
+  }
+
+  if (inputs.length === 0) {
+    return errorJson(
+      "bad_request",
+      "Query param places must list at least one business (comma- or newline-separated).",
+      400,
+    );
+  }
+  if (inputs.length > MAX_BATCH_PLACES) {
+    return errorJson(
+      "bad_request",
+      `Too many places (max ${MAX_BATCH_PLACES} per batch); received ${inputs.length}.`,
+      400,
+    );
+  }
+  // Edge-harden every input before any quota-metered resolver runs (same checks
+  // as the single path) so one bad entry fails fast and cheap.
+  for (const input of inputs) {
+    const check = validateInput(input);
+    if (!check.ok) {
+      return errorJson(
+        "bad_request",
+        `Invalid place "${truncateForMessage(input)}": ${check.message}`,
+        400,
+      );
+    }
+  }
+
+  const cache = createReviewsCache();
+  const client = deps.client ?? createReviewsProvider();
+  const payloads: CachedReviewsPayload[] = [];
+  const seenSlug = new Set<string>();
+  let allCached = true;
+
+  for (const input of inputs) {
+    let normalised;
+    try {
+      normalised = await resolveInputToNormalised(input, { resolve: deps.resolve });
+    } catch (err) {
+      if (err instanceof SemanticForceError) {
+        return errorJson(
+          err.code,
+          `${err.message} (place: "${truncateForMessage(input)}")`,
+          statusForCode(err.code, err.status),
+        );
+      }
+      if (err instanceof PlaceIdParseError) {
+        return errorJson(
+          "bad_request",
+          `${err.message} (place: "${truncateForMessage(input)}")`,
+          400,
+        );
+      }
+      throw err;
+    }
+
+    // Two inputs that resolve to the same place (e.g. a name and its data_id)
+    // collapse to one column-set in the combined file.
+    if (seenSlug.has(normalised.slug)) continue;
+    seenSlug.add(normalised.slug);
+
+    const cached = await cache.get(normalised.slug);
+    if (cached) {
+      payloads.push(cached);
+      continue;
+    }
+    allCached = false;
+
+    const outcome = await walkAndAssemble(client, normalised.raw);
+    if (outcome.kind === "ok") {
+      await cache.set(normalised.slug, outcome.payload);
+      payloads.push(outcome.payload);
+    } else if (outcome.kind === "partial") {
+      const headers: Record<string, string> = {};
+      if (outcome.retryAfterS != null)
+        headers["Retry-After"] = String(outcome.retryAfterS);
+      return NextResponse.json(
+        {
+          error: {
+            code: "rate_limited",
+            message: `${outcome.message} (place: "${truncateForMessage(input)}")`,
+          },
+        },
+        { status: 429, headers },
+      );
+    } else if (outcome.kind === "no_place") {
+      return errorJson(
+        "not_found",
+        `No place metadata returned for "${truncateForMessage(input)}".`,
+        404,
+      );
+    } else if (outcome.kind === "error") {
+      return errorJson(
+        outcome.code,
+        `${outcome.message} (place: "${truncateForMessage(input)}")`,
+        outcome.status,
+      );
+    } else {
+      return errorJson("unknown", outcome.message, 500);
+    }
+  }
+
+  // `limit` caps EACH place at N rows before combining (consistent with the
+  // single path's per-request slice; the per-place cache still holds the full
+  // walk so a later larger limit reuses it).
+  const finalPayloads =
+    userLimit != null
+      ? payloads.map((p) => slicePayload(p, userLimit))
+      : payloads;
+
+  return respondBatch(finalPayloads, format, allCached ? "HIT" : "MISS");
+}
+
+function slicePayload(p: CachedReviewsPayload, n: number): CachedReviewsPayload {
+  const out: CachedReviewsPayload = {
+    place: p.place,
+    reviews: p.reviews.slice(0, n),
+    fetched_at: p.fetched_at,
+  };
+  if (p.truncated) out.truncated = true;
+  return out;
+}
+
+function respondBatch(
+  payloads: CachedReviewsPayload[],
+  format: Format,
+  cacheStatus: "HIT" | "MISS",
+) {
+  const placeCount = payloads.length;
+  // Data vintage of the batch = freshest place's fetch time (matches the
+  // batchFilename convention's `max(fetched_at)`).
+  const freshest = payloads.reduce(
+    (max, p) => (p.fetched_at > max ? p.fetched_at : max),
+    payloads[0]?.fetched_at ?? "",
+  );
+
+  if (format === "json") {
+    const body = {
+      places: payloads.map((p) => {
+        const b: ReviewsBody = {
+          place: p.place,
+          reviews: p.reviews,
+          fetched_at: p.fetched_at,
+        };
+        if (p.truncated) b.truncated = true;
+        return b;
+      }),
+      place_count: placeCount,
+      review_count: batchReviewCount(payloads),
+      fetched_at: freshest,
+    };
+    return NextResponse.json(body, { headers: { "X-Cache": cacheStatus } });
+  }
+
+  if (format === "csv") {
+    const csv = formatBatchAsCsv(payloads);
+    const filename = batchFilename(placeCount, freshest, "csv");
+    return new NextResponse(csv, {
+      status: 200,
+      headers: {
+        "Content-Type": "text/csv; charset=utf-8",
+        "Content-Disposition": `attachment; filename="${filename}"`,
+        "X-Cache": cacheStatus,
+      },
+    });
+  }
+
+  // format === "xlsx"
+  const xlsx = formatBatchAsXlsx(payloads);
+  const filename = batchFilename(placeCount, freshest, "xlsx");
+  return new NextResponse(new Blob([new Uint8Array(xlsx)]), {
+    status: 200,
+    headers: {
+      "Content-Type": XLSX_CONTENT_TYPE,
+      "Content-Disposition": `attachment; filename="${filename}"`,
+      "X-Cache": cacheStatus,
+    },
+  });
+}
+
+// Truncate a user-supplied input echoed back in an error message, so a near-
+// limit (2KB) value can't bloat the error body.
+function truncateForMessage(s: string): string {
+  return s.length > 80 ? `${s.slice(0, 77)}...` : s;
 }
 
 function respondSuccess(
@@ -385,6 +666,7 @@ export const __testing = {
   HARD_CAP_PAGES,
   MAX_LIMIT,
   MAX_INPUT_LENGTH,
+  MAX_BATCH_PLACES,
   SUPPORTED_FORMATS,
   statusForCode,
   inferRetryAfter,
