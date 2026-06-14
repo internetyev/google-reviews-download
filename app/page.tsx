@@ -1,4 +1,5 @@
 import { ReviewToolForm } from "@/app/_components/review-tool-form";
+import { BatchReviewToolForm } from "@/app/_components/batch-review-tool-form";
 import { FaqSection } from "@/app/_components/faq";
 
 export default function HomePage() {
@@ -15,6 +16,8 @@ export default function HomePage() {
       </header>
 
       <ReviewToolForm />
+
+      <BatchReviewToolForm />
 
       <FaqSection />
     </main>

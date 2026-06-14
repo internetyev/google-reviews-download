@@ -27,6 +27,7 @@ import {
 } from "@/lib/cache/reviews-cache";
 import { resolveToDataId } from "@/lib/serpapi/resolve";
 import { resolveInputToNormalised } from "@/lib/reviews/resolve-input";
+import { MAX_BATCH_PLACES, parsePlacesList } from "@/lib/reviews/batch-input";
 import { csvFilename, formatReviewsAsCsv } from "@/lib/export/csv";
 import {
   XLSX_CONTENT_TYPE,
@@ -56,10 +57,6 @@ const MAX_LIMIT = HARD_CAP_REVIEWS;
 // a malformed/abusive input we reject at the edge BEFORE it reaches the
 // quota-metered SerpApi name resolver.
 const MAX_INPUT_LENGTH = 2_048;
-// Upper bound on places in one batch download. A batch resolves+walks each
-// place upstream, so the count directly caps quota spend per request; 25 is a
-// generous "paste a list" ceiling that still bounds a single request's cost.
-const MAX_BATCH_PLACES = 25;
 // Raw control characters (incl. NUL, tab, newline, DEL) never appear in a
 // legitimate id/URL/name once the querystring is decoded; their presence is a
 // malformed input (or an injection probe) we reject rather than forward.
@@ -313,18 +310,9 @@ async function handleBatch(req: NextRequest, deps: RouteDeps) {
   const userLimit = limit.value;
 
   // Split on comma or newline, trim, drop blanks, dedupe by raw text
-  // (preserving first-seen order).
-  const rawItems = placesRaw
-    .split(/[,\n]/)
-    .map((s) => s.trim())
-    .filter((s) => s.length > 0);
-  const seenInput = new Set<string>();
-  const inputs: string[] = [];
-  for (const item of rawItems) {
-    if (seenInput.has(item)) continue;
-    seenInput.add(item);
-    inputs.push(item);
-  }
+  // (preserving first-seen order) — shared with the web preview so both
+  // surfaces parse a pasted list identically (L31.3).
+  const inputs = parsePlacesList(placesRaw);
 
   if (inputs.length === 0) {
     return errorJson(
