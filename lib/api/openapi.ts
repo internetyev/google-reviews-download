@@ -56,6 +56,17 @@ export const openApiSpec = {
               "integer, capped at 5000. The cache always holds the full walk.",
             schema: { type: "integer", minimum: 1, maximum: 5000 },
           },
+          {
+            name: "summary",
+            in: "query",
+            required: false,
+            description:
+              "When truthy (1/true/yes), attaches an aggregate `summary` object " +
+              "(star distribution, sentiment split, photo/owner-response/language " +
+              "signals) to the JSON response. Derived from the returned (limited) " +
+              "sample; ignored for csv/xlsx. Never causes a 400.",
+            schema: { type: "string", enum: ["1", "true", "yes"] },
+          },
         ],
         responses: {
           "200": {
@@ -197,6 +208,71 @@ export const openApiSpec = {
           },
         },
       },
+      ReviewSummary: {
+        type: "object",
+        description:
+          "Aggregate digest of the returned sample, attached when ?summary=1. " +
+          "`total_reviews`/`overall_rating` are the WHOLE-place headline (from " +
+          "the place meta); every `sampled_*`/`rating_distribution`/`sentiment`/" +
+          "`with_*`/`languages` figure describes only the reviews in this response.",
+        required: [
+          "place_id",
+          "place_name",
+          "total_reviews",
+          "sampled_reviews",
+          "overall_rating",
+          "sampled_average_rating",
+          "rating_distribution",
+          "sentiment",
+          "with_photos",
+          "with_owner_response",
+          "languages",
+        ],
+        properties: {
+          place_id: { type: "string" },
+          place_name: { type: "string" },
+          total_reviews: {
+            type: "integer",
+            description: "Whole-place review count (place.rating_count).",
+          },
+          sampled_reviews: {
+            type: "integer",
+            description: "Reviews analysed in this response (reviews.length).",
+          },
+          overall_rating: {
+            type: "number",
+            description: "Whole-place average (place.rating_avg).",
+          },
+          sampled_average_rating: {
+            type: "number",
+            description: "Mean of the sampled reviews' stars, 2dp; 0 when empty.",
+          },
+          rating_distribution: {
+            type: "object",
+            description: "Count of sampled reviews at each star level (keys 1–5).",
+            properties: {
+              "1": { type: "integer" },
+              "2": { type: "integer" },
+              "3": { type: "integer" },
+              "4": { type: "integer" },
+              "5": { type: "integer" },
+            },
+          },
+          sentiment: {
+            type: "object",
+            description: "Star-derived split: 4–5★ positive, 3★ neutral, 1–2★ negative.",
+            required: ["positive", "neutral", "negative"],
+            properties: {
+              positive: { type: "integer" },
+              neutral: { type: "integer" },
+              negative: { type: "integer" },
+            },
+          },
+          with_photos: { type: "integer" },
+          with_owner_response: { type: "integer" },
+          languages: { type: "array", items: { type: "string" } },
+        },
+      },
       ReviewsResponse: {
         type: "object",
         required: ["place", "reviews", "fetched_at"],
@@ -207,6 +283,10 @@ export const openApiSpec = {
           truncated: {
             type: "boolean",
             description: "Present and true when the walk hit the 5000-review hard cap.",
+          },
+          summary: {
+            allOf: [{ $ref: "#/components/schemas/ReviewSummary" }],
+            description: "Present only when ?summary=1 was set on a JSON request.",
           },
         },
       },

@@ -25,6 +25,7 @@ import {
   CachedReviewsPayload,
   createReviewsCache,
 } from "@/lib/cache/reviews-cache";
+import { ReviewSummary, summariseReviews } from "@/lib/reviews/summary";
 import { resolveToDataId } from "@/lib/serpapi/resolve";
 import { resolveInputToNormalised } from "@/lib/reviews/resolve-input";
 import { MAX_BATCH_PLACES, parsePlacesList } from "@/lib/reviews/batch-input";
@@ -70,6 +71,12 @@ type ReviewsBody = {
   reviews: Review[];
   fetched_at: string;
   truncated?: true;
+  // Optional aggregate digest (star distribution, sentiment split, operational
+  // signals) attached only when `?summary=1` is set on a JSON request (L32.2).
+  // Derived from the SAME trimmed view the caller receives, so `sampled_reviews`
+  // equals `reviews.length` above — never the whole-place total (that lives in
+  // `summary.total_reviews`, the D-041/D-031 total-not-walk-count invariant).
+  summary?: ReviewSummary;
 };
 type PartialBody = ErrorBody & {
   partial: Review[];
@@ -136,6 +143,11 @@ async function handleGet(req: NextRequest, deps: RouteDeps) {
   }
   const userLimit = limit.value;
 
+  // Optional `?summary=1` flag — attaches an aggregate digest to the JSON
+  // response (L32.2). Lenient: ignored on csv/xlsx (the file formats have no
+  // place for it) and never the cause of a 400.
+  const summaryFlag = parseSummaryFlag(params.get("summary"));
+
   // Accept an id/URL or a business name (serpapi-resolved, cached) — shared
   // with the web preview so both surfaces behave identically (L28.1/L28.2).
   let normalised;
@@ -154,7 +166,7 @@ async function handleGet(req: NextRequest, deps: RouteDeps) {
   const cache = createReviewsCache();
   const cached = await cache.get(normalised.slug);
   if (cached) {
-    return respondSuccess(cached, format, userLimit, "HIT", normalised.slug);
+    return respondSuccess(cached, format, userLimit, "HIT", normalised.slug, summaryFlag);
   }
 
   const client = deps.client ?? createReviewsProvider();
@@ -196,7 +208,7 @@ async function handleGet(req: NextRequest, deps: RouteDeps) {
   // from-rate-limit branch above is excluded.
   await cache.set(normalised.slug, outcome.payload);
 
-  return respondSuccess(outcome.payload, format, userLimit, "MISS", normalised.slug);
+  return respondSuccess(outcome.payload, format, userLimit, "MISS", normalised.slug, summaryFlag);
 }
 
 // One place's assemble-walk: paginate the provider in PAGE_SIZE pages up to the
@@ -505,6 +517,7 @@ function respondSuccess(
   userLimit: number | undefined,
   cacheStatus: "HIT" | "MISS",
   slug: string,
+  summary: boolean,
 ) {
   const trimmed =
     userLimit != null ? payload.reviews.slice(0, userLimit) : payload.reviews;
@@ -525,6 +538,10 @@ function respondSuccess(
       fetched_at: payload.fetched_at,
     };
     if (payload.truncated) body.truncated = true;
+    // Summarise the TRIMMED view so `summary.sampled_reviews` matches the
+    // `reviews` array the caller receives (a limit=3 response digests 3 rows,
+    // while `summary.total_reviews` still carries the whole-place headline).
+    if (summary) body.summary = summariseReviews(trimmedPayload);
     return NextResponse.json(body, {
       headers: { "X-Cache": cacheStatus },
     });
@@ -616,6 +633,16 @@ function parseLimit(limitRaw: string | null): LimitCheck {
   return { ok: true, value: Math.min(Math.floor(parsed), MAX_LIMIT) };
 }
 
+// Parse the optional `summary` flag (L32.2). Truthy tokens (`1`/`true`/`yes`,
+// case-insensitive, surrounding whitespace tolerated) → true; absent or any
+// other value → false. Lenient by design: the flag is purely additive, so an
+// unrecognised value is treated as "off" rather than failing an otherwise-valid
+// download with a 400.
+function parseSummaryFlag(raw: string | null): boolean {
+  if (raw == null) return false;
+  return ["1", "true", "yes"].includes(raw.trim().toLowerCase());
+}
+
 function errorJson(code: string, message: string, status: number) {
   const body: ErrorBody = { error: { code, message } };
   return NextResponse.json(body, { status });
@@ -660,6 +687,7 @@ export const __testing = {
   inferRetryAfter,
   validateInput,
   parseLimit,
+  parseSummaryFlag,
   // Drive the handler with an injected name resolver (offline tests).
   handleGet,
 };
