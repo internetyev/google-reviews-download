@@ -294,6 +294,16 @@ _Opened 2026-06-14 (D-105). With Phases 27–30 all `[x]` and every remaining ro
 
 ---
 
+## Phase 32 — Review summary / aggregate stats (real feature, agent-doable; promoted from the parking lot) 📊
+
+_Opened 2026-06-14 (D-108). With Phases 27–31 all `[x]` and every remaining roadmap leaf human/corgi-gated (L1.6b, L3.1b, L4.1, L5.1, L5.2), the routine again had no standard leaf. Per the "open a real-work phase rather than idle" rule (D-046/D-051/D-105) and the D-084 STOP banner (no suite-deepening — build real features), this promotes the parking-lot "Sentiment analysis / summarisation" item — but the **deterministic, offline half only**: every figure is derived purely from the already-fetched `Review[]` + `PlaceMeta` (star distribution, a star-derived positive/neutral/negative sentiment split, photo/owner-response/language signals), NO LLM and NO network, so it stays mock-first and zero-cost. An LLM-backed prose summary would be a separate, human-gated leaf and is deliberately out of scope. Design-aligned: the data already carries `rating` per review and `rating_count`/`rating_avg` on the place; this just aggregates what we have. Net-new code so tests are legitimate coverage, not deepening. The route + preview-card wiring are separate follow-up leaves (L32.2/L32.3)._
+
+- [x] L32.1 Add the pure summary layer: `lib/reviews/summary.ts` exposing `summariseReviews({place, reviews})` → a `ReviewSummary` (authoritative `total_reviews`/`overall_rating` from `PlaceMeta` kept distinct from `sampled_reviews`/`sampled_average_rating`; `rating_distribution` histogram; `sentiment` 4–5★/3★/1–2★ split; `with_photos`/`with_owner_response`/distinct sorted `languages`). Pure/hookless/offline. Offline tests over hand-built payloads + the committed SMALL fixture. **DONE 2026-06-14:** `lib/reviews/summary.ts` (pure `summariseReviews` + `__testing` seams: `sentimentOf`/`round2`/the per-field reducers), deriving the whole-place headline verbatim from `PlaceMeta` (D-041/D-031 total-not-walk-count) and the sample stats from `reviews`. New `tests/reviews-summary.test.ts` (13: headline-vs-sampled separation, independent sampled average, 2dp rounding, distribution+sentiment reconcile-to-sample-size, boundary sentiment classification, photo/owner-response/language counting incl. blank-language + empty-photos-array edges, empty-sample no-divide-by-zero, the SMALL-fixture L1.3-coverage survival, and per-call freshness incl. nested objects). tsc clean; full suite 527 passed / 2 skipped. Purely additive — no existing path changes.
+- [ ] L32.2 Surface the summary on the JSON `/api/reviews` response (add an optional `summary` field to the JSON format, or a `?summary=1` flag) backed by `summariseReviews`; document it in `docs/api.md` + `lib/api/openapi.ts`. New-feature route tests only (offline).
+- [ ] L32.3 Show a summary card on `app/preview/page.tsx` (star distribution bars + sentiment split + the operational signals) using the shared `summariseReviews`; offline component test over fixtures.
+
+---
+
 ## Out-of-scope parking lot
 
 - Sentiment analysis / summarisation
