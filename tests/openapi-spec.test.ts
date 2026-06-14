@@ -18,11 +18,14 @@ describe("openApiSpec", () => {
     expect(openApiSpec.info.version).toBe(API_VERSION);
   });
 
-  it("documents the three query params the route reads", () => {
+  it("documents the four query params the route reads", () => {
     const names = op.parameters.map((p) => p.name);
-    expect(names).toEqual(["placeId", "format", "limit"]);
+    expect(names).toEqual(["placeId", "format", "limit", "summary"]);
     const placeId = op.parameters.find((p) => p.name === "placeId");
     expect(placeId?.required).toBe(true);
+    // summary is optional and additive (L32.2).
+    const summary = op.parameters.find((p) => p.name === "summary");
+    expect(summary?.required).toBe(false);
   });
 
   it("documents exactly the formats the route supports", () => {

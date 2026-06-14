@@ -19,6 +19,7 @@ A machine-readable **OpenAPI 3.1** description of everything below is served at
 | `placeId` | yes      | —       | A Google Place ID (`ChIJ…`), legacy `data_id` (`0x…:0x…`), a `MOCK_*` fixture id, a Google Maps URL containing one, **or a free-text business name**. Short `maps.app.goo.gl` links are rejected — paste the long URL or the id. ¹ |
 | `format`  | no       | `json`  | One of `json` \| `csv` \| `xlsx` (case-insensitive). |
 | `limit`   | no       | all     | Positive integer, capped at **5000**. Trims the JSON array and the CSV/XLSX rows. The 24h cache always holds the full walk, so a later larger `limit` is served from cache. |
+| `summary` | no       | off     | Truthy (`1` \| `true` \| `yes`) attaches an aggregate `summary` object to the **JSON** response (see below). Ignored for `csv`/`xlsx`; never causes a `400`. |
 
 ¹ A free-text **business name** is resolved to a `data_id` via Google Maps
 search (`lib/serpapi/resolve.ts`, `engine=google_maps`) — **serpapi provider
@@ -53,6 +54,40 @@ cached (24h) so a repeat name lookup doesn't spend another search.
   "truncated": true            // present only if the 5000-review hard cap was hit
 }
 ```
+
+#### Optional summary (`?summary=1`)
+
+Add `&summary=1` to a JSON request to receive an aggregate digest alongside the
+reviews — no extra fetch, derived purely from the data already returned:
+
+```jsonc
+{
+  "place": { /* … */ },
+  "reviews": [ /* … */ ],
+  "fetched_at": "2026-06-08T01:48:39.000Z",
+  "summary": {
+    "place_id": "0x80858098babc2d4b:0xbeedd659cc698c92",
+    "place_name": "Blue Bottle Coffee",
+    "total_reviews": 891,           // whole-place headline (place.rating_count)
+    "overall_rating": 4.6,          // whole-place average (place.rating_avg)
+    "sampled_reviews": 50,          // == reviews.length in THIS response
+    "sampled_average_rating": 4.38, // mean of the sampled stars, 2dp
+    "rating_distribution": { "1": 2, "2": 1, "3": 4, "4": 12, "5": 31 },
+    "sentiment": { "positive": 43, "neutral": 4, "negative": 3 },
+    "with_photos": 9,
+    "with_owner_response": 5,
+    "languages": ["en", "es"]
+  }
+}
+```
+
+`total_reviews`/`overall_rating` describe the **whole place**; every `sampled_*`,
+`rating_distribution`, `sentiment`, `with_*`, and `languages` figure describes
+only the reviews in this response — so when `limit` trims the array, the summary
+digests the trimmed view (`sampled_reviews` always equals `reviews.length`). The
+sentiment split is star-derived (4–5★ positive · 3★ neutral · 1–2★ negative);
+there is no LLM in this path. `summary` is omitted entirely without the flag and
+for `csv`/`xlsx`.
 
 **`format=csv`** → `text/csv; charset=utf-8`, Excel-safe (UTF-8 BOM, CRLF,
 all fields quoted). **`format=xlsx`** → an `.xlsx` workbook (one row per review,
@@ -95,6 +130,9 @@ is taken from `x-forwarded-for` (leftmost) → `x-real-ip` → `"unknown"`.
 ```bash
 # JSON, first 50 reviews
 curl "https://<host>/api/reviews?placeId=0x80858098babc2d4b:0xbeedd659cc698c92&limit=50"
+
+# JSON with an aggregate summary digest attached
+curl "https://<host>/api/reviews?placeId=ChIJ…&limit=50&summary=1"
 
 # CSV download
 curl -OJ "https://<host>/api/reviews?placeId=ChIJ…&format=csv"
