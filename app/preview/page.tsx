@@ -17,6 +17,7 @@ import Link from "next/link";
 import { createReviewsProvider } from "@/lib/reviews/provider";
 import { createReviewsCache, createPreviewCache } from "@/lib/cache/reviews-cache";
 import { resolveInputToNormalised } from "@/lib/reviews/resolve-input";
+import { MAX_BATCH_PLACES, parsePlacesList } from "@/lib/reviews/batch-input";
 import { PlaceIdParseError } from "@/lib/semanticforce/place-id";
 import { semanticForceErrorToUx } from "@/lib/semanticforce/error-ux";
 import {
@@ -185,6 +186,153 @@ function PlaceHeader({ place }: { place: PlaceMeta }) {
   );
 }
 
+// One place's preview slice via the same three-tier cache the single path
+// uses (completed download → prior preview → live+cache), so batch and single
+// preview cost the same upstream and warm the same entries. Throws the same
+// PlaceIdParseError / SemanticForceError the single path catches.
+async function loadPlacePreview(
+  rawInput: string,
+): Promise<{ place: PlaceMeta; reviews: Review[] }> {
+  const normalised = await resolveInputToNormalised(rawInput);
+  const slug = normalised.slug;
+  const reviewsCache = createReviewsCache();
+  const previewCache = createPreviewCache();
+  const full = await reviewsCache.get(slug);
+  const prior = full ?? (await previewCache.get(slug));
+  if (prior) {
+    return { place: prior.place, reviews: prior.reviews.slice(0, PREVIEW_COUNT) };
+  }
+  const client = createReviewsProvider();
+  const res = await client.getReviews({
+    placeId: normalised.raw,
+    limit: PREVIEW_COUNT,
+  });
+  const place = res.place;
+  const reviews = res.reviews.slice(0, PREVIEW_COUNT);
+  await previewCache.set(slug, {
+    place,
+    reviews,
+    fetched_at: new Date().toISOString(),
+  });
+  return { place, reviews };
+}
+
+// Batch preview (L31.3): resolve each pasted place, show its review count, and
+// offer ONE combined download. All-or-nothing like the /api/reviews batch path
+// — any place that fails to resolve/fetch surfaces a clear error rather than a
+// silently-short list.
+async function BatchPreview({
+  rawPlaces,
+  preferred,
+}: {
+  rawPlaces: string;
+  preferred: Format;
+}) {
+  const inputs = parsePlacesList(rawPlaces);
+  if (inputs.length === 0) {
+    return (
+      <ErrorCard
+        title="Nothing to preview"
+        detail="No businesses were provided. Go back and paste one place per line (or comma-separated)."
+      />
+    );
+  }
+  if (inputs.length > MAX_BATCH_PLACES) {
+    return (
+      <ErrorCard
+        title="Too many businesses"
+        detail={`A batch is limited to ${MAX_BATCH_PLACES} places; you pasted ${inputs.length}. Remove some and try again.`}
+      />
+    );
+  }
+
+  const places: PlaceMeta[] = [];
+  try {
+    for (const input of inputs) {
+      const { place } = await loadPlacePreview(input);
+      places.push(place);
+    }
+  } catch (err) {
+    if (err instanceof PlaceIdParseError) {
+      return (
+        <ErrorCard title="That doesn't look like a place" detail={err.message} />
+      );
+    }
+    if (err instanceof SemanticForceError) {
+      const ux = semanticForceErrorToUx(err);
+      return (
+        <ErrorCard title={ux.title} detail={ux.detail} retryHint={ux.retryHint} />
+      );
+    }
+    throw err;
+  }
+
+  const totalReviews = places.reduce((s, p) => s + p.rating_count, 0);
+  const href = (fmt: Format) =>
+    `/api/reviews?places=${encodeURIComponent(rawPlaces)}&format=${fmt}`;
+  const ordered: Format[] = [
+    preferred,
+    ...SUPPORTED_FORMATS.filter((f) => f !== preferred),
+  ];
+  const [primary, ...secondary] = ordered;
+
+  return (
+    <Shell>
+      <header className="flex flex-col gap-2">
+        <h1 className="text-2xl font-semibold tracking-tight">
+          {places.length} businesses · {totalReviews.toLocaleString("en-US")}{" "}
+          reviews
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          One combined download with a per-row place column.
+        </p>
+      </header>
+
+      <ul className="flex flex-col rounded-lg border border-border bg-card">
+        {places.map((p) => (
+          <li
+            key={p.place_id}
+            className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border px-4 py-3 last:border-0"
+          >
+            <span className="font-medium">{p.name}</span>
+            <span className="text-sm text-muted-foreground">
+              <span className="text-amber-500">{stars(p.rating_avg)}</span>{" "}
+              {p.rating_count.toLocaleString("en-US")} reviews
+            </span>
+          </li>
+        ))}
+      </ul>
+
+      <div className="flex flex-col gap-3 rounded-lg border border-border bg-card p-6">
+        <span className="text-sm font-medium">
+          Download all {places.length} places as one file
+        </span>
+        <div className="flex flex-wrap items-center gap-3">
+          <a
+            href={href(primary)}
+            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90"
+          >
+            Download {primary.toUpperCase()}
+          </a>
+          {secondary.map((f) => (
+            <a
+              key={f}
+              href={href(f)}
+              className="inline-flex items-center justify-center rounded-md border border-input px-4 py-2 text-sm font-medium transition-colors hover:bg-accent"
+            >
+              {f.toUpperCase()}
+            </a>
+          ))}
+        </div>
+        <span className="text-xs text-muted-foreground">
+          Each place&apos;s rows are tagged with its <code>place_id</code> /
+          <code>place_name</code> so the combined file splits back apart.
+        </span>
+      </div>
+    </Shell>
+  );
+}
+
 export const metadata: Metadata = {
   title: "Review preview",
   robots: { index: false },
@@ -193,10 +341,21 @@ export const metadata: Metadata = {
 export default async function PreviewPage({
   searchParams,
 }: {
-  searchParams: Promise<{ placeId?: string; format?: string }>;
+  searchParams: Promise<{ placeId?: string; format?: string; places?: string }>;
 }) {
-  const { placeId: rawInput, format: formatRaw } = await searchParams;
+  const {
+    placeId: rawInput,
+    format: formatRaw,
+    places: rawPlaces,
+  } = await searchParams;
   const preferred: Format = isFormat(formatRaw) ? formatRaw : "csv";
+
+  // Batch mode (L31.3): a `places` list downloads several businesses as one
+  // file. Purely additive — the single-place `placeId` path below is unchanged
+  // when `places` is absent.
+  if (rawPlaces != null) {
+    return <BatchPreview rawPlaces={rawPlaces} preferred={preferred} />;
+  }
 
   if (!rawInput || !rawInput.trim()) {
     return (
