@@ -26,6 +26,7 @@ import {
   createReviewsCache,
 } from "@/lib/cache/reviews-cache";
 import { ReviewSummary, summariseReviews } from "@/lib/reviews/summary";
+import { Rating, ReviewFilter, filterReviews } from "@/lib/reviews/filter";
 import { resolveToDataId } from "@/lib/serpapi/resolve";
 import { resolveInputToNormalised } from "@/lib/reviews/resolve-input";
 import { MAX_BATCH_PLACES, parsePlacesList } from "@/lib/reviews/batch-input";
@@ -148,6 +149,15 @@ async function handleGet(req: NextRequest, deps: RouteDeps) {
   // place for it) and never the cause of a 400.
   const summaryFlag = parseSummaryFlag(params.get("summary"));
 
+  // Optional review-filtering criteria (L33.2) — parsed leniently into a
+  // `ReviewFilter` and applied to the assembled walk BEFORE the userLimit slice
+  // and BEFORE export/summary, so every delivery surface filters identically
+  // (the pure layer is `lib/reviews/filter.ts`, L33.1). A malformed criterion
+  // degrades to "no constraint" rather than 400 — consistent with the filter
+  // module's lenient-date design and the `?summary=1` flag; only the structural
+  // params (placeId/format/limit) ever 400.
+  const filter = parseFilter(params);
+
   // Accept an id/URL or a business name (serpapi-resolved, cached) — shared
   // with the web preview so both surfaces behave identically (L28.1/L28.2).
   let normalised;
@@ -166,7 +176,7 @@ async function handleGet(req: NextRequest, deps: RouteDeps) {
   const cache = createReviewsCache();
   const cached = await cache.get(normalised.slug);
   if (cached) {
-    return respondSuccess(cached, format, userLimit, "HIT", normalised.slug, summaryFlag);
+    return respondSuccess(cached, format, userLimit, "HIT", normalised.slug, summaryFlag, filter);
   }
 
   const client = deps.client ?? createReviewsProvider();
@@ -208,7 +218,7 @@ async function handleGet(req: NextRequest, deps: RouteDeps) {
   // from-rate-limit branch above is excluded.
   await cache.set(normalised.slug, outcome.payload);
 
-  return respondSuccess(outcome.payload, format, userLimit, "MISS", normalised.slug, summaryFlag);
+  return respondSuccess(outcome.payload, format, userLimit, "MISS", normalised.slug, summaryFlag, filter);
 }
 
 // One place's assemble-walk: paginate the provider in PAGE_SIZE pages up to the
@@ -518,9 +528,15 @@ function respondSuccess(
   cacheStatus: "HIT" | "MISS",
   slug: string,
   summary: boolean,
+  filter: ReviewFilter = {},
 ) {
+  // Filter the assembled walk FIRST (L33.2), THEN apply the userLimit slice:
+  // a `min_rating=1&limit=50` request means "the 50 most-recent 1★ reviews",
+  // not "the 1★ reviews among the 50 most-recent". Filtering is a per-request
+  // view concern — the cache (D-030) still holds the full unfiltered walk.
+  const filtered = filterReviews(payload.reviews, filter);
   const trimmed =
-    userLimit != null ? payload.reviews.slice(0, userLimit) : payload.reviews;
+    userLimit != null ? filtered.slice(0, userLimit) : filtered;
   // CSV and XLSX exports operate on the trimmed view too, so a `limit=N`
   // request produces a file with N rows. The cache key is unaffected
   // (D-030: cache holds the full walk).
@@ -643,6 +659,64 @@ function parseSummaryFlag(raw: string | null): boolean {
   return ["1", "true", "yes"].includes(raw.trim().toLowerCase());
 }
 
+// Parse a `min_rating`/`max_rating` param into a 1..5 star bound (L33.2).
+// Lenient + clamping: a non-numeric value → undefined (no bound); a numeric
+// value is floored and clamped into [1, 5] so `?min_rating=0` reads as 1 and
+// `?max_rating=9` as 5 rather than 400-ing an otherwise-valid download. Returns
+// the value typed as `Rating` for the ReviewFilter (the clamp guarantees range).
+function parseRating(raw: string | null): Rating | undefined {
+  if (raw == null) return undefined;
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed)) return undefined;
+  const clamped = Math.min(5, Math.max(1, Math.floor(parsed)));
+  return clamped as Rating;
+}
+
+// Parse a boolean filter flag (`with_photos`/`with_owner_response`, L33.2).
+// Returns `true` only for an explicit truthy token (`1`/`true`/`yes`, case-
+// insensitive, trimmed); absent or any other value → undefined. Returning
+// undefined (not `false`) is load-bearing: the filter treats `withPhotos === true`
+// as the only constraint, so an unchecked box / absent param must mean "don't
+// care", never "exclude reviews that have photos" (matches filter.ts's contract).
+function parseBooleanFlag(raw: string | null): boolean | undefined {
+  if (raw == null) return undefined;
+  return ["1", "true", "yes"].includes(raw.trim().toLowerCase()) ? true : undefined;
+}
+
+// Build a `ReviewFilter` from the request's query params (L33.2). Every
+// criterion is optional; an unset/blank one is simply omitted so an all-absent
+// query yields `{}` (the identity filter — `filterReviews(rs, {})` deep-equals
+// `rs`). `language`/`keyword`/`since`/`until` are passed through as-is — the
+// pure filter layer already normalises case, treats a whitespace-only keyword
+// as "no constraint", and ignores an unparseable date — so we don't re-validate
+// here (single source of truth for the matching semantics is filter.ts).
+function parseFilter(params: URLSearchParams): ReviewFilter {
+  const filter: ReviewFilter = {};
+
+  const minRating = parseRating(params.get("min_rating"));
+  if (minRating != null) filter.minRating = minRating;
+  const maxRating = parseRating(params.get("max_rating"));
+  if (maxRating != null) filter.maxRating = maxRating;
+
+  const language = params.get("language");
+  if (language != null && language.trim().length > 0) filter.language = language;
+
+  if (parseBooleanFlag(params.get("with_photos"))) filter.withPhotos = true;
+  if (parseBooleanFlag(params.get("with_owner_response"))) {
+    filter.withOwnerResponse = true;
+  }
+
+  const keyword = params.get("keyword");
+  if (keyword != null) filter.keyword = keyword;
+
+  const since = params.get("since");
+  if (since != null) filter.since = since;
+  const until = params.get("until");
+  if (until != null) filter.until = until;
+
+  return filter;
+}
+
 function errorJson(code: string, message: string, status: number) {
   const body: ErrorBody = { error: { code, message } };
   return NextResponse.json(body, { status });
@@ -688,6 +762,9 @@ export const __testing = {
   validateInput,
   parseLimit,
   parseSummaryFlag,
+  parseRating,
+  parseBooleanFlag,
+  parseFilter,
   // Drive the handler with an injected name resolver (offline tests).
   handleGet,
 };
