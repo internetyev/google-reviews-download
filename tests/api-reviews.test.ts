@@ -353,6 +353,178 @@ describe("GET /api/reviews — success envelope shape + X-Cache symmetry across 
   });
 });
 
+describe("GET /api/reviews — review filtering (L33.2)", () => {
+  // The filter query params (min_rating/max_rating/language/with_photos/
+  // with_owner_response/keyword/since/until) parse into a ReviewFilter and apply
+  // to the assembled walk BEFORE the userLimit slice and BEFORE export/summary.
+  // Distribution of the committed MOCK_SMALL_001 fixture (12 reviews), pinned by
+  // tests/fixtures-contract.test.ts: ratings 5×7 / 4×2 / 3×1 / 2×1 / 1×1;
+  // languages en×9 / de×1 / es×1 / pl×1; 1 review with photos, 3 with an owner
+  // response; "coffee" appears in 3 texts; published 2026-02-05 .. 2026-04-15.
+  it("min_rating=4 keeps the 9 reviews rated 4 or 5", async () => {
+    const res = await call("?placeId=MOCK_SMALL_001&min_rating=4");
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.reviews).toHaveLength(9);
+    expect(body.reviews.every((r: { rating: number }) => r.rating >= 4)).toBe(true);
+  });
+
+  it("max_rating=2 keeps only the 2 low-star reviews", async () => {
+    const res = await call("?placeId=MOCK_SMALL_001&max_rating=2");
+    const body = await res.json();
+    expect(body.reviews).toHaveLength(2);
+    expect(body.reviews.every((r: { rating: number }) => r.rating <= 2)).toBe(true);
+  });
+
+  it("min_rating=4&max_rating=4 keeps exactly the rating-4 band (AND of bounds)", async () => {
+    const res = await call("?placeId=MOCK_SMALL_001&min_rating=4&max_rating=4");
+    const body = await res.json();
+    expect(body.reviews).toHaveLength(2);
+    expect(body.reviews.every((r: { rating: number }) => r.rating === 4)).toBe(true);
+  });
+
+  it("language=de keeps the single German review (case-insensitive)", async () => {
+    const res = await call("?placeId=MOCK_SMALL_001&language=DE");
+    const body = await res.json();
+    expect(body.reviews).toHaveLength(1);
+    expect(body.reviews[0].language).toBe("de");
+  });
+
+  it("with_photos=1 keeps only reviews carrying a photo", async () => {
+    const res = await call("?placeId=MOCK_SMALL_001&with_photos=1");
+    const body = await res.json();
+    expect(body.reviews).toHaveLength(1);
+    expect((body.reviews[0].photos ?? []).length).toBeGreaterThan(0);
+  });
+
+  it("with_owner_response=true keeps the 3 reviews with an owner reply", async () => {
+    const res = await call("?placeId=MOCK_SMALL_001&with_owner_response=true");
+    const body = await res.json();
+    expect(body.reviews).toHaveLength(3);
+    expect(body.reviews.every((r: { owner_response?: unknown }) => r.owner_response != null)).toBe(true);
+  });
+
+  it("keyword=COFFEE matches the 3 texts mentioning coffee, case-insensitively", async () => {
+    const res = await call("?placeId=MOCK_SMALL_001&keyword=COFFEE");
+    const body = await res.json();
+    expect(body.reviews).toHaveLength(3);
+    expect(body.reviews.every((r: { text: string }) => r.text.toLowerCase().includes("coffee"))).toBe(true);
+  });
+
+  it("since=2026-04-01 keeps only the 3 reviews published on/after that date", async () => {
+    const res = await call("?placeId=MOCK_SMALL_001&since=2026-04-01");
+    const body = await res.json();
+    expect(body.reviews).toHaveLength(3);
+  });
+
+  it("until=2026-02-28 keeps only the 4 February reviews", async () => {
+    const res = await call("?placeId=MOCK_SMALL_001&until=2026-02-28");
+    const body = await res.json();
+    expect(body.reviews).toHaveLength(4);
+  });
+
+  it("since+until bound an inclusive window (2 reviews in the first half of April)", async () => {
+    const res = await call(
+      "?placeId=MOCK_SMALL_001&since=2026-04-01&until=2026-04-13",
+    );
+    const body = await res.json();
+    expect(body.reviews).toHaveLength(2);
+  });
+
+  it("filtering runs BEFORE the limit slice (min_rating=5&limit=3 → 3 five-star, not the 5★ subset of the top-3 recent)", async () => {
+    // The 3 most-recent reviews are 5★/5★/4★; a limit-then-filter regression
+    // would return only the 2 five-star ones. Filter-then-limit returns 3.
+    const res = await call("?placeId=MOCK_SMALL_001&min_rating=5&limit=3");
+    const body = await res.json();
+    expect(body.reviews).toHaveLength(3);
+    expect(body.reviews.every((r: { rating: number }) => r.rating === 5)).toBe(true);
+  });
+
+  it("csv export respects the filter (min_rating=5 → 7 data rows under the header)", async () => {
+    const res = await call("?placeId=MOCK_SMALL_001&format=csv&min_rating=5");
+    expect(res.status).toBe(200);
+    const lines = (await res.text())
+      .replace(/^﻿/, "")
+      .split("\r\n")
+      .filter((l) => l.length > 0);
+    expect(lines).toHaveLength(8); // header + 7 five-star rows
+  });
+
+  it("a malformed criterion degrades to no-constraint (min_rating=abc → all 12)", async () => {
+    const res = await call("?placeId=MOCK_SMALL_001&min_rating=abc");
+    const body = await res.json();
+    expect(body.reviews).toHaveLength(12);
+  });
+
+  it("rating bounds clamp into 1..5 (min_rating=9 → 5★ only, min_rating=0 → all)", async () => {
+    const high = await (await call("?placeId=MOCK_SMALL_001&min_rating=9")).json();
+    expect(high.reviews).toHaveLength(7); // clamped to 5 → the seven 5★ reviews
+    const low = await (await call("?placeId=MOCK_SMALL_001&min_rating=0")).json();
+    expect(low.reviews).toHaveLength(12); // clamped to 1 → every review qualifies
+  });
+
+  it("with_photos=false means 'don't care', not 'exclude' (all 12 returned)", async () => {
+    const res = await call("?placeId=MOCK_SMALL_001&with_photos=false");
+    const body = await res.json();
+    expect(body.reviews).toHaveLength(12);
+  });
+
+  it("no filter params is the identity transform (all 12 returned, order preserved)", async () => {
+    const res = await call("?placeId=MOCK_SMALL_001");
+    const body = await res.json();
+    expect(body.reviews).toHaveLength(12);
+  });
+});
+
+describe("GET /api/reviews — parseFilter (__testing)", () => {
+  it("maps each query param onto the ReviewFilter, omitting absent ones", async () => {
+    const { __testing } = await import("@/app/api/reviews/route");
+    const params = new URLSearchParams(
+      "min_rating=2&max_rating=4&language=en&with_photos=1&with_owner_response=yes&keyword=refund&since=2026-01-01&until=2026-12-31",
+    );
+    expect(__testing.parseFilter(params)).toEqual({
+      minRating: 2,
+      maxRating: 4,
+      language: "en",
+      withPhotos: true,
+      withOwnerResponse: true,
+      keyword: "refund",
+      since: "2026-01-01",
+      until: "2026-12-31",
+    });
+  });
+
+  it("an empty query yields the identity filter {}", async () => {
+    const { __testing } = await import("@/app/api/reviews/route");
+    expect(__testing.parseFilter(new URLSearchParams(""))).toEqual({});
+  });
+
+  it("a blank language is omitted (not a constraint that empties the result)", async () => {
+    const { __testing } = await import("@/app/api/reviews/route");
+    expect(__testing.parseFilter(new URLSearchParams("language=%20%20"))).toEqual({});
+  });
+
+  it("parseRating floors+clamps into 1..5 and ignores non-numbers", async () => {
+    const { __testing } = await import("@/app/api/reviews/route");
+    expect(__testing.parseRating("3")).toBe(3);
+    expect(__testing.parseRating("4.9")).toBe(4); // floored
+    expect(__testing.parseRating("0")).toBe(1); // clamped low
+    expect(__testing.parseRating("99")).toBe(5); // clamped high
+    expect(__testing.parseRating("abc")).toBeUndefined();
+    expect(__testing.parseRating(null)).toBeUndefined();
+  });
+
+  it("parseBooleanFlag returns true only for an explicit truthy token, else undefined", async () => {
+    const { __testing } = await import("@/app/api/reviews/route");
+    for (const t of ["1", "true", "TRUE", "yes", " Yes "]) {
+      expect(__testing.parseBooleanFlag(t)).toBe(true);
+    }
+    for (const f of ["0", "false", "no", "", "maybe", null]) {
+      expect(__testing.parseBooleanFlag(f)).toBeUndefined();
+    }
+  });
+});
+
 describe("GET /api/reviews — __testing surface", () => {
   it("statusForCode maps SF error codes to HTTP status, upstream wins", async () => {
     const { __testing } = await import("@/app/api/reviews/route");
