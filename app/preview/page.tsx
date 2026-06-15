@@ -16,6 +16,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createReviewsProvider } from "@/lib/reviews/provider";
 import { createReviewsCache, createPreviewCache } from "@/lib/cache/reviews-cache";
+import { summariseReviews, type ReviewSummary } from "@/lib/reviews/summary";
 import { resolveInputToNormalised } from "@/lib/reviews/resolve-input";
 import { MAX_BATCH_PLACES, parsePlacesList } from "@/lib/reviews/batch-input";
 import { PlaceIdParseError } from "@/lib/semanticforce/place-id";
@@ -183,6 +184,89 @@ function PlaceHeader({ place }: { place: PlaceMeta }) {
         </span>
       </p>
     </header>
+  );
+}
+
+function pct(n: number, total: number): string {
+  if (total <= 0) return "0%";
+  return `${Math.round((n / total) * 100)}%`;
+}
+
+// At-a-glance digest of the sampled reviews (L32.3), backed by the shared
+// `summariseReviews` (L32.1) so the card, the JSON `?summary=1` field (L32.2)
+// and any future MCP surface report identical figures. Everything here
+// describes only the reviews actually shown — the sample, NOT the whole place:
+// the heading names the sampled count and PlaceHeader above already carries
+// Google's canonical `rating_count` total, so the two are never conflated
+// (the D-041/D-031 total-not-walk-count invariant). Pure/hookless so the
+// preview suites can flatten it without a react-dom render (D-050).
+function SummaryCard({ summary }: { summary: ReviewSummary }) {
+  const sampled = summary.sampled_reviews;
+  const dist = summary.rating_distribution;
+  const { positive, neutral, negative } = summary.sentiment;
+  return (
+    <section
+      aria-labelledby="summary-heading"
+      className="flex flex-col gap-4 rounded-lg border border-border bg-card p-6"
+    >
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 id="summary-heading" className="text-sm font-medium">
+          Summary of the {sampled} reviews shown
+        </h2>
+        <span className="text-xs text-muted-foreground">
+          Sample average{" "}
+          <span className="text-amber-500">★</span>{" "}
+          {summary.sampled_average_rating.toFixed(1)}
+        </span>
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        {([5, 4, 3, 2, 1] as const).map((star) => (
+          <div key={star} className="flex items-center gap-2 text-xs">
+            <span className="w-7 shrink-0 tabular-nums text-muted-foreground">
+              {star}★
+            </span>
+            <span className="h-2 flex-1 overflow-hidden rounded bg-muted">
+              <span
+                className="block h-full bg-amber-500"
+                style={{ width: pct(dist[star], sampled) }}
+              />
+            </span>
+            <span className="w-6 shrink-0 text-right tabular-nums text-muted-foreground">
+              {dist[star]}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <dl className="flex flex-wrap gap-x-6 gap-y-1 text-xs">
+        <div className="flex items-center gap-1.5">
+          <dt className="text-muted-foreground">Positive</dt>
+          <dd className="font-medium text-emerald-600">{positive}</dd>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <dt className="text-muted-foreground">Neutral</dt>
+          <dd className="font-medium">{neutral}</dd>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <dt className="text-muted-foreground">Negative</dt>
+          <dd className="font-medium text-destructive">{negative}</dd>
+        </div>
+      </dl>
+
+      <ul className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-muted-foreground">
+        <li>📷 {summary.with_photos} with photos</li>
+        <li>💬 {summary.with_owner_response} with owner response</li>
+        <li>
+          🌐{" "}
+          {summary.languages.length === 0
+            ? "no language data"
+            : `${summary.languages.length} ${
+                summary.languages.length === 1 ? "language" : "languages"
+              }: ${summary.languages.join(", ")}`}
+        </li>
+      </ul>
+    </section>
   );
 }
 
@@ -429,9 +513,12 @@ export default async function PreviewPage({
     throw err;
   }
 
+  const summary = summariseReviews({ place, reviews });
+
   return (
     <Shell>
       <PlaceHeader place={place} />
+      <SummaryCard summary={summary} />
       <DownloadCta placeIdInput={rawInput} preferred={preferred} />
       <section className="flex flex-col gap-1">
         <h2 className="text-sm font-medium text-muted-foreground">
