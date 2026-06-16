@@ -314,6 +314,16 @@ _Opened 2026-06-15 (D-111). With Phases 27–32 all `[x]` and every remaining ro
 
 ---
 
+## Phase 34 — Review ordering / sort (real feature, agent-doable; promoted from real product need) ↕️
+
+_Opened 2026-06-15 (D-113). With Phases 27–33 all landed except the human-gated L33.3 (UI direction pending human OK) and the standing corgi/human gates (L1.6b, L3.1b, L4.1, L5.1, L5.2), the routine again had no agent-doable standard leaf. Per the "open a real-work phase rather than idle" rule (D-046/D-051/D-105/D-108/D-111) and the D-084 STOP banner (build real features, never suite-deepening), this opens the natural offline companion to the Phase 32 summary + Phase 33 filter work: letting a user **order** the fetched reviews before previewing/exporting — "newest first", "oldest first", "highest rated", "lowest rated" (the worst-reviews-first case pairs directly with the L33 "only 1–2★" slice). Fully deterministic, offline, NO creds/LLM/network: a pure stable `Review[] → Review[]` transform applied after the provider fetch and after `filterReviews`, before the exporters/summary, so every surface orders identically. Net-new code so tests are legitimate coverage (D-084), not deepening. Mirrors the Phase 31/32/33 pure-layer-first cadence: the route wiring (L34.2) and the web form + preview controls (L34.3) are separate follow-up leaves._
+
+- [x] L34.1 Add the pure sort layer: `lib/reviews/sort.ts` exposing `sortReviews(reviews, order)` → `Review[]` for a `ReviewOrder` union (`"newest"`/`"oldest"` by `published_at`, `"highest"`/`"lowest"` by `rating`). Stable + non-mutating (returns a new array; equal keys keep input order); an absent/unrecognised order is the identity (no reordering). Rating ties break by recency (newest first) so "lowest" surfaces the freshest complaints. Lenient on malformed/missing `published_at` (sorts those to the end, never throws). Offline tests over hand-built reviews + the committed SMALL fixture. Pure/hookless.
+- [ ] L34.2 Wire the sort into `/api/reviews`: accept an `order`/`sort` query param, parse it into a `ReviewOrder`, and apply `sortReviews` **after** `filterReviews` and **before** the `userLimit` slice + csv/xlsx/summary (single-place path first) — so `order=lowest&limit=3` yields the 3 lowest-rated of the whole filtered set, not the lowest-of-the-top-3. Lenient like the L33.2 filter params: a bad value degrades to "no sort" (identity), never a 400. New-feature route tests only (offline).
+- [ ] L34.3 Wire the sort control through the web form + preview (an order dropdown; preview reflects the chosen order; the download carries it). **(depends on L34.2; UI direction pending human OK — same gate as L33.3.)**
+
+---
+
 ## Out-of-scope parking lot
 
 - Sentiment analysis / summarisation
