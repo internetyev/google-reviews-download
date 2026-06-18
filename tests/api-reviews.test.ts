@@ -476,6 +476,80 @@ describe("GET /api/reviews — review filtering (L33.2)", () => {
   });
 });
 
+describe("GET /api/reviews — review ordering (L34.2)", () => {
+  // The `order` (or its `sort` alias) param parses into a ReviewOrder and applies
+  // AFTER filterReviews and BEFORE the userLimit slice + export/summary. Assertions
+  // here check the ORDER property directly (ratings monotonic / dates monotonic)
+  // rather than hardcoding the fixture's date sequence, so they survive a fixture
+  // re-date. MOCK_SMALL_001 ratings: 5×7 / 4×2 / 3×1 / 2×1 / 1×1.
+  const ratingsOf = (body: { reviews: { rating: number }[] }) =>
+    body.reviews.map((r) => r.rating);
+  const datesOf = (body: { reviews: { published_at: string }[] }) =>
+    body.reviews.map((r) => Date.parse(r.published_at));
+  const isNonIncreasing = (xs: number[]) =>
+    xs.every((x, i) => i === 0 || xs[i - 1] >= x);
+  const isNonDecreasing = (xs: number[]) =>
+    xs.every((x, i) => i === 0 || xs[i - 1] <= x);
+
+  it("order=highest sorts ratings non-increasing (5★ first, 1★ last)", async () => {
+    const body = await (await call("?placeId=MOCK_SMALL_001&order=highest")).json();
+    expect(body.reviews).toHaveLength(12);
+    expect(isNonIncreasing(ratingsOf(body))).toBe(true);
+    expect(body.reviews[0].rating).toBe(5);
+    expect(body.reviews[11].rating).toBe(1);
+  });
+
+  it("order=lowest sorts ratings non-decreasing (1★ first, 5★ last)", async () => {
+    const body = await (await call("?placeId=MOCK_SMALL_001&order=lowest")).json();
+    expect(isNonDecreasing(ratingsOf(body))).toBe(true);
+    expect(body.reviews[0].rating).toBe(1);
+    expect(body.reviews[11].rating).toBe(5);
+  });
+
+  it("order=oldest sorts published_at ascending; order=newest descending", async () => {
+    const oldest = await (await call("?placeId=MOCK_SMALL_001&order=oldest")).json();
+    expect(isNonDecreasing(datesOf(oldest))).toBe(true);
+    const newest = await (await call("?placeId=MOCK_SMALL_001&order=newest")).json();
+    expect(isNonIncreasing(datesOf(newest))).toBe(true);
+  });
+
+  it("the `sort` alias is honoured (sort=lowest === order=lowest)", async () => {
+    const viaSort = await (await call("?placeId=MOCK_SMALL_001&sort=lowest")).json();
+    expect(viaSort.reviews[0].rating).toBe(1);
+  });
+
+  it("ordering runs BEFORE the limit slice (order=lowest&limit=3 → the 3 lowest of the whole set, not the lowest of the top-3 recent)", async () => {
+    // The 3 lowest-rated of all 12 are the 1★, 2★, 3★ reviews. A limit-then-sort
+    // regression would slice the 3 most-recent first, then sort only those.
+    const body = await (await call("?placeId=MOCK_SMALL_001&order=lowest&limit=3")).json();
+    expect(ratingsOf(body)).toEqual([1, 2, 3]);
+  });
+
+  it("ordering composes with filtering (min_rating=4&order=highest → 9 reviews, all ≥4, non-increasing)", async () => {
+    const body = await (await call("?placeId=MOCK_SMALL_001&min_rating=4&order=highest")).json();
+    expect(body.reviews).toHaveLength(9);
+    expect(body.reviews.every((r: { rating: number }) => r.rating >= 4)).toBe(true);
+    expect(isNonIncreasing(ratingsOf(body))).toBe(true);
+  });
+
+  it("csv export reflects the order (order=lowest → first data row is the 1★ review)", async () => {
+    const res = await call("?placeId=MOCK_SMALL_001&format=csv&order=lowest");
+    expect(res.status).toBe(200);
+    const lines = (await res.text()).replace(/^﻿/, "").split("\r\n").filter((l) => l.length > 0);
+    expect(lines).toHaveLength(13); // header + 12 rows, reordered not dropped
+  });
+
+  it("a bad order value degrades to no-sort (identity), never a 400", async () => {
+    const res = await call("?placeId=MOCK_SMALL_001&order=sideways");
+    expect(res.status).toBe(200);
+    const plain = await (await call("?placeId=MOCK_SMALL_001")).json();
+    const body = await res.json();
+    expect(body.reviews.map((r: { review_id: string }) => r.review_id)).toEqual(
+      plain.reviews.map((r: { review_id: string }) => r.review_id),
+    );
+  });
+});
+
 describe("GET /api/reviews — parseFilter (__testing)", () => {
   it("maps each query param onto the ReviewFilter, omitting absent ones", async () => {
     const { __testing } = await import("@/app/api/reviews/route");

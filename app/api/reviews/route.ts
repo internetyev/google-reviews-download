@@ -27,6 +27,7 @@ import {
 } from "@/lib/cache/reviews-cache";
 import { ReviewSummary, summariseReviews } from "@/lib/reviews/summary";
 import { Rating, ReviewFilter, filterReviews } from "@/lib/reviews/filter";
+import { ReviewOrder, parseReviewOrder, sortReviews } from "@/lib/reviews/sort";
 import { resolveToDataId } from "@/lib/serpapi/resolve";
 import { resolveInputToNormalised } from "@/lib/reviews/resolve-input";
 import { MAX_BATCH_PLACES, parsePlacesList } from "@/lib/reviews/batch-input";
@@ -158,6 +159,14 @@ async function handleGet(req: NextRequest, deps: RouteDeps) {
   // params (placeId/format/limit) ever 400.
   const filter = parseFilter(params);
 
+  // Optional review ordering (L34.2) — `order` (or its `sort` alias) parsed
+  // leniently into a `ReviewOrder` and applied AFTER `filterReviews` and BEFORE
+  // the userLimit slice + export/summary, so `order=lowest&limit=3` yields the 3
+  // lowest-rated of the whole filtered set (not the lowest of the top-3). A bad
+  // value degrades to `null` → identity (no sort), never a 400 — consistent with
+  // the lenient filter/summary params (the pure layer is `lib/reviews/sort.ts`).
+  const order = parseReviewOrder(params.get("order") ?? params.get("sort"));
+
   // Accept an id/URL or a business name (serpapi-resolved, cached) — shared
   // with the web preview so both surfaces behave identically (L28.1/L28.2).
   let normalised;
@@ -176,7 +185,7 @@ async function handleGet(req: NextRequest, deps: RouteDeps) {
   const cache = createReviewsCache();
   const cached = await cache.get(normalised.slug);
   if (cached) {
-    return respondSuccess(cached, format, userLimit, "HIT", normalised.slug, summaryFlag, filter);
+    return respondSuccess(cached, format, userLimit, "HIT", normalised.slug, summaryFlag, filter, order);
   }
 
   const client = deps.client ?? createReviewsProvider();
@@ -218,7 +227,7 @@ async function handleGet(req: NextRequest, deps: RouteDeps) {
   // from-rate-limit branch above is excluded.
   await cache.set(normalised.slug, outcome.payload);
 
-  return respondSuccess(outcome.payload, format, userLimit, "MISS", normalised.slug, summaryFlag, filter);
+  return respondSuccess(outcome.payload, format, userLimit, "MISS", normalised.slug, summaryFlag, filter, order);
 }
 
 // One place's assemble-walk: paginate the provider in PAGE_SIZE pages up to the
@@ -529,14 +538,18 @@ function respondSuccess(
   slug: string,
   summary: boolean,
   filter: ReviewFilter = {},
+  order: ReviewOrder | null = null,
 ) {
-  // Filter the assembled walk FIRST (L33.2), THEN apply the userLimit slice:
-  // a `min_rating=1&limit=50` request means "the 50 most-recent 1★ reviews",
-  // not "the 1★ reviews among the 50 most-recent". Filtering is a per-request
-  // view concern — the cache (D-030) still holds the full unfiltered walk.
+  // Filter the assembled walk FIRST (L33.2), THEN sort (L34.2), THEN apply the
+  // userLimit slice: a `min_rating=1&order=lowest&limit=50` request means "the
+  // 50 lowest-rated 1★ reviews", not "the lowest-rated among the first 50". Both
+  // filtering and ordering are per-request view concerns — the cache (D-030)
+  // still holds the full unfiltered, unsorted walk. `order` is `null` for an
+  // absent/unrecognised param, which `sortReviews` treats as the identity.
   const filtered = filterReviews(payload.reviews, filter);
+  const sorted = sortReviews(filtered, order);
   const trimmed =
-    userLimit != null ? filtered.slice(0, userLimit) : filtered;
+    userLimit != null ? sorted.slice(0, userLimit) : sorted;
   // CSV and XLSX exports operate on the trimmed view too, so a `limit=N`
   // request produces a file with N rows. The cache key is unaffected
   // (D-030: cache holds the full walk).
