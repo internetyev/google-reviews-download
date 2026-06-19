@@ -15,7 +15,8 @@ import * as XLSX from "xlsx";
 
 import { CachedReviewsPayload } from "@/lib/cache/reviews-cache";
 import { Review } from "@/lib/semanticforce/types";
-import { CSV_COLUMNS, CsvColumn } from "./csv";
+import { CSV_COLUMNS, CsvColumn, selectCsvColumns } from "./csv";
+import type { ReviewField } from "@/lib/reviews/project";
 
 export const XLSX_COLUMNS = CSV_COLUMNS;
 export type XlsxColumn = CsvColumn;
@@ -89,14 +90,21 @@ type SheetWithFreeze = XLSX.WorkSheet & {
 // shipped 0.18.5 workbook does not actually freeze. Its reader also does not
 // repopulate `!cols` on read-back, so file inspection must be at the
 // worksheet-construction layer, not via XLSX.read.
-function buildReviewsSheet(payload: CachedReviewsPayload): SheetWithFreeze {
+function buildReviewsSheet(
+  payload: CachedReviewsPayload,
+  columns: readonly XlsxColumn[] = XLSX_COLUMNS,
+): SheetWithFreeze {
   const rows: Row[] = payload.reviews.map((r) => rowFor(r, payload));
 
+  // `header` selects which keys (and in what order) reach the sheet, so passing
+  // a column subset (L35.2) drops the unrequested fields from the workbook —
+  // `rowFor` still builds the full record, json_to_sheet just emits the chosen
+  // columns. Widths track the same subset so the frozen header stays aligned.
   const ws = XLSX.utils.json_to_sheet(rows, {
-    header: [...XLSX_COLUMNS],
+    header: [...columns],
   }) as SheetWithFreeze;
 
-  ws["!cols"] = XLSX_COLUMNS.map((col) => ({ wch: COLUMN_WIDTHS[col] }));
+  ws["!cols"] = columns.map((col) => ({ wch: COLUMN_WIDTHS[col] }));
   ws["!views"] = [
     {
       state: "frozen",
@@ -111,8 +119,11 @@ function buildReviewsSheet(payload: CachedReviewsPayload): SheetWithFreeze {
   return ws;
 }
 
-export function formatReviewsAsXlsx(payload: CachedReviewsPayload): Uint8Array {
-  return writeWorkbook(buildReviewsSheet(payload));
+export function formatReviewsAsXlsx(
+  payload: CachedReviewsPayload,
+  fields: ReviewField[] | null = null,
+): Uint8Array {
+  return writeWorkbook(buildReviewsSheet(payload, selectCsvColumns(fields)));
 }
 
 // Multi-place batch export (Phase 31): one "Reviews" sheet whose rows are the
