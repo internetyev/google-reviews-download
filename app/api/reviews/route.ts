@@ -28,6 +28,11 @@ import {
 import { ReviewSummary, summariseReviews } from "@/lib/reviews/summary";
 import { Rating, ReviewFilter, filterReviews } from "@/lib/reviews/filter";
 import { ReviewOrder, parseReviewOrder, sortReviews } from "@/lib/reviews/sort";
+import {
+  ReviewField,
+  parseReviewFields,
+  projectReviews,
+} from "@/lib/reviews/project";
 import { resolveToDataId } from "@/lib/serpapi/resolve";
 import { resolveInputToNormalised } from "@/lib/reviews/resolve-input";
 import { MAX_BATCH_PLACES, parsePlacesList } from "@/lib/reviews/batch-input";
@@ -70,7 +75,10 @@ type Format = (typeof SUPPORTED_FORMATS)[number];
 type ErrorBody = { error: { code: string; message: string } };
 type ReviewsBody = {
   place: PlaceMeta;
-  reviews: Review[];
+  // Full `Review[]` by default; a `Partial<Review>[]` when a `fields` column
+  // selection (L35.2) narrows each object to its requested keys. `Review[]` is
+  // assignable here, so the batch path (which never projects) is unaffected.
+  reviews: Review[] | Partial<Review>[];
   fetched_at: string;
   truncated?: true;
   // Optional aggregate digest (star distribution, sentiment split, operational
@@ -167,6 +175,17 @@ async function handleGet(req: NextRequest, deps: RouteDeps) {
   // the lenient filter/summary params (the pure layer is `lib/reviews/sort.ts`).
   const order = parseReviewOrder(params.get("order") ?? params.get("sort"));
 
+  // Optional column selection (L35.2) — `fields` (or its `columns` alias) parsed
+  // leniently into an ordered, de-duplicated `ReviewField[]` and applied AFTER
+  // filter+sort+limit, as the LAST transform before serialisation, so the
+  // exported columns (JSON keys / CSV+XLSX headers) match the request. `null`
+  // (absent/blank/all-unrecognised) is the identity → full objects / full 14
+  // columns, never a 400 — consistent with the lenient filter/sort/summary
+  // params (the pure layer is `lib/reviews/project.ts`).
+  const fields = parseReviewFields(
+    params.get("fields") ?? params.get("columns"),
+  );
+
   // Accept an id/URL or a business name (serpapi-resolved, cached) — shared
   // with the web preview so both surfaces behave identically (L28.1/L28.2).
   let normalised;
@@ -185,7 +204,7 @@ async function handleGet(req: NextRequest, deps: RouteDeps) {
   const cache = createReviewsCache();
   const cached = await cache.get(normalised.slug);
   if (cached) {
-    return respondSuccess(cached, format, userLimit, "HIT", normalised.slug, summaryFlag, filter, order);
+    return respondSuccess(cached, format, userLimit, "HIT", normalised.slug, summaryFlag, filter, order, fields);
   }
 
   const client = deps.client ?? createReviewsProvider();
@@ -227,7 +246,7 @@ async function handleGet(req: NextRequest, deps: RouteDeps) {
   // from-rate-limit branch above is excluded.
   await cache.set(normalised.slug, outcome.payload);
 
-  return respondSuccess(outcome.payload, format, userLimit, "MISS", normalised.slug, summaryFlag, filter, order);
+  return respondSuccess(outcome.payload, format, userLimit, "MISS", normalised.slug, summaryFlag, filter, order, fields);
 }
 
 // One place's assemble-walk: paginate the provider in PAGE_SIZE pages up to the
@@ -539,6 +558,7 @@ function respondSuccess(
   summary: boolean,
   filter: ReviewFilter = {},
   order: ReviewOrder | null = null,
+  fields: ReviewField[] | null = null,
 ) {
   // Filter the assembled walk FIRST (L33.2), THEN sort (L34.2), THEN apply the
   // userLimit slice: a `min_rating=1&order=lowest&limit=50` request means "the
@@ -561,15 +581,22 @@ function respondSuccess(
   if (payload.truncated) trimmedPayload.truncated = true;
 
   if (format === "json") {
+    // Project the JSON objects down to the requested columns (L35.2) as the
+    // last step before serialisation. `fields === null` is the identity, so an
+    // absent/blank `fields` keeps full objects (the documented JSON default);
+    // a recognised set narrows each object to exactly its present requested
+    // keys, in first-requested order.
     const body: ReviewsBody = {
       place: payload.place,
-      reviews: trimmed,
+      reviews: projectReviews(trimmed, fields),
       fetched_at: payload.fetched_at,
     };
     if (payload.truncated) body.truncated = true;
-    // Summarise the TRIMMED view so `summary.sampled_reviews` matches the
-    // `reviews` array the caller receives (a limit=3 response digests 3 rows,
-    // while `summary.total_reviews` still carries the whole-place headline).
+    // Summarise the TRIMMED view (NOT the projected one) so the digest stays a
+    // faithful aggregate even when columns are dropped: `summary.sampled_reviews`
+    // matches the `reviews` array length (a limit=3 response digests 3 rows),
+    // while `summary.total_reviews` still carries the whole-place headline.
+    // Column selection is a presentation concern for the `reviews` array only.
     if (summary) body.summary = summariseReviews(trimmedPayload);
     return NextResponse.json(body, {
       headers: { "X-Cache": cacheStatus },
@@ -577,7 +604,7 @@ function respondSuccess(
   }
 
   if (format === "csv") {
-    const csv = formatReviewsAsCsv(trimmedPayload);
+    const csv = formatReviewsAsCsv(trimmedPayload, fields);
     const filename = csvFilename(slug, payload.fetched_at);
     return new NextResponse(csv, {
       status: 200,
@@ -590,7 +617,7 @@ function respondSuccess(
   }
 
   // format === "xlsx" — only branch left after json/csv above.
-  const xlsx = formatReviewsAsXlsx(trimmedPayload);
+  const xlsx = formatReviewsAsXlsx(trimmedPayload, fields);
   const xlsxName = xlsxFilename(slug, payload.fetched_at);
   // Wrap the bytes in a Blob: a BodyInit the edge runtime accepts directly.
   // Copy into a fresh ArrayBuffer-backed view so the type is a concrete

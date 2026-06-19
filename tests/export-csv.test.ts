@@ -6,6 +6,7 @@
 import { describe, it, expect } from "vitest";
 import {
   formatReviewsAsCsv,
+  selectCsvColumns,
   csvFilename,
   CSV_COLUMNS,
   __testing,
@@ -293,5 +294,41 @@ describe("Empty reviews + photo_count boundary + filename slice ceiling", () => 
     expect(csvFilename("slug", "2026-01-02")).toBe(
       "google-reviews-slug-20260102.csv",
     );
+  });
+});
+
+// Column selection (L35.2): selectCsvColumns narrows the 14-column schema to
+// the requested review fields, and formatReviewsAsCsv emits only those columns.
+describe("selectCsvColumns + formatReviewsAsCsv — column selection (L35.2)", () => {
+  it("returns the full schema for a null/empty selection (identity)", () => {
+    expect(selectCsvColumns(null)).toEqual(CSV_COLUMNS);
+    expect(selectCsvColumns([])).toEqual(CSV_COLUMNS);
+  });
+
+  it("maps fields to columns, preserving first-requested order", () => {
+    expect(selectCsvColumns(["text", "rating"])).toEqual(["text", "rating"]);
+  });
+
+  it("fans photos + owner_response out to their denormalised columns", () => {
+    expect(selectCsvColumns(["photos"])).toEqual(["photo_count", "photo_urls"]);
+    expect(selectCsvColumns(["owner_response"])).toEqual([
+      "owner_response_text",
+      "owner_response_at",
+    ]);
+  });
+
+  it("drops place_* context columns (they are not review fields)", () => {
+    expect(selectCsvColumns(["rating", "text"])).not.toContain("place_name");
+  });
+
+  it("emits a header + rows limited to the selected columns", () => {
+    const csv = formatReviewsAsCsv(payload(), ["rating", "text"]);
+    const [header, row1] = csv.replace(/^﻿/, "").split("\r\n");
+    expect(header).toBe('"rating","text"');
+    expect(row1).toBe('"5","Loved it.\nGreat ""service""!"');
+  });
+
+  it("leaves the full output unchanged when no selection is given", () => {
+    expect(formatReviewsAsCsv(payload())).toBe(formatReviewsAsCsv(payload(), null));
   });
 });
