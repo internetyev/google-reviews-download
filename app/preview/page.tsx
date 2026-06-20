@@ -23,6 +23,7 @@ import {
   hasActiveFilter,
   parseFilter,
 } from "@/lib/reviews/filter-params";
+import { sortReviews, parseReviewOrder } from "@/lib/reviews/sort";
 import { resolveInputToNormalised } from "@/lib/reviews/resolve-input";
 import { MAX_BATCH_PLACES, parsePlacesList } from "@/lib/reviews/batch-input";
 import { PlaceIdParseError } from "@/lib/semanticforce/place-id";
@@ -100,9 +101,9 @@ function DownloadCta({
 }: {
   placeIdInput: string;
   preferred: Format;
-  // Already-encoded `min_rating=…&language=…` suffix (no leading `&`); empty
-  // string when no filter is active. Forwarded verbatim so the download applies
-  // the exact same slice the preview showed (L33.3).
+  // Already-encoded `min_rating=…&language=…&order=…` suffix (no leading `&`);
+  // empty string when no filter/sort is active. Forwarded verbatim so the
+  // download applies the exact same slice + order the preview showed (L33.3/L34.3).
   filterQuery: string;
 }) {
   const href = (fmt: Format) => {
@@ -464,6 +465,14 @@ export default async function PreviewPage({
     }
   }
   const filter: ReviewFilter = parseFilter(filterParams);
+
+  // Optional ordering (L34.3): parse the form's `order` param (the route's
+  // `sort` alias also accepted) via the shared pure layer, and carry it in the
+  // SAME query string the download CTA forwards so preview + download order
+  // identically. A blank "As listed" value parses to null → identity, and is
+  // omitted from the query (exactly today's unordered behaviour).
+  const order = parseReviewOrder(sp.order ?? sp.sort);
+  if (order) filterParams.set("order", order);
   const filterQuery = filterParams.toString();
 
   // Batch mode (L31.3): a `places` list downloads several businesses as one
@@ -542,7 +551,13 @@ export default async function PreviewPage({
         fetched_at: new Date().toISOString(),
       });
     }
-    reviews = filterReviews(sampled, filter).slice(0, PREVIEW_COUNT);
+    // Filter FIRST, then sort (L34.2/L34.3 ordering), then slice — the same
+    // pipeline `/api/reviews` runs so the preview reflects the exact slice the
+    // download will produce.
+    reviews = sortReviews(filterReviews(sampled, filter), order).slice(
+      0,
+      PREVIEW_COUNT,
+    );
   } catch (err) {
     if (err instanceof SemanticForceError) {
       const ux = semanticForceErrorToUx(err);
