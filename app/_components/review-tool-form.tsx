@@ -33,6 +33,20 @@ const LANGUAGES = [
   { value: "ja", label: "Japanese" },
 ] as const;
 
+// Optional sort control (L34.3). Posts the `order` param the HTTP API parses
+// (`lib/reviews/sort.ts`'s `ReviewOrder` union, aliased as `sort` on the route)
+// so the preview and the download apply the same ordering. The empty "" value
+// is the default "as listed" identity — the route + the pure sort layer treat
+// an absent/unrecognised order as "no sort", so leaving this untouched is
+// exactly today's unordered behaviour. The option values are the `ReviewOrder`
+// strings verbatim (`parseReviewOrder` lower-cases + trims, so they round-trip).
+const ORDERS = [
+  { value: "newest", label: "Newest first" },
+  { value: "oldest", label: "Oldest first" },
+  { value: "highest", label: "Highest rated" },
+  { value: "lowest", label: "Lowest rated" },
+] as const;
+
 export function ReviewToolForm() {
   return (
     <form
@@ -89,7 +103,7 @@ export function ReviewToolForm() {
       </fieldset>
 
       <fieldset className="flex flex-col gap-3 text-sm">
-        <legend className="font-medium">Filter (optional)</legend>
+        <legend className="font-medium">Filter &amp; sort (optional)</legend>
         <div className="flex flex-wrap gap-4">
           <label className="flex flex-col gap-1" htmlFor="min_rating">
             <span className="text-xs text-muted-foreground">Min rating</span>
@@ -141,6 +155,23 @@ export function ReviewToolForm() {
               ))}
             </select>
           </label>
+
+          <label className="flex flex-col gap-1" htmlFor="order">
+            <span className="text-xs text-muted-foreground">Sort order</span>
+            <select
+              id="order"
+              name="order"
+              defaultValue=""
+              className="rounded-md border border-input bg-background px-3 py-2 text-base text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              <option value="">As listed</option>
+              {ORDERS.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
 
         <label className="flex cursor-pointer items-center gap-2">
@@ -149,9 +180,10 @@ export function ReviewToolForm() {
         </label>
 
         <span className="text-xs text-muted-foreground">
-          Filters apply to the preview <em>and</em> the download. Leave them on
-          “Any” to export every review. The preview filters the first reviews it
-          samples; the full download filters every review.
+          Filters and sort order apply to the preview <em>and</em> the download.
+          Leave them on “Any” / “As listed” to export every review in the order
+          Google returns them. The preview filters and orders the first reviews
+          it samples; the full download filters and orders every review.
         </span>
       </fieldset>
 
