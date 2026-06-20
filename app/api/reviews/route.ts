@@ -33,11 +33,8 @@ import {
   parseRating,
 } from "@/lib/reviews/filter-params";
 import { ReviewOrder, parseReviewOrder, sortReviews } from "@/lib/reviews/sort";
-import {
-  ReviewField,
-  parseReviewFields,
-  projectReviews,
-} from "@/lib/reviews/project";
+import { ReviewField, projectReviews } from "@/lib/reviews/project";
+import { parseFieldsParam } from "@/lib/reviews/project-params";
 import { resolveToDataId } from "@/lib/serpapi/resolve";
 import { resolveInputToNormalised } from "@/lib/reviews/resolve-input";
 import { MAX_BATCH_PLACES, parsePlacesList } from "@/lib/reviews/batch-input";
@@ -180,16 +177,16 @@ async function handleGet(req: NextRequest, deps: RouteDeps) {
   // the lenient filter/summary params (the pure layer is `lib/reviews/sort.ts`).
   const order = parseReviewOrder(params.get("order") ?? params.get("sort"));
 
-  // Optional column selection (L35.2) — `fields` (or its `columns` alias) parsed
-  // leniently into an ordered, de-duplicated `ReviewField[]` and applied AFTER
-  // filter+sort+limit, as the LAST transform before serialisation, so the
+  // Optional column selection (L35.2/L35.3) — `fields` (or its `columns` alias)
+  // parsed leniently into an ordered, de-duplicated `ReviewField[]` and applied
+  // AFTER filter+sort+limit, as the LAST transform before serialisation, so the
   // exported columns (JSON keys / CSV+XLSX headers) match the request. `null`
   // (absent/blank/all-unrecognised) is the identity → full objects / full 14
   // columns, never a 400 — consistent with the lenient filter/sort/summary
-  // params (the pure layer is `lib/reviews/project.ts`).
-  const fields = parseReviewFields(
-    params.get("fields") ?? params.get("columns"),
-  );
+  // params. The shared `parseFieldsParam` (L35.3/D-095 de-drift) also accepts
+  // the web form's repeated `fields=…&fields=…` checkbox params, not just the
+  // API's comma string (the pure layer is `lib/reviews/project.ts`).
+  const fields = parseFieldsParam(params);
 
   // Accept an id/URL or a business name (serpapi-resolved, cached) — shared
   // with the web preview so both surfaces behave identically (L28.1/L28.2).

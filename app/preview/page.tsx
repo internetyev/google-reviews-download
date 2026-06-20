@@ -24,6 +24,8 @@ import {
   parseFilter,
 } from "@/lib/reviews/filter-params";
 import { sortReviews, parseReviewOrder } from "@/lib/reviews/sort";
+import { projectReviews } from "@/lib/reviews/project";
+import { parseFieldsParam } from "@/lib/reviews/project-params";
 import { resolveInputToNormalised } from "@/lib/reviews/resolve-input";
 import { MAX_BATCH_PLACES, parsePlacesList } from "@/lib/reviews/batch-input";
 import { PlaceIdParseError } from "@/lib/semanticforce/place-id";
@@ -144,19 +146,33 @@ function DownloadCta({
   );
 }
 
-function ReviewRow({ review }: { review: Review }) {
+// Accepts a `Partial<Review>` so the L35.3 column projection can drop fields:
+// every field is guarded, so a deselected column simply disappears from the card
+// (the preview reflects the chosen columns, matching the download's projection).
+function ReviewRow({ review }: { review: Partial<Review> }) {
   return (
     <li className="flex flex-col gap-1 border-b border-border py-4 last:border-0">
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <span className="font-medium">{review.author_name}</span>
-        <span className="text-xs text-muted-foreground">
-          {formatDate(review.published_at)}
-        </span>
-      </div>
+      {(review.author_name || review.published_at) && (
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          {review.author_name && (
+            <span className="font-medium">{review.author_name}</span>
+          )}
+          {review.published_at && (
+            <span className="text-xs text-muted-foreground">
+              {formatDate(review.published_at)}
+            </span>
+          )}
+        </div>
+      )}
       <div className="flex items-center gap-2 text-sm">
-        <span aria-label={`${review.rating} out of 5 stars`} className="text-amber-500">
-          {stars(review.rating)}
-        </span>
+        {review.rating != null && (
+          <span
+            aria-label={`${review.rating} out of 5 stars`}
+            className="text-amber-500"
+          >
+            {stars(review.rating)}
+          </span>
+        )}
         {review.language && review.language !== "en" && (
           <span className="rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
             {review.language}
@@ -443,10 +459,12 @@ export default async function PreviewPage({
     placeId?: string;
     format?: string;
     places?: string;
-    // Filter criteria (L33.3) ride along from the web form's GET submit; they
-    // are parsed via the SAME shared parser /api/reviews uses, then forwarded to
-    // the download CTA so preview and download apply an identical slice.
-    [key: string]: string | undefined;
+    // Filter criteria (L33.3) + sort (L34.3) + column selection (L35.3) ride
+    // along from the web form's GET submit; they are parsed via the SAME shared
+    // parsers /api/reviews uses, then forwarded to the download CTA so preview
+    // and download apply an identical slice. A repeated param (the `fields`
+    // checkbox group) arrives as a string[]; a single one as a string.
+    [key: string]: string | string[] | undefined;
   }>;
 }) {
   const sp = await searchParams;
@@ -473,6 +491,23 @@ export default async function PreviewPage({
   // omitted from the query (exactly today's unordered behaviour).
   const order = parseReviewOrder(sp.order ?? sp.sort);
   if (order) filterParams.set("order", order);
+
+  // Optional column selection (L35.3): the form's `fields` checkboxes submit
+  // repeated `fields=…` params (and the API also accepts a `fields=a,b` comma
+  // string / `columns` alias). Parse via the shared `parseFieldsParam` — the
+  // SAME parser /api/reviews uses — then carry each selected field back onto the
+  // download CTA (as repeated `fields=…` params) so the file the user downloads
+  // projects to the exact columns the preview reflected. A null (all-unchecked)
+  // selection appends nothing → full columns, exactly today's behaviour.
+  // Next gives a repeated query param (`fields=a&fields=b`) as a string[] at
+  // runtime, a single one as a string — collect both shapes into URLSearchParams.
+  const requestParams = new URLSearchParams();
+  for (const [k, v] of Object.entries(sp)) {
+    if (typeof v === "string") requestParams.append(k, v);
+    else if (Array.isArray(v)) for (const item of v) requestParams.append(k, item);
+  }
+  const fields = parseFieldsParam(requestParams);
+  if (fields) for (const f of fields) filterParams.append("fields", f);
   const filterQuery = filterParams.toString();
 
   // Batch mode (L31.3): a `places` list downloads several businesses as one
@@ -568,7 +603,13 @@ export default async function PreviewPage({
     throw err;
   }
 
+  // Summarise the FULL (unprojected) sample so the digest stays faithful even
+  // when columns are dropped — the same call L35.2 makes over the trimmed-not-
+  // projected payload. Projection narrows only the displayed review rows so the
+  // preview reflects the chosen columns (a deselected field disappears from each
+  // card); `fields === null` (nothing checked) is the identity → full rows.
   const summary = summariseReviews({ place, reviews });
+  const projected = projectReviews(reviews, fields);
 
   return (
     <Shell>
@@ -593,8 +634,8 @@ export default async function PreviewPage({
           </p>
         ) : (
           <ul className="flex flex-col">
-            {reviews.map((r) => (
-              <ReviewRow key={r.review_id} review={r} />
+            {projected.map((r, i) => (
+              <ReviewRow key={r.review_id ?? i} review={r} />
             ))}
           </ul>
         )}

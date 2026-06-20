@@ -47,6 +47,26 @@ const ORDERS = [
   { value: "lowest", label: "Lowest rated" },
 ] as const;
 
+// Optional column picker (L35.3). Each checkbox posts a `fields` param the HTTP
+// API + preview narrow the exported columns by (`lib/reviews/project.ts`'s
+// `ReviewField` union, parsed by the shared `lib/reviews/project-params.ts`). A
+// no-JS multi-checkbox GET submits repeated `fields=rating&fields=text` params,
+// which `parseFieldsParam` collects; leaving every box unchecked submits no
+// `fields` param at all → the route/preview keep ALL columns (the identity), so
+// the untouched fieldset is exactly today's full-export behaviour. The `value`s
+// are the `ReviewField` strings verbatim so each round-trips through the parser.
+const COLUMN_FIELDS = [
+  { value: "review_id", label: "Review ID" },
+  { value: "author_name", label: "Author" },
+  { value: "author_url", label: "Author URL" },
+  { value: "rating", label: "Rating" },
+  { value: "text", label: "Review text" },
+  { value: "language", label: "Language" },
+  { value: "published_at", label: "Date" },
+  { value: "photos", label: "Photos" },
+  { value: "owner_response", label: "Owner response" },
+] as const;
+
 export function ReviewToolForm() {
   return (
     <form
@@ -184,6 +204,26 @@ export function ReviewToolForm() {
           Leave them on “Any” / “As listed” to export every review in the order
           Google returns them. The preview filters and orders the first reviews
           it samples; the full download filters and orders every review.
+        </span>
+      </fieldset>
+
+      <fieldset className="flex flex-col gap-2 text-sm">
+        <legend className="font-medium">Columns (optional)</legend>
+        <div className="flex flex-wrap gap-x-4 gap-y-2">
+          {COLUMN_FIELDS.map((c) => (
+            <label
+              key={c.value}
+              className="flex cursor-pointer items-center gap-2"
+            >
+              <input type="checkbox" name="fields" value={c.value} />
+              <span>{c.label}</span>
+            </label>
+          ))}
+        </div>
+        <span className="text-xs text-muted-foreground">
+          Pick which columns to export. Leave every box unchecked to include all
+          fields (the default). The selection narrows the CSV/XLSX columns and
+          the JSON keys of both the preview and the download.
         </span>
       </fieldset>
 
