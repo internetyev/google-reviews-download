@@ -17,6 +17,12 @@ import Link from "next/link";
 import { createReviewsProvider } from "@/lib/reviews/provider";
 import { createReviewsCache, createPreviewCache } from "@/lib/cache/reviews-cache";
 import { summariseReviews, type ReviewSummary } from "@/lib/reviews/summary";
+import { filterReviews, type ReviewFilter } from "@/lib/reviews/filter";
+import {
+  FILTER_PARAM_KEYS,
+  hasActiveFilter,
+  parseFilter,
+} from "@/lib/reviews/filter-params";
 import { resolveInputToNormalised } from "@/lib/reviews/resolve-input";
 import { MAX_BATCH_PLACES, parsePlacesList } from "@/lib/reviews/batch-input";
 import { PlaceIdParseError } from "@/lib/semanticforce/place-id";
@@ -90,12 +96,19 @@ function ErrorCard({
 function DownloadCta({
   placeIdInput,
   preferred,
+  filterQuery,
 }: {
   placeIdInput: string;
   preferred: Format;
+  // Already-encoded `min_rating=…&language=…` suffix (no leading `&`); empty
+  // string when no filter is active. Forwarded verbatim so the download applies
+  // the exact same slice the preview showed (L33.3).
+  filterQuery: string;
 }) {
-  const href = (fmt: Format) =>
-    `/api/reviews?placeId=${encodeURIComponent(placeIdInput)}&format=${fmt}`;
+  const href = (fmt: Format) => {
+    const base = `/api/reviews?placeId=${encodeURIComponent(placeIdInput)}&format=${fmt}`;
+    return filterQuery ? `${base}&${filterQuery}` : base;
+  };
   const ordered: Format[] = [
     preferred,
     ...SUPPORTED_FORMATS.filter((f) => f !== preferred),
@@ -425,14 +438,33 @@ export const metadata: Metadata = {
 export default async function PreviewPage({
   searchParams,
 }: {
-  searchParams: Promise<{ placeId?: string; format?: string; places?: string }>;
+  searchParams: Promise<{
+    placeId?: string;
+    format?: string;
+    places?: string;
+    // Filter criteria (L33.3) ride along from the web form's GET submit; they
+    // are parsed via the SAME shared parser /api/reviews uses, then forwarded to
+    // the download CTA so preview and download apply an identical slice.
+    [key: string]: string | undefined;
+  }>;
 }) {
-  const {
-    placeId: rawInput,
-    format: formatRaw,
-    places: rawPlaces,
-  } = await searchParams;
+  const sp = await searchParams;
+  const { placeId: rawInput, format: formatRaw, places: rawPlaces } = sp;
   const preferred: Format = isFormat(formatRaw) ? formatRaw : "csv";
+
+  // Build the review filter from the same query params the HTTP API reads, via
+  // the shared `lib/reviews/filter-params.ts` parser (no drift, L33.3/D-095).
+  // The encoded `filterQuery` is forwarded verbatim onto the download CTA so the
+  // file the user downloads carries the exact filter the preview reflected.
+  const filterParams = new URLSearchParams();
+  for (const key of FILTER_PARAM_KEYS) {
+    const value = sp[key];
+    if (typeof value === "string" && value.length > 0) {
+      filterParams.set(key, value);
+    }
+  }
+  const filter: ReviewFilter = parseFilter(filterParams);
+  const filterQuery = filterParams.toString();
 
   // Batch mode (L31.3): a `places` list downloads several businesses as one
   // file. Purely additive — the single-place `placeId` path below is unchanged
@@ -485,9 +517,16 @@ export default async function PreviewPage({
     const previewCache = createPreviewCache();
     const full = await reviewsCache.get(slug);
     const prior = full ?? (await previewCache.get(slug));
+    // `sampled` is the unfiltered set we have on hand (the full walk when the
+    // download cache is warm, otherwise the ≤5 preview sample). We filter THIS
+    // and then slice — so a warm full cache shows the first PREVIEW_COUNT
+    // *matching* reviews, while a cold preview can only filter its small sample
+    // (the download still filters every review — L33.3). The cache always stores
+    // the unfiltered sample so a later differently-filtered preview reuses it.
+    let sampled: Review[];
     if (prior) {
       place = prior.place;
-      reviews = prior.reviews.slice(0, PREVIEW_COUNT);
+      sampled = prior.reviews;
     } else {
       const client = createReviewsProvider();
       const res = await client.getReviews({
@@ -495,14 +534,15 @@ export default async function PreviewPage({
         limit: PREVIEW_COUNT,
       });
       place = res.place;
-      reviews = res.reviews.slice(0, PREVIEW_COUNT);
+      sampled = res.reviews.slice(0, PREVIEW_COUNT);
       // Best-effort: never write the full-walk key from a partial preview.
       await previewCache.set(slug, {
         place,
-        reviews,
+        reviews: sampled,
         fetched_at: new Date().toISOString(),
       });
     }
+    reviews = filterReviews(sampled, filter).slice(0, PREVIEW_COUNT);
   } catch (err) {
     if (err instanceof SemanticForceError) {
       const ux = semanticForceErrorToUx(err);
@@ -519,17 +559,30 @@ export default async function PreviewPage({
     <Shell>
       <PlaceHeader place={place} />
       <SummaryCard summary={summary} />
-      <DownloadCta placeIdInput={rawInput} preferred={preferred} />
+      <DownloadCta
+        placeIdInput={rawInput}
+        preferred={preferred}
+        filterQuery={filterQuery}
+      />
       <section className="flex flex-col gap-1">
         <h2 className="text-sm font-medium text-muted-foreground">
-          First {Math.min(PREVIEW_COUNT, reviews.length)} of{" "}
-          {place.rating_count.toLocaleString("en-US")} reviews
+          {hasActiveFilter(filter)
+            ? `${reviews.length} matching of the previewed sample`
+            : `First ${Math.min(PREVIEW_COUNT, reviews.length)} of ${place.rating_count.toLocaleString("en-US")} reviews`}
         </h2>
-        <ul className="flex flex-col">
-          {reviews.map((r) => (
-            <ReviewRow key={r.review_id} review={r} />
-          ))}
-        </ul>
+        {reviews.length === 0 && hasActiveFilter(filter) ? (
+          <p className="rounded-md border border-border bg-muted/40 p-4 text-sm text-muted-foreground">
+            No reviews in the previewed sample match this filter. The full
+            download still applies it across every review, so it may return
+            matches the small preview sample missed.
+          </p>
+        ) : (
+          <ul className="flex flex-col">
+            {reviews.map((r) => (
+              <ReviewRow key={r.review_id} review={r} />
+            ))}
+          </ul>
+        )}
       </section>
     </Shell>
   );

@@ -26,7 +26,12 @@ import {
   createReviewsCache,
 } from "@/lib/cache/reviews-cache";
 import { ReviewSummary, summariseReviews } from "@/lib/reviews/summary";
-import { Rating, ReviewFilter, filterReviews } from "@/lib/reviews/filter";
+import { ReviewFilter, filterReviews } from "@/lib/reviews/filter";
+import {
+  parseBooleanFlag,
+  parseFilter,
+  parseRating,
+} from "@/lib/reviews/filter-params";
 import { ReviewOrder, parseReviewOrder, sortReviews } from "@/lib/reviews/sort";
 import {
   ReviewField,
@@ -699,63 +704,12 @@ function parseSummaryFlag(raw: string | null): boolean {
   return ["1", "true", "yes"].includes(raw.trim().toLowerCase());
 }
 
-// Parse a `min_rating`/`max_rating` param into a 1..5 star bound (L33.2).
-// Lenient + clamping: a non-numeric value → undefined (no bound); a numeric
-// value is floored and clamped into [1, 5] so `?min_rating=0` reads as 1 and
-// `?max_rating=9` as 5 rather than 400-ing an otherwise-valid download. Returns
-// the value typed as `Rating` for the ReviewFilter (the clamp guarantees range).
-function parseRating(raw: string | null): Rating | undefined {
-  if (raw == null) return undefined;
-  const parsed = Number(raw);
-  if (!Number.isFinite(parsed)) return undefined;
-  const clamped = Math.min(5, Math.max(1, Math.floor(parsed)));
-  return clamped as Rating;
-}
-
-// Parse a boolean filter flag (`with_photos`/`with_owner_response`, L33.2).
-// Returns `true` only for an explicit truthy token (`1`/`true`/`yes`, case-
-// insensitive, trimmed); absent or any other value → undefined. Returning
-// undefined (not `false`) is load-bearing: the filter treats `withPhotos === true`
-// as the only constraint, so an unchecked box / absent param must mean "don't
-// care", never "exclude reviews that have photos" (matches filter.ts's contract).
-function parseBooleanFlag(raw: string | null): boolean | undefined {
-  if (raw == null) return undefined;
-  return ["1", "true", "yes"].includes(raw.trim().toLowerCase()) ? true : undefined;
-}
-
-// Build a `ReviewFilter` from the request's query params (L33.2). Every
-// criterion is optional; an unset/blank one is simply omitted so an all-absent
-// query yields `{}` (the identity filter — `filterReviews(rs, {})` deep-equals
-// `rs`). `language`/`keyword`/`since`/`until` are passed through as-is — the
-// pure filter layer already normalises case, treats a whitespace-only keyword
-// as "no constraint", and ignores an unparseable date — so we don't re-validate
-// here (single source of truth for the matching semantics is filter.ts).
-function parseFilter(params: URLSearchParams): ReviewFilter {
-  const filter: ReviewFilter = {};
-
-  const minRating = parseRating(params.get("min_rating"));
-  if (minRating != null) filter.minRating = minRating;
-  const maxRating = parseRating(params.get("max_rating"));
-  if (maxRating != null) filter.maxRating = maxRating;
-
-  const language = params.get("language");
-  if (language != null && language.trim().length > 0) filter.language = language;
-
-  if (parseBooleanFlag(params.get("with_photos"))) filter.withPhotos = true;
-  if (parseBooleanFlag(params.get("with_owner_response"))) {
-    filter.withOwnerResponse = true;
-  }
-
-  const keyword = params.get("keyword");
-  if (keyword != null) filter.keyword = keyword;
-
-  const since = params.get("since");
-  if (since != null) filter.since = since;
-  const until = params.get("until");
-  if (until != null) filter.until = until;
-
-  return filter;
-}
+// The `min_rating`/`max_rating`/`with_photos`/… → `ReviewFilter` parsing now
+// lives in the shared `lib/reviews/filter-params.ts` (L33.3) so this route and
+// the web preview page parse the same query params identically (de-drift, the
+// L28.2/D-095 pattern). `parseRating`/`parseBooleanFlag`/`parseFilter` are
+// imported above and re-exported through `__testing` below for the existing
+// route suites.
 
 function errorJson(code: string, message: string, status: number) {
   const body: ErrorBody = { error: { code, message } };
