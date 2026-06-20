@@ -115,9 +115,15 @@ describe("ReviewToolForm — L33.3 filter controls", () => {
   });
 
   it("emits a with_photos checkbox whose value is a truthy token", () => {
+    // Scope to the filter's own checkbox by name — L35.3 added a column-picker
+    // fieldset of `name="fields"` checkboxes to the same form, so an unscoped
+    // "all checkboxes" count is no longer 1.
     const boxes = findAll(
       tree,
-      (el) => el.type === "input" && el.props.type === "checkbox",
+      (el) =>
+        el.type === "input" &&
+        el.props.type === "checkbox" &&
+        el.props.name === "with_photos",
     );
     expect(boxes).toHaveLength(1);
     expect(boxes[0].props.name).toBe("with_photos");
