@@ -1,4 +1,4 @@
-// GET /api/reviews?placeId=...&format=json|csv|xlsx&limit=N
+// GET /api/reviews?placeId=...&format=json|csv|xlsx|md&limit=N
 //
 // Pagination walker per docs/methodology.md §2: walks SF in PAGE_SIZE-sized
 // pages, assembles into a single payload, sets `truncated: true` if either
@@ -47,9 +47,15 @@ import {
   xlsxFilename,
 } from "@/lib/export/xlsx";
 import {
+  MARKDOWN_CONTENT_TYPE,
+  formatReviewsAsMarkdown,
+  markdownFilename,
+} from "@/lib/export/markdown";
+import {
   batchFilename,
   batchReviewCount,
   formatBatchAsCsv,
+  formatBatchAsMarkdown,
   formatBatchAsXlsx,
 } from "@/lib/export/batch";
 
@@ -73,8 +79,18 @@ const MAX_INPUT_LENGTH = 2_048;
 // legitimate id/URL/name once the querystring is decoded; their presence is a
 // malformed input (or an injection probe) we reject rather than forward.
 const CONTROL_CHARS = /[\u0000-\u001f\u007f]/;
-const SUPPORTED_FORMATS = ["json", "csv", "xlsx"] as const;
+const SUPPORTED_FORMATS = ["json", "csv", "xlsx", "md"] as const;
 type Format = (typeof SUPPORTED_FORMATS)[number];
+
+// Format aliases the public surface accepts but normalises before validation:
+// `markdown` is the long form of the canonical `md` (parity with the docs and
+// the way users name the extension). Applied right after the lowercase so the
+// rest of the route only ever sees the canonical `Format` tokens.
+const FORMAT_ALIASES: Record<string, Format> = { markdown: "md" };
+
+function normaliseFormat(raw: string): string {
+  return FORMAT_ALIASES[raw] ?? raw;
+}
 
 type ErrorBody = { error: { code: string; message: string } };
 type ReviewsBody = {
@@ -126,7 +142,7 @@ async function handleGet(req: NextRequest, deps: RouteDeps) {
     return handleBatch(req, deps);
   }
   const placeIdInput = params.get("placeId");
-  const formatRaw = (params.get("format") ?? "json").toLowerCase();
+  const formatRaw = normaliseFormat((params.get("format") ?? "json").toLowerCase());
   const limitRaw = params.get("limit");
 
   if (!placeIdInput) {
@@ -360,7 +376,7 @@ async function walkAndAssemble(
 async function handleBatch(req: NextRequest, deps: RouteDeps) {
   const params = req.nextUrl.searchParams;
   const placesRaw = params.get("places") ?? "";
-  const formatRaw = (params.get("format") ?? "csv").toLowerCase();
+  const formatRaw = normaliseFormat((params.get("format") ?? "csv").toLowerCase());
   const limitRaw = params.get("limit");
 
   if (!isFormat(formatRaw)) {
@@ -547,6 +563,19 @@ function respondBatch(
     });
   }
 
+  if (format === "md") {
+    const md = formatBatchAsMarkdown(payloads);
+    const filename = batchFilename(placeCount, freshest, "md");
+    return new NextResponse(md, {
+      status: 200,
+      headers: {
+        "Content-Type": MARKDOWN_CONTENT_TYPE,
+        "Content-Disposition": `attachment; filename="${filename}"`,
+        "X-Cache": cacheStatus,
+      },
+    });
+  }
+
   // format === "xlsx"
   const xlsx = formatBatchAsXlsx(payloads);
   const filename = batchFilename(placeCount, freshest, "xlsx");
@@ -642,7 +671,24 @@ function respondSuccess(
     });
   }
 
-  // format === "xlsx" — only branch left after json/csv above.
+  if (format === "md") {
+    // Markdown is a narrative testimonials document, NOT a column subset, so it
+    // intentionally ignores `fields` (L37.1 design) while honouring the same
+    // filter→sort→limit→anonymise pipeline as the other formats (it serialises
+    // the redacted `trimmedPayload`).
+    const md = formatReviewsAsMarkdown(trimmedPayload);
+    const filename = markdownFilename(slug, payload.fetched_at);
+    return new NextResponse(md, {
+      status: 200,
+      headers: {
+        "Content-Type": MARKDOWN_CONTENT_TYPE,
+        "Content-Disposition": `attachment; filename="${filename}"`,
+        "X-Cache": cacheStatus,
+      },
+    });
+  }
+
+  // format === "xlsx" — only branch left after json/csv/md above.
   const xlsx = formatReviewsAsXlsx(trimmedPayload, fields);
   const xlsxName = xlsxFilename(slug, payload.fetched_at);
   // Wrap the bytes in a Blob: a BodyInit the edge runtime accepts directly.
