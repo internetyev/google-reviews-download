@@ -67,6 +67,24 @@ const COLUMN_FIELDS = [
   { value: "owner_response", label: "Owner response" },
 ] as const;
 
+// Optional privacy / PII-redaction controls (L36.3). Each checkbox posts a
+// granular redaction flag the HTTP API + preview parse via the shared
+// `lib/reviews/anonymise-params.ts` (`parseAnonymiseOptions`) into an
+// `AnonymiseOptions`, applied by the pure `lib/reviews/anonymise.ts` layer. The
+// `value="1"` is the truthy token `parseBooleanFlag` accepts; a no-JS checkbox
+// submits the param only when checked, so leaving every box unchecked submits no
+// redaction param at all → the route/preview keep every field intact (the
+// identity), exactly today's full-export behaviour. The `name`s are the granular
+// `ANONYMISE_PARAM_KEYS` verbatim so each round-trips through the parser. (The
+// `anonymize` umbrella that turns on all three at once stays an API-only switch;
+// the form exposes the three redactions individually so a user can mask names
+// while keeping photos, etc.)
+const PRIVACY_FLAGS = [
+  { name: "mask_author", label: "Mask reviewer names (initials only)" },
+  { name: "drop_author_url", label: "Remove reviewer profile links" },
+  { name: "drop_photos", label: "Remove reviewer photos" },
+] as const;
+
 export function ReviewToolForm() {
   return (
     <form
@@ -224,6 +242,28 @@ export function ReviewToolForm() {
           Pick which columns to export. Leave every box unchecked to include all
           fields (the default). The selection narrows the CSV/XLSX columns and
           the JSON keys of both the preview and the download.
+        </span>
+      </fieldset>
+
+      <fieldset className="flex flex-col gap-2 text-sm">
+        <legend className="font-medium">Privacy (optional)</legend>
+        <div className="flex flex-wrap gap-x-4 gap-y-2">
+          {PRIVACY_FLAGS.map((p) => (
+            <label
+              key={p.name}
+              className="flex cursor-pointer items-center gap-2"
+            >
+              <input type="checkbox" name={p.name} value="1" />
+              <span>{p.label}</span>
+            </label>
+          ))}
+        </div>
+        <span className="text-xs text-muted-foreground">
+          Redact reviewers&apos; personal data before exporting — mask names to
+          initials (“John Smith” → “J. S.”), drop profile links, and drop
+          reviewer-uploaded photos. Leave every box unchecked to keep the
+          reviews untouched (the default). The redaction applies to the preview{" "}
+          <em>and</em> the download.
         </span>
       </fieldset>
 
