@@ -6,13 +6,14 @@
 // pages keep only the single-place tool (single-keyword intent) while the home
 // page offers both. Plain GET form — no client JS — it navigates to `/preview`
 // with a `places` param (comma/newline-separated), which the preview route
-// reads in batch mode: per-place review counts + one combined CSV/XLSX/JSON
+// reads in batch mode: per-place review counts + one combined CSV/XLSX/JSON/MD
 // download. `format` rides along as the preferred download format.
 
 const FORMATS = [
   { value: "csv", label: "CSV", hint: "combined file" },
   { value: "xlsx", label: "XLSX", hint: "combined file" },
   { value: "json", label: "JSON", hint: "combined envelope" },
+  { value: "md", label: "Markdown", hint: "combined document" },
 ] as const;
 
 export function BatchReviewToolForm() {

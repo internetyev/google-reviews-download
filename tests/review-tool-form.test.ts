@@ -17,10 +17,11 @@
 //   2. Exactly one text input, `name="placeId"`, `required` — the place
 //      identifier the preview/normalisation pipeline keys on; `required`
 //      stops an empty submit from round-tripping to an error card.
-//   3. Exactly three `name="format"` radios with values json/csv/xlsx in that
-//      order, and `json` is the one `defaultChecked` — the order the form
+//   3. Exactly four `name="format"` radios with values json/csv/xlsx/md in
+//      that order, and `json` is the one `defaultChecked` — the order the form
 //      surfaces (same check-order spirit as L6.5/D-046) and the documented
-//      default download format that rides along to the preview CTA.
+//      default download format that rides along to the preview CTA. (`md` is
+//      the L37.3 Markdown testimonials format, wired alongside JSON/CSV/XLSX.)
 //
 // `ReviewToolForm` is a pure, synchronous, hookless component with no
 // sub-components (only intrinsic JSX elements), so it is invoked directly and
@@ -119,16 +120,24 @@ describe("ReviewToolForm — the export-format radios", () => {
     (el) => el.type === "input" && el.props.type === "radio",
   );
 
-  it("renders exactly three format radios named format", () => {
-    expect(radios).toHaveLength(3);
+  it("renders exactly four format radios named format", () => {
+    expect(radios).toHaveLength(4);
     for (const r of radios) {
       expect(r.props.name).toBe("format");
     }
   });
 
-  it("offers json/csv/xlsx in that surfaced order", () => {
+  it("offers json/csv/xlsx/md in that surfaced order", () => {
     // The order the form surfaces — same check-order spirit as L6.5/D-046.
-    expect(radios.map((r) => r.props.value)).toEqual(["json", "csv", "xlsx"]);
+    // `md` (Markdown testimonials, L37.3) is appended after the columnar
+    // formats — the canonical token /api/reviews accepts (the `markdown`
+    // alias is API-only; the form submits the short `md`).
+    expect(radios.map((r) => r.props.value)).toEqual([
+      "json",
+      "csv",
+      "xlsx",
+      "md",
+    ]);
   });
 
   it("defaults to json (the documented preferred download format)", () => {

@@ -39,7 +39,7 @@ import {
 } from "@/lib/semanticforce/types";
 
 const PREVIEW_COUNT = 5;
-const SUPPORTED_FORMATS = ["csv", "json", "xlsx"] as const;
+const SUPPORTED_FORMATS = ["csv", "json", "xlsx", "md"] as const;
 type Format = (typeof SUPPORTED_FORMATS)[number];
 
 function isFormat(s: string | undefined): s is Format {
@@ -142,7 +142,7 @@ function DownloadCta({
       <span className="text-xs text-muted-foreground">
         The full export includes every review (preview shows the first{" "}
         {PREVIEW_COUNT}). CSV is Excel-ready (UTF-8 BOM, CRLF); XLSX has a
-        frozen header.
+        frozen header; Markdown (MD) is a paste-ready testimonials document.
       </span>
     </div>
   );
