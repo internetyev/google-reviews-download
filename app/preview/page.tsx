@@ -26,6 +26,8 @@ import {
 import { sortReviews, parseReviewOrder } from "@/lib/reviews/sort";
 import { projectReviews } from "@/lib/reviews/project";
 import { parseFieldsParam } from "@/lib/reviews/project-params";
+import { anonymiseReviews } from "@/lib/reviews/anonymise";
+import { parseAnonymiseOptions } from "@/lib/reviews/anonymise-params";
 import { resolveInputToNormalised } from "@/lib/reviews/resolve-input";
 import { MAX_BATCH_PLACES, parsePlacesList } from "@/lib/reviews/batch-input";
 import { PlaceIdParseError } from "@/lib/semanticforce/place-id";
@@ -459,8 +461,9 @@ export default async function PreviewPage({
     placeId?: string;
     format?: string;
     places?: string;
-    // Filter criteria (L33.3) + sort (L34.3) + column selection (L35.3) ride
-    // along from the web form's GET submit; they are parsed via the SAME shared
+    // Filter criteria (L33.3) + sort (L34.3) + column selection (L35.3) +
+    // privacy redaction (L36.3) ride along from the web form's GET submit; they
+    // are parsed via the SAME shared
     // parsers /api/reviews uses, then forwarded to the download CTA so preview
     // and download apply an identical slice. A repeated param (the `fields`
     // checkbox group) arrives as a string[]; a single one as a string.
@@ -508,6 +511,21 @@ export default async function PreviewPage({
   }
   const fields = parseFieldsParam(requestParams);
   if (fields) for (const f of fields) filterParams.append("fields", f);
+
+  // Optional PII redaction (L36.3): the form's privacy checkboxes submit the
+  // granular `mask_author` / `drop_author_url` / `drop_photos` flags (the API
+  // also accepts the `anonymize`/`anonymise` umbrella). Parse via the SAME
+  // shared `parseAnonymiseOptions` /api/reviews uses — then re-emit the active
+  // redactions as granular flags onto the download CTA so the file the user
+  // downloads redacts exactly what the preview reflected. An empty options bag
+  // (nothing checked) appends nothing → no redaction, exactly today's behaviour.
+  // Re-emitting granular flags also normalises an `anonymize=1` umbrella into the
+  // three flags it implies, so the forwarded query is unambiguous.
+  const anonymise = parseAnonymiseOptions(requestParams);
+  if (anonymise.maskAuthorName) filterParams.set("mask_author", "1");
+  if (anonymise.dropAuthorUrl) filterParams.set("drop_author_url", "1");
+  if (anonymise.dropPhotos) filterParams.set("drop_photos", "1");
+
   const filterQuery = filterParams.toString();
 
   // Batch mode (L31.3): a `places` list downloads several businesses as one
@@ -603,13 +621,22 @@ export default async function PreviewPage({
     throw err;
   }
 
-  // Summarise the FULL (unprojected) sample so the digest stays faithful even
-  // when columns are dropped — the same call L35.2 makes over the trimmed-not-
-  // projected payload. Projection narrows only the displayed review rows so the
-  // preview reflects the chosen columns (a deselected field disappears from each
-  // card); `fields === null` (nothing checked) is the identity → full rows.
-  const summary = summariseReviews({ place, reviews });
-  const projected = projectReviews(reviews, fields);
+  // Redact reviewer PII (L36.3) BEFORE projection + summary — the exact order
+  // /api/reviews runs (anonymise then project), so masking sees the full
+  // `Review` (a projected-away `author_name` would leave nothing to mask) and
+  // every preview surface redacts identically to the download. An empty options
+  // bag (nothing checked) is the identity → whole copies, exactly today's rows.
+  const redacted = anonymiseReviews(reviews, anonymise);
+
+  // Summarise the redacted-but-UNPROJECTED sample so the digest stays faithful
+  // even when columns are dropped (the same trimmed-not-projected basis L35.2
+  // uses) while still reflecting redaction — dropping photos shows in the
+  // "with photos" count, matching the route's summary over the redacted view.
+  // Projection narrows only the displayed review rows so the preview reflects
+  // the chosen columns (a deselected field disappears from each card);
+  // `fields === null` (nothing checked) is the identity → full rows.
+  const summary = summariseReviews({ place, reviews: redacted });
+  const projected = projectReviews(redacted, fields);
 
   return (
     <Shell>
