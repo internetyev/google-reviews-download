@@ -44,8 +44,14 @@ export const openApiSpec = {
             name: "format",
             in: "query",
             required: false,
-            description: "Output format (case-insensitive). Defaults to json.",
-            schema: { type: "string", enum: ["json", "csv", "xlsx"], default: "json" },
+            description:
+              "Output format (case-insensitive). Defaults to json. `md` " +
+              "(alias `markdown`) returns a narrative testimonials document.",
+            schema: {
+              type: "string",
+              enum: ["json", "csv", "xlsx", "md"],
+              default: "json",
+            },
           },
           {
             name: "limit",
@@ -79,7 +85,7 @@ export const openApiSpec = {
                 schema: { type: "string", enum: ["HIT", "MISS"] },
               },
               "Content-Disposition": {
-                description: "attachment; filename=… (csv/xlsx only).",
+                description: "attachment; filename=… (csv/xlsx/md only).",
                 schema: { type: "string" },
               },
             },
@@ -88,6 +94,7 @@ export const openApiSpec = {
                 schema: { $ref: "#/components/schemas/ReviewsResponse" },
               },
               "text/csv": { schema: { type: "string" } },
+              "text/markdown": { schema: { type: "string" } },
               "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
                 schema: { type: "string", format: "binary" },
               },
