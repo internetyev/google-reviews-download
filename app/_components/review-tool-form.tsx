@@ -10,6 +10,7 @@ const FORMATS = [
   { value: "json", label: "JSON", hint: "available today" },
   { value: "csv", label: "CSV", hint: "available today" },
   { value: "xlsx", label: "XLSX", hint: "available today" },
+  { value: "md", label: "Markdown", hint: "available today" },
 ] as const;
 
 // Optional filter controls (L33.3). These post the same query params the HTTP
@@ -136,7 +137,9 @@ export function ReviewToolForm() {
           CSV opens in Excel without an import wizard (UTF-8 BOM, CRLF,
           QUOTE_ALL); XLSX gets a frozen header row and tuned column
           widths. JSON returns the raw <code>GetReviewsResponse</code>
-          envelope.
+          envelope. Markdown is a paste-ready testimonials document —
+          a headline rating and one quoted review per section — ideal
+          for a report, a deck, or a public testimonials page.
         </span>
       </fieldset>
 
