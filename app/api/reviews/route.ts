@@ -35,6 +35,8 @@ import {
 import { ReviewOrder, parseReviewOrder, sortReviews } from "@/lib/reviews/sort";
 import { ReviewField, projectReviews } from "@/lib/reviews/project";
 import { parseFieldsParam } from "@/lib/reviews/project-params";
+import { AnonymiseOptions, anonymiseReviews } from "@/lib/reviews/anonymise";
+import { parseAnonymiseOptions } from "@/lib/reviews/anonymise-params";
 import { resolveToDataId } from "@/lib/serpapi/resolve";
 import { resolveInputToNormalised } from "@/lib/reviews/resolve-input";
 import { MAX_BATCH_PLACES, parsePlacesList } from "@/lib/reviews/batch-input";
@@ -188,6 +190,19 @@ async function handleGet(req: NextRequest, deps: RouteDeps) {
   // API's comma string (the pure layer is `lib/reviews/project.ts`).
   const fields = parseFieldsParam(params);
 
+  // Optional PII redaction (L36.2) — the `anonymize`/`anonymise` umbrella plus
+  // the granular `mask_author`/`drop_author_url`/`drop_photos` flags parsed
+  // leniently into an `AnonymiseOptions`. Applied AFTER filter+sort+limit and
+  // BEFORE projection + serialisation/summary (`anonymiseReviews` needs the full
+  // `Review` to mask `author_name`, which projection may have dropped), so every
+  // delivery surface (JSON/CSV/XLSX) redacts identically. An empty bag (no
+  // flag set / all unrecognised) is the identity → today's full export, never a
+  // 400 — consistent with the lenient filter/sort/fields/summary params. The
+  // shared `parseAnonymiseOptions` (de-drift, the L28.2/D-095 pattern) will also
+  // back the web form's checkboxes in L36.3 (the pure layer is
+  // `lib/reviews/anonymise.ts`).
+  const anonymise = parseAnonymiseOptions(params);
+
   // Accept an id/URL or a business name (serpapi-resolved, cached) — shared
   // with the web preview so both surfaces behave identically (L28.1/L28.2).
   let normalised;
@@ -206,7 +221,7 @@ async function handleGet(req: NextRequest, deps: RouteDeps) {
   const cache = createReviewsCache();
   const cached = await cache.get(normalised.slug);
   if (cached) {
-    return respondSuccess(cached, format, userLimit, "HIT", normalised.slug, summaryFlag, filter, order, fields);
+    return respondSuccess(cached, format, userLimit, "HIT", normalised.slug, summaryFlag, filter, order, fields, anonymise);
   }
 
   const client = deps.client ?? createReviewsProvider();
@@ -248,7 +263,7 @@ async function handleGet(req: NextRequest, deps: RouteDeps) {
   // from-rate-limit branch above is excluded.
   await cache.set(normalised.slug, outcome.payload);
 
-  return respondSuccess(outcome.payload, format, userLimit, "MISS", normalised.slug, summaryFlag, filter, order, fields);
+  return respondSuccess(outcome.payload, format, userLimit, "MISS", normalised.slug, summaryFlag, filter, order, fields, anonymise);
 }
 
 // One place's assemble-walk: paginate the provider in PAGE_SIZE pages up to the
@@ -561,6 +576,7 @@ function respondSuccess(
   filter: ReviewFilter = {},
   order: ReviewOrder | null = null,
   fields: ReviewField[] | null = null,
+  anonymise: AnonymiseOptions = {},
 ) {
   // Filter the assembled walk FIRST (L33.2), THEN sort (L34.2), THEN apply the
   // userLimit slice: a `min_rating=1&order=lowest&limit=50` request means "the
@@ -572,12 +588,20 @@ function respondSuccess(
   const sorted = sortReviews(filtered, order);
   const trimmed =
     userLimit != null ? sorted.slice(0, userLimit) : sorted;
-  // CSV and XLSX exports operate on the trimmed view too, so a `limit=N`
-  // request produces a file with N rows. The cache key is unaffected
+  // Redact reviewer PII (L36.2) as a uniform pass over the assembled+sliced
+  // `Review[]` — BEFORE projection (which can drop `author_name`, leaving
+  // nothing to mask) and BEFORE every serialisation surface, so JSON/CSV/XLSX
+  // and the summary all redact identically. An empty `anonymise` bag is the
+  // identity (whole copies), so an absent redaction request reproduces today's
+  // export byte-for-byte. Per-request view concern: the cache (D-030) still
+  // holds the un-redacted walk.
+  const redacted = anonymiseReviews(trimmed, anonymise);
+  // CSV and XLSX exports operate on the redacted, trimmed view too, so a
+  // `limit=N` request produces a file with N rows. The cache key is unaffected
   // (D-030: cache holds the full walk).
   const trimmedPayload: CachedReviewsPayload = {
     place: payload.place,
-    reviews: trimmed,
+    reviews: redacted,
     fetched_at: payload.fetched_at,
   };
   if (payload.truncated) trimmedPayload.truncated = true;
@@ -590,7 +614,7 @@ function respondSuccess(
     // keys, in first-requested order.
     const body: ReviewsBody = {
       place: payload.place,
-      reviews: projectReviews(trimmed, fields),
+      reviews: projectReviews(redacted, fields),
       fetched_at: payload.fetched_at,
     };
     if (payload.truncated) body.truncated = true;
@@ -756,6 +780,7 @@ export const __testing = {
   parseRating,
   parseBooleanFlag,
   parseFilter,
+  parseAnonymiseOptions,
   // Drive the handler with an injected name resolver (offline tests).
   handleGet,
 };
