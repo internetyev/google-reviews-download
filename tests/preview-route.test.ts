@@ -287,19 +287,21 @@ describe("PreviewPage — bad input renders an error card, never throws", () => 
 //       breaking the route contract while every preview still "works".
 
 describe("PreviewPage — DownloadCta deep-link URL contract (L16.1)", () => {
-  for (const fmt of ["csv", "json", "xlsx", "md"] as const) {
+  for (const fmt of ["csv", "json", "xlsx", "md", "html"] as const) {
     it(`preferred format=${fmt} is the primary anchor, others follow`, async () => {
       const tree = await PreviewPage(
         mk({ placeId: "MOCK_SMALL_001", format: fmt }),
       );
       const hrefs = apiReviewsHrefs(tree);
-      // expect exactly 4 anchors (one per supported format), preferred first.
-      expect(hrefs.length).toBe(4);
+      // expect exactly 5 anchors (one per supported format), preferred first.
+      expect(hrefs.length).toBe(5);
       expect(hrefs[0]).toContain(`format=${fmt}`);
-      // the three secondary anchors are the remaining formats; each appears
+      // the four secondary anchors are the remaining formats; each appears
       // exactly once — pin the "filter doesn't double-emit / doesn't drop"
       // contract on the secondary slice.
-      const rest = ["csv", "json", "xlsx", "md"].filter((f) => f !== fmt);
+      const rest = ["csv", "json", "xlsx", "md", "html"].filter(
+        (f) => f !== fmt,
+      );
       const secondaryFormats = hrefs.slice(1).map((h) => {
         const m = /format=([a-z]+)/.exec(h);
         return m ? m[1] : "";
@@ -320,7 +322,7 @@ describe("PreviewPage — DownloadCta deep-link URL contract (L16.1)", () => {
       mk({ placeId: "MOCK_SMALL_001&malicious=true" }),
     );
     const hrefs = apiReviewsHrefs(tree);
-    expect(hrefs.length).toBe(4);
+    expect(hrefs.length).toBe(5);
     // Every emitted href must have its `placeId=` value encoded. A
     // regression dropping encodeURIComponent would produce
     // `placeId=MOCK_SMALL_001&malicious=true` (literal `&` and `=`), which
@@ -381,6 +383,17 @@ describe("PreviewPage — format validation default (L16.1)", () => {
     );
     const primary = firstApiReviewsHref(tree);
     expect(primary).toContain("format=md");
+  });
+
+  it("format=html (valid, L38.3) → primary CTA passes through as html", async () => {
+    // `html` is the L38.3 self-contained testimonials page; isFormat now
+    // accepts it so the form's `format=html` rides through to the download
+    // CTA verbatim, alongside md/json/csv/xlsx.
+    const tree = await PreviewPage(
+      mk({ placeId: "MOCK_SMALL_001", format: "html" }),
+    );
+    const primary = firstApiReviewsHref(tree);
+    expect(primary).toContain("format=html");
   });
 
   it("format=markdown (the API alias) → primary CTA falls back to csv (preview accepts only the canonical `md`)", async () => {

@@ -11,6 +11,7 @@ const FORMATS = [
   { value: "csv", label: "CSV", hint: "available today" },
   { value: "xlsx", label: "XLSX", hint: "available today" },
   { value: "md", label: "Markdown", hint: "available today" },
+  { value: "html", label: "HTML", hint: "available today" },
 ] as const;
 
 // Optional filter controls (L33.3). These post the same query params the HTTP
@@ -139,7 +140,9 @@ export function ReviewToolForm() {
           widths. JSON returns the raw <code>GetReviewsResponse</code>
           envelope. Markdown is a paste-ready testimonials document —
           a headline rating and one quoted review per section — ideal
-          for a report, a deck, or a public testimonials page.
+          for a report or a deck. HTML is a self-contained,
+          ready-to-publish testimonials page (inline-styled, no external
+          assets) you can drop straight onto a site or into an email.
         </span>
       </fieldset>
 

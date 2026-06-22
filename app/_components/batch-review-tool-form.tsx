@@ -14,6 +14,7 @@ const FORMATS = [
   { value: "xlsx", label: "XLSX", hint: "combined file" },
   { value: "json", label: "JSON", hint: "combined envelope" },
   { value: "md", label: "Markdown", hint: "combined document" },
+  { value: "html", label: "HTML", hint: "combined page" },
 ] as const;
 
 export function BatchReviewToolForm() {
