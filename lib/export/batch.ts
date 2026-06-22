@@ -16,10 +16,16 @@ import { CachedReviewsPayload } from "@/lib/cache/reviews-cache";
 import { formatBatchAsCsv } from "./csv";
 import { formatBatchAsXlsx } from "./xlsx";
 import { formatBatchAsMarkdown } from "./markdown";
+import { formatBatchAsHtml } from "./html";
 
-export { formatBatchAsCsv, formatBatchAsXlsx, formatBatchAsMarkdown };
+export {
+  formatBatchAsCsv,
+  formatBatchAsXlsx,
+  formatBatchAsMarkdown,
+  formatBatchAsHtml,
+};
 
-export type BatchExportFormat = "csv" | "xlsx" | "md";
+export type BatchExportFormat = "csv" | "xlsx" | "md" | "html";
 
 // Total reviews across every place in the batch — what a caller shows as the
 // "N reviews from M places" summary without re-walking the payloads.
