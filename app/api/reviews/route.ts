@@ -1,4 +1,4 @@
-// GET /api/reviews?placeId=...&format=json|csv|xlsx|md&limit=N
+// GET /api/reviews?placeId=...&format=json|csv|xlsx|md|html&limit=N
 //
 // Pagination walker per docs/methodology.md §2: walks SF in PAGE_SIZE-sized
 // pages, assembles into a single payload, sets `truncated: true` if either
@@ -52,9 +52,15 @@ import {
   markdownFilename,
 } from "@/lib/export/markdown";
 import {
+  HTML_CONTENT_TYPE,
+  formatReviewsAsHtml,
+  htmlFilename,
+} from "@/lib/export/html";
+import {
   batchFilename,
   batchReviewCount,
   formatBatchAsCsv,
+  formatBatchAsHtml,
   formatBatchAsMarkdown,
   formatBatchAsXlsx,
 } from "@/lib/export/batch";
@@ -79,7 +85,7 @@ const MAX_INPUT_LENGTH = 2_048;
 // legitimate id/URL/name once the querystring is decoded; their presence is a
 // malformed input (or an injection probe) we reject rather than forward.
 const CONTROL_CHARS = /[\u0000-\u001f\u007f]/;
-const SUPPORTED_FORMATS = ["json", "csv", "xlsx", "md"] as const;
+const SUPPORTED_FORMATS = ["json", "csv", "xlsx", "md", "html"] as const;
 type Format = (typeof SUPPORTED_FORMATS)[number];
 
 // Format aliases the public surface accepts but normalises before validation:
@@ -576,6 +582,19 @@ function respondBatch(
     });
   }
 
+  if (format === "html") {
+    const html = formatBatchAsHtml(payloads);
+    const filename = batchFilename(placeCount, freshest, "html");
+    return new NextResponse(html, {
+      status: 200,
+      headers: {
+        "Content-Type": HTML_CONTENT_TYPE,
+        "Content-Disposition": `attachment; filename="${filename}"`,
+        "X-Cache": cacheStatus,
+      },
+    });
+  }
+
   // format === "xlsx"
   const xlsx = formatBatchAsXlsx(payloads);
   const filename = batchFilename(placeCount, freshest, "xlsx");
@@ -688,7 +707,24 @@ function respondSuccess(
     });
   }
 
-  // format === "xlsx" — only branch left after json/csv/md above.
+  if (format === "html") {
+    // HTML is a self-contained, publishable testimonials page (L38.1), NOT a
+    // column subset, so — like Markdown — it intentionally ignores `fields`
+    // while honouring the same filter→sort→limit→anonymise pipeline as the
+    // other formats (it serialises the redacted `trimmedPayload`).
+    const html = formatReviewsAsHtml(trimmedPayload);
+    const filename = htmlFilename(slug, payload.fetched_at);
+    return new NextResponse(html, {
+      status: 200,
+      headers: {
+        "Content-Type": HTML_CONTENT_TYPE,
+        "Content-Disposition": `attachment; filename="${filename}"`,
+        "X-Cache": cacheStatus,
+      },
+    });
+  }
+
+  // format === "xlsx" — only branch left after json/csv/md/html above.
   const xlsx = formatReviewsAsXlsx(trimmedPayload, fields);
   const xlsxName = xlsxFilename(slug, payload.fetched_at);
   // Wrap the bytes in a Blob: a BodyInit the edge runtime accepts directly.
