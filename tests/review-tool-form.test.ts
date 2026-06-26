@@ -17,12 +17,13 @@
 //   2. Exactly one text input, `name="placeId"`, `required` — the place
 //      identifier the preview/normalisation pipeline keys on; `required`
 //      stops an empty submit from round-tripping to an error card.
-//   3. Exactly five `name="format"` radios with values json/csv/xlsx/md/html
+//   3. Exactly six `name="format"` radios with values json/csv/xlsx/md/html/txt
 //      in that order, and `json` is the one `defaultChecked` — the order the
 //      form surfaces (same check-order spirit as L6.5/D-046) and the documented
 //      default download format that rides along to the preview CTA. (`md` is
-//      the L37.3 Markdown testimonials format and `html` the L38.3 self-
-//      contained testimonials page, wired alongside JSON/CSV/XLSX.)
+//      the L37.3 Markdown testimonials format, `html` the L38.3 self-contained
+//      testimonials page, and `txt` the L39.3 unstyled plain-text testimonials,
+//      wired alongside JSON/CSV/XLSX.)
 //
 // `ReviewToolForm` is a pure, synchronous, hookless component with no
 // sub-components (only intrinsic JSX elements), so it is invoked directly and
@@ -121,25 +122,27 @@ describe("ReviewToolForm — the export-format radios", () => {
     (el) => el.type === "input" && el.props.type === "radio",
   );
 
-  it("renders exactly five format radios named format", () => {
-    expect(radios).toHaveLength(5);
+  it("renders exactly six format radios named format", () => {
+    expect(radios).toHaveLength(6);
     for (const r of radios) {
       expect(r.props.name).toBe("format");
     }
   });
 
-  it("offers json/csv/xlsx/md/html in that surfaced order", () => {
+  it("offers json/csv/xlsx/md/html/txt in that surfaced order", () => {
     // The order the form surfaces — same check-order spirit as L6.5/D-046.
-    // `md` (Markdown testimonials, L37.3) and `html` (self-contained
-    // testimonials page, L38.3) are appended after the columnar formats —
-    // the canonical tokens /api/reviews accepts (the `markdown` alias is
-    // API-only; the form submits the short `md`/`html`).
+    // `md` (Markdown testimonials, L37.3), `html` (self-contained
+    // testimonials page, L38.3) and `txt` (unstyled plain-text testimonials,
+    // L39.3) are appended after the columnar formats — the canonical tokens
+    // /api/reviews accepts (the `markdown` alias is API-only; the form submits
+    // the short `md`/`html`/`txt`).
     expect(radios.map((r) => r.props.value)).toEqual([
       "json",
       "csv",
       "xlsx",
       "md",
       "html",
+      "txt",
     ]);
   });
 
