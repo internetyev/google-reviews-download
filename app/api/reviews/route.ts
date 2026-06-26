@@ -57,11 +57,17 @@ import {
   htmlFilename,
 } from "@/lib/export/html";
 import {
+  TEXT_CONTENT_TYPE,
+  formatReviewsAsText,
+  textFilename,
+} from "@/lib/export/text";
+import {
   batchFilename,
   batchReviewCount,
   formatBatchAsCsv,
   formatBatchAsHtml,
   formatBatchAsMarkdown,
+  formatBatchAsText,
   formatBatchAsXlsx,
 } from "@/lib/export/batch";
 
@@ -85,7 +91,7 @@ const MAX_INPUT_LENGTH = 2_048;
 // legitimate id/URL/name once the querystring is decoded; their presence is a
 // malformed input (or an injection probe) we reject rather than forward.
 const CONTROL_CHARS = /[\u0000-\u001f\u007f]/;
-const SUPPORTED_FORMATS = ["json", "csv", "xlsx", "md", "html"] as const;
+const SUPPORTED_FORMATS = ["json", "csv", "xlsx", "md", "html", "txt"] as const;
 type Format = (typeof SUPPORTED_FORMATS)[number];
 
 // Format aliases the public surface accepts but normalises before validation:
@@ -595,6 +601,19 @@ function respondBatch(
     });
   }
 
+  if (format === "txt") {
+    const txt = formatBatchAsText(payloads);
+    const filename = batchFilename(placeCount, freshest, "txt");
+    return new NextResponse(txt, {
+      status: 200,
+      headers: {
+        "Content-Type": TEXT_CONTENT_TYPE,
+        "Content-Disposition": `attachment; filename="${filename}"`,
+        "X-Cache": cacheStatus,
+      },
+    });
+  }
+
   // format === "xlsx"
   const xlsx = formatBatchAsXlsx(payloads);
   const filename = batchFilename(placeCount, freshest, "xlsx");
@@ -724,7 +743,24 @@ function respondSuccess(
     });
   }
 
-  // format === "xlsx" — only branch left after json/csv/md/html above.
+  if (format === "txt") {
+    // Plain text is an unstyled narrative testimonials document (L39.1), NOT a
+    // column subset, so — like Markdown and HTML — it intentionally ignores
+    // `fields` while honouring the same filter→sort→limit→anonymise pipeline as
+    // the other formats (it serialises the redacted `trimmedPayload`).
+    const txt = formatReviewsAsText(trimmedPayload);
+    const filename = textFilename(slug, payload.fetched_at);
+    return new NextResponse(txt, {
+      status: 200,
+      headers: {
+        "Content-Type": TEXT_CONTENT_TYPE,
+        "Content-Disposition": `attachment; filename="${filename}"`,
+        "X-Cache": cacheStatus,
+      },
+    });
+  }
+
+  // format === "xlsx" — only branch left after json/csv/md/html/txt above.
   const xlsx = formatReviewsAsXlsx(trimmedPayload, fields);
   const xlsxName = xlsxFilename(slug, payload.fetched_at);
   // Wrap the bytes in a Blob: a BodyInit the edge runtime accepts directly.
