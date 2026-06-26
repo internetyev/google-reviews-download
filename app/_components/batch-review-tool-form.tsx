@@ -15,6 +15,7 @@ const FORMATS = [
   { value: "json", label: "JSON", hint: "combined envelope" },
   { value: "md", label: "Markdown", hint: "combined document" },
   { value: "html", label: "HTML", hint: "combined page" },
+  { value: "txt", label: "Plain text", hint: "combined file" },
 ] as const;
 
 export function BatchReviewToolForm() {
