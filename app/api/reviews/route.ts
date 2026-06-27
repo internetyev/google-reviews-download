@@ -62,10 +62,16 @@ import {
   textFilename,
 } from "@/lib/export/text";
 import {
+  JSONLD_CONTENT_TYPE,
+  formatReviewsAsJsonLd,
+  jsonldFilename,
+} from "@/lib/export/jsonld";
+import {
   batchFilename,
   batchReviewCount,
   formatBatchAsCsv,
   formatBatchAsHtml,
+  formatBatchAsJsonLd,
   formatBatchAsMarkdown,
   formatBatchAsText,
   formatBatchAsXlsx,
@@ -91,7 +97,7 @@ const MAX_INPUT_LENGTH = 2_048;
 // legitimate id/URL/name once the querystring is decoded; their presence is a
 // malformed input (or an injection probe) we reject rather than forward.
 const CONTROL_CHARS = /[\u0000-\u001f\u007f]/;
-const SUPPORTED_FORMATS = ["json", "csv", "xlsx", "md", "html", "txt"] as const;
+const SUPPORTED_FORMATS = ["json", "csv", "xlsx", "md", "html", "txt", "jsonld"] as const;
 type Format = (typeof SUPPORTED_FORMATS)[number];
 
 // Format aliases the public surface accepts but normalises before validation:
@@ -614,6 +620,19 @@ function respondBatch(
     });
   }
 
+  if (format === "jsonld") {
+    const jsonld = formatBatchAsJsonLd(payloads);
+    const filename = batchFilename(placeCount, freshest, "jsonld");
+    return new NextResponse(jsonld, {
+      status: 200,
+      headers: {
+        "Content-Type": JSONLD_CONTENT_TYPE,
+        "Content-Disposition": `attachment; filename="${filename}"`,
+        "X-Cache": cacheStatus,
+      },
+    });
+  }
+
   // format === "xlsx"
   const xlsx = formatBatchAsXlsx(payloads);
   const filename = batchFilename(placeCount, freshest, "xlsx");
@@ -760,7 +779,24 @@ function respondSuccess(
     });
   }
 
-  // format === "xlsx" — only branch left after json/csv/md/html/txt above.
+  if (format === "jsonld") {
+    // JSON-LD is a schema.org structured-data document (L40.1), NOT a column
+    // subset, so — like Markdown, HTML and plain text — it intentionally ignores
+    // `fields` while honouring the same filter→sort→limit→anonymise pipeline as
+    // the other formats (it serialises the redacted `trimmedPayload`).
+    const jsonld = formatReviewsAsJsonLd(trimmedPayload);
+    const filename = jsonldFilename(slug, payload.fetched_at);
+    return new NextResponse(jsonld, {
+      status: 200,
+      headers: {
+        "Content-Type": JSONLD_CONTENT_TYPE,
+        "Content-Disposition": `attachment; filename="${filename}"`,
+        "X-Cache": cacheStatus,
+      },
+    });
+  }
+
+  // format === "xlsx" — only branch left after json/csv/md/html/txt/jsonld above.
   const xlsx = formatReviewsAsXlsx(trimmedPayload, fields);
   const xlsxName = xlsxFilename(slug, payload.fetched_at);
   // Wrap the bytes in a Blob: a BodyInit the edge runtime accepts directly.
