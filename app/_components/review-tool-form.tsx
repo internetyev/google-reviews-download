@@ -13,6 +13,7 @@ const FORMATS = [
   { value: "md", label: "Markdown", hint: "available today" },
   { value: "html", label: "HTML", hint: "available today" },
   { value: "txt", label: "Plain text", hint: "available today" },
+  { value: "jsonld", label: "JSON-LD", hint: "available today" },
 ] as const;
 
 // Optional filter controls (L33.3). These post the same query params the HTTP
@@ -146,7 +147,10 @@ export function ReviewToolForm() {
           assets) you can drop straight onto a site or into an email.
           Plain text is unstyled testimonials with no markup — ideal for an
           email body, a CMS/CRM note field, or anywhere a paste must survive
-          markup-stripping.
+          markup-stripping. JSON-LD is schema.org structured data
+          (<code>LocalBusiness</code> + <code>AggregateRating</code> +{" "}
+          <code>Review</code>) you can embed on your own site to win
+          review-star rich snippets in search results.
         </span>
       </fieldset>
 
