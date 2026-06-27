@@ -48,10 +48,11 @@ export const openApiSpec = {
               "Output format (case-insensitive). Defaults to json. `md` " +
               "(alias `markdown`) returns a narrative testimonials document; " +
               "`html` returns a self-contained, publishable testimonials page; " +
-              "`txt` returns an unstyled plain-text testimonials document.",
+              "`txt` returns an unstyled plain-text testimonials document; " +
+              "`jsonld` returns a schema.org JSON-LD review-markup document.",
             schema: {
               type: "string",
-              enum: ["json", "csv", "xlsx", "md", "html", "txt"],
+              enum: ["json", "csv", "xlsx", "md", "html", "txt", "jsonld"],
               default: "json",
             },
           },

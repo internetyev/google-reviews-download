@@ -18,6 +18,7 @@ import { formatBatchAsXlsx } from "./xlsx";
 import { formatBatchAsMarkdown } from "./markdown";
 import { formatBatchAsHtml } from "./html";
 import { formatBatchAsText } from "./text";
+import { formatBatchAsJsonLd } from "./jsonld";
 
 export {
   formatBatchAsCsv,
@@ -25,9 +26,16 @@ export {
   formatBatchAsMarkdown,
   formatBatchAsHtml,
   formatBatchAsText,
+  formatBatchAsJsonLd,
 };
 
-export type BatchExportFormat = "csv" | "xlsx" | "md" | "html" | "txt";
+export type BatchExportFormat =
+  | "csv"
+  | "xlsx"
+  | "md"
+  | "html"
+  | "txt"
+  | "jsonld";
 
 // Total reviews across every place in the batch — what a caller shows as the
 // "N reviews from M places" summary without re-walking the payloads.
