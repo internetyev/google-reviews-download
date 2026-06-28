@@ -39,7 +39,7 @@ import {
 } from "@/lib/semanticforce/types";
 
 const PREVIEW_COUNT = 5;
-const SUPPORTED_FORMATS = ["csv", "json", "xlsx", "md", "html", "txt", "jsonld"] as const;
+const SUPPORTED_FORMATS = ["csv", "json", "xlsx", "md", "html", "txt", "jsonld", "rss"] as const;
 type Format = (typeof SUPPORTED_FORMATS)[number];
 
 function isFormat(s: string | undefined): s is Format {
@@ -145,7 +145,8 @@ function DownloadCta({
         frozen header; Markdown (MD) is a paste-ready testimonials document;
         HTML is a self-contained, ready-to-publish testimonials page; plain
         text (TXT) is unstyled testimonials with no markup; JSON-LD is
-        schema.org structured data for review-star rich snippets.
+        schema.org structured data for review-star rich snippets; RSS is a
+        standards-compliant 2.0 feed for feed readers and syndication.
       </span>
     </div>
   );
