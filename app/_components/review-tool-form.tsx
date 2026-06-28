@@ -14,6 +14,7 @@ const FORMATS = [
   { value: "html", label: "HTML", hint: "available today" },
   { value: "txt", label: "Plain text", hint: "available today" },
   { value: "jsonld", label: "JSON-LD", hint: "available today" },
+  { value: "rss", label: "RSS", hint: "available today" },
 ] as const;
 
 // Optional filter controls (L33.3). These post the same query params the HTTP
@@ -150,7 +151,10 @@ export function ReviewToolForm() {
           markup-stripping. JSON-LD is schema.org structured data
           (<code>LocalBusiness</code> + <code>AggregateRating</code> +{" "}
           <code>Review</code>) you can embed on your own site to win
-          review-star rich snippets in search results.
+          review-star rich snippets in search results. RSS is a
+          standards-compliant 2.0 feed — point a feed reader, a "latest
+          reviews" widget, or a Zapier/IFTTT automation at it to syndicate
+          new reviews out as they arrive.
         </span>
       </fieldset>
 

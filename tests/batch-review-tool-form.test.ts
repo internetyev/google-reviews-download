@@ -15,16 +15,17 @@
 //      area the batch-input parser (parsePlacesList) splits. `required` stops an
 //      empty submit. A regression to a single `<input name="placeId">` (folding
 //      it back into the single form's shape) would silently break batch mode.
-//   3. Exactly seven `name="format"` radios with values
-//      csv/xlsx/json/md/html/txt/jsonld in that surfaced order, and `csv` is the
-//      one defaultChecked — the documented batch default (a combined file is
+//   3. Exactly eight `name="format"` radios with values
+//      csv/xlsx/json/md/html/txt/jsonld/rss in that surfaced order, and `csv` is
+//      the one defaultChecked — the documented batch default (a combined file is
 //      most useful as a spreadsheet), which is deliberately a DIFFERENT default
 //      from the single form's json (L8.2/D-046); pinning it makes a "harmonise
 //      the two forms" cleanup loud. (`md` is the L37.3 combined Markdown
 //      testimonials document, `html` the L38.3 combined testimonials page, `txt`
-//      the L39.3 combined plain-text document, and `jsonld` the L40.3 combined
-//      schema.org structured-data document, wired alongside the columnar formats
-//      — batch parity with the single form.)
+//      the L39.3 combined plain-text document, `jsonld` the L40.3 combined
+//      schema.org structured-data document, and `rss` the L41.3 combined RSS 2.0
+//      feed, wired alongside the columnar formats — batch parity with the single
+//      form.)
 //   4. label/textarea pairing (htmlFor="places" ↔ id="places") — the a11y
 //      contract, same as the single form's placeId pairing.
 //
@@ -147,19 +148,19 @@ describe("BatchReviewToolForm — the export-format radios", () => {
     (el) => el.type === "input" && el.props.type === "radio",
   );
 
-  it("renders exactly seven format radios named format", () => {
-    expect(radios).toHaveLength(7);
+  it("renders exactly eight format radios named format", () => {
+    expect(radios).toHaveLength(8);
     for (const r of radios) {
       expect(r.props.name).toBe("format");
     }
   });
 
-  it("offers csv/xlsx/json/md/html/txt/jsonld in that surfaced order", () => {
+  it("offers csv/xlsx/json/md/html/txt/jsonld/rss in that surfaced order", () => {
     // `md` (combined Markdown testimonials, L37.3), `html` (combined
     // testimonials page, L38.3), `txt` (combined plain-text document,
-    // L39.3) and `jsonld` (combined schema.org structured data, L40.3) are
-    // appended after the columnar formats — the canonical tokens
-    // /api/reviews accepts.
+    // L39.3), `jsonld` (combined schema.org structured data, L40.3) and `rss`
+    // (combined RSS 2.0 feed, L41.3) are appended after the columnar formats —
+    // the canonical tokens /api/reviews accepts.
     expect(radios.map((r) => r.props.value)).toEqual([
       "csv",
       "xlsx",
@@ -168,6 +169,7 @@ describe("BatchReviewToolForm — the export-format radios", () => {
       "html",
       "txt",
       "jsonld",
+      "rss",
     ]);
   });
 
