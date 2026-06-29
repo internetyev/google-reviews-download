@@ -20,6 +20,7 @@ import { formatBatchAsHtml } from "./html";
 import { formatBatchAsText } from "./text";
 import { formatBatchAsJsonLd } from "./jsonld";
 import { formatBatchAsRss } from "./rss";
+import { formatBatchAsAtom } from "./atom";
 
 export {
   formatBatchAsCsv,
@@ -29,6 +30,7 @@ export {
   formatBatchAsText,
   formatBatchAsJsonLd,
   formatBatchAsRss,
+  formatBatchAsAtom,
 };
 
 export type BatchExportFormat =
@@ -38,7 +40,8 @@ export type BatchExportFormat =
   | "html"
   | "txt"
   | "jsonld"
-  | "rss";
+  | "rss"
+  | "atom";
 
 // Total reviews across every place in the batch — what a caller shows as the
 // "N reviews from M places" summary without re-walking the payloads.
