@@ -50,10 +50,11 @@ export const openApiSpec = {
               "`html` returns a self-contained, publishable testimonials page; " +
               "`txt` returns an unstyled plain-text testimonials document; " +
               "`jsonld` returns a schema.org JSON-LD review-markup document; " +
-              "`rss` returns an RSS 2.0 syndication feed of the reviews.",
+              "`rss` returns an RSS 2.0 syndication feed of the reviews; " +
+              "`atom` returns an Atom 1.0 (RFC 4287) syndication feed of the reviews.",
             schema: {
               type: "string",
-              enum: ["json", "csv", "xlsx", "md", "html", "txt", "jsonld", "rss"],
+              enum: ["json", "csv", "xlsx", "md", "html", "txt", "jsonld", "rss", "atom"],
               default: "json",
             },
           },

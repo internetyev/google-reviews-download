@@ -72,6 +72,11 @@ import {
   rssFilename,
 } from "@/lib/export/rss";
 import {
+  ATOM_CONTENT_TYPE,
+  formatReviewsAsAtom,
+  atomFilename,
+} from "@/lib/export/atom";
+import {
   batchFilename,
   batchReviewCount,
   formatBatchAsCsv,
@@ -79,6 +84,7 @@ import {
   formatBatchAsJsonLd,
   formatBatchAsMarkdown,
   formatBatchAsRss,
+  formatBatchAsAtom,
   formatBatchAsText,
   formatBatchAsXlsx,
 } from "@/lib/export/batch";
@@ -103,7 +109,7 @@ const MAX_INPUT_LENGTH = 2_048;
 // legitimate id/URL/name once the querystring is decoded; their presence is a
 // malformed input (or an injection probe) we reject rather than forward.
 const CONTROL_CHARS = /[\u0000-\u001f\u007f]/;
-const SUPPORTED_FORMATS = ["json", "csv", "xlsx", "md", "html", "txt", "jsonld", "rss"] as const;
+const SUPPORTED_FORMATS = ["json", "csv", "xlsx", "md", "html", "txt", "jsonld", "rss", "atom"] as const;
 type Format = (typeof SUPPORTED_FORMATS)[number];
 
 // Format aliases the public surface accepts but normalises before validation:
@@ -652,6 +658,19 @@ function respondBatch(
     });
   }
 
+  if (format === "atom") {
+    const atom = formatBatchAsAtom(payloads);
+    const filename = batchFilename(placeCount, freshest, "atom");
+    return new NextResponse(atom, {
+      status: 200,
+      headers: {
+        "Content-Type": ATOM_CONTENT_TYPE,
+        "Content-Disposition": `attachment; filename="${filename}"`,
+        "X-Cache": cacheStatus,
+      },
+    });
+  }
+
   // format === "xlsx"
   const xlsx = formatBatchAsXlsx(payloads);
   const filename = batchFilename(placeCount, freshest, "xlsx");
@@ -832,7 +851,24 @@ function respondSuccess(
     });
   }
 
-  // format === "xlsx" — only branch left after json/csv/md/html/txt/jsonld/rss above.
+  if (format === "atom") {
+    // Atom 1.0 (RFC 4287) is a syndication feed (L42.1), NOT a column subset,
+    // so — like Markdown, HTML, plain text, JSON-LD and RSS — it intentionally
+    // ignores `fields` while honouring the same filter→sort→limit→anonymise
+    // pipeline as the other formats (it serialises the redacted `trimmedPayload`).
+    const atom = formatReviewsAsAtom(trimmedPayload);
+    const filename = atomFilename(slug, payload.fetched_at);
+    return new NextResponse(atom, {
+      status: 200,
+      headers: {
+        "Content-Type": ATOM_CONTENT_TYPE,
+        "Content-Disposition": `attachment; filename="${filename}"`,
+        "X-Cache": cacheStatus,
+      },
+    });
+  }
+
+  // format === "xlsx" — only branch left after json/csv/md/html/txt/jsonld/rss/atom above.
   const xlsx = formatReviewsAsXlsx(trimmedPayload, fields);
   const xlsxName = xlsxFilename(slug, payload.fetched_at);
   // Wrap the bytes in a Blob: a BodyInit the edge runtime accepts directly.
