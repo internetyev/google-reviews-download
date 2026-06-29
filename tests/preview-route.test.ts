@@ -287,19 +287,19 @@ describe("PreviewPage — bad input renders an error card, never throws", () => 
 //       breaking the route contract while every preview still "works".
 
 describe("PreviewPage — DownloadCta deep-link URL contract (L16.1)", () => {
-  for (const fmt of ["csv", "json", "xlsx", "md", "html", "txt", "jsonld", "rss"] as const) {
+  for (const fmt of ["csv", "json", "xlsx", "md", "html", "txt", "jsonld", "rss", "atom"] as const) {
     it(`preferred format=${fmt} is the primary anchor, others follow`, async () => {
       const tree = await PreviewPage(
         mk({ placeId: "MOCK_SMALL_001", format: fmt }),
       );
       const hrefs = apiReviewsHrefs(tree);
-      // expect exactly 8 anchors (one per supported format), preferred first.
-      expect(hrefs.length).toBe(8);
+      // expect exactly 9 anchors (one per supported format), preferred first.
+      expect(hrefs.length).toBe(9);
       expect(hrefs[0]).toContain(`format=${fmt}`);
-      // the seven secondary anchors are the remaining formats; each appears
+      // the eight secondary anchors are the remaining formats; each appears
       // exactly once — pin the "filter doesn't double-emit / doesn't drop"
       // contract on the secondary slice.
-      const rest = ["csv", "json", "xlsx", "md", "html", "txt", "jsonld", "rss"].filter(
+      const rest = ["csv", "json", "xlsx", "md", "html", "txt", "jsonld", "rss", "atom"].filter(
         (f) => f !== fmt,
       );
       const secondaryFormats = hrefs.slice(1).map((h) => {
@@ -322,7 +322,7 @@ describe("PreviewPage — DownloadCta deep-link URL contract (L16.1)", () => {
       mk({ placeId: "MOCK_SMALL_001&malicious=true" }),
     );
     const hrefs = apiReviewsHrefs(tree);
-    expect(hrefs.length).toBe(8);
+    expect(hrefs.length).toBe(9);
     // Every emitted href must have its `placeId=` value encoded. A
     // regression dropping encodeURIComponent would produce
     // `placeId=MOCK_SMALL_001&malicious=true` (literal `&` and `=`), which
@@ -427,6 +427,17 @@ describe("PreviewPage — format validation default (L16.1)", () => {
     );
     const primary = firstApiReviewsHref(tree);
     expect(primary).toContain("format=rss");
+  });
+
+  it("format=atom (valid, L42.3) → primary CTA passes through as atom", async () => {
+    // `atom` is the L42.3 Atom 1.0 syndication feed; isFormat now accepts it so
+    // the form's `format=atom` rides through to the download CTA verbatim,
+    // alongside md/html/txt/json/csv/xlsx/jsonld/rss.
+    const tree = await PreviewPage(
+      mk({ placeId: "MOCK_SMALL_001", format: "atom" }),
+    );
+    const primary = firstApiReviewsHref(tree);
+    expect(primary).toContain("format=atom");
   });
 
   it("format=markdown (the API alias) → primary CTA falls back to csv (preview accepts only the canonical `md`)", async () => {

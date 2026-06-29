@@ -158,9 +158,9 @@ describe("PreviewPage batch mode — combined download links", () => {
   it("links to /api/reviews?places=… (not ?placeId=), preferred format first", async () => {
     const tree = await PreviewPage(mk({ places: PLACES, format: "xlsx" }));
     const hrefs = apiReviewsHrefs(tree);
-    // one anchor per supported format (csv/json/xlsx/md/html/txt/jsonld/rss,
-    // L37.3/L38.3/L39.3/L40.3/L41.3), preferred (xlsx) first.
-    expect(hrefs).toHaveLength(8);
+    // one anchor per supported format (csv/json/xlsx/md/html/txt/jsonld/rss/atom,
+    // L37.3/L38.3/L39.3/L40.3/L41.3/L42.3), preferred (xlsx) first.
+    expect(hrefs).toHaveLength(9);
     expect(hrefs[0]).toContain("format=xlsx");
     for (const href of hrefs) {
       // the batch download must carry the whole pasted list as `places`,
