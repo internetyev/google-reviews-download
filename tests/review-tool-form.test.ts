@@ -17,15 +17,15 @@
 //   2. Exactly one text input, `name="placeId"`, `required` — the place
 //      identifier the preview/normalisation pipeline keys on; `required`
 //      stops an empty submit from round-tripping to an error card.
-//   3. Exactly eight `name="format"` radios with values
-//      json/csv/xlsx/md/html/txt/jsonld/rss in that order, and `json` is the one
-//      `defaultChecked` — the order the form surfaces (same check-order spirit
-//      as L6.5/D-046) and the documented default download format that rides
-//      along to the preview CTA. (`md` is the L37.3 Markdown testimonials
+//   3. Exactly nine `name="format"` radios with values
+//      json/csv/xlsx/md/html/txt/jsonld/rss/atom in that order, and `json` is the
+//      one `defaultChecked` — the order the form surfaces (same check-order
+//      spirit as L6.5/D-046) and the documented default download format that
+//      rides along to the preview CTA. (`md` is the L37.3 Markdown testimonials
 //      format, `html` the L38.3 self-contained testimonials page, `txt` the
 //      L39.3 unstyled plain-text testimonials, `jsonld` the L40.3 schema.org
-//      structured-data export, and `rss` the L41.3 RSS 2.0 syndication feed,
-//      wired alongside JSON/CSV/XLSX.)
+//      structured-data export, `rss` the L41.3 RSS 2.0 syndication feed, and
+//      `atom` the L42.3 Atom 1.0 syndication feed, wired alongside JSON/CSV/XLSX.)
 //
 // `ReviewToolForm` is a pure, synchronous, hookless component with no
 // sub-components (only intrinsic JSX elements), so it is invoked directly and
@@ -124,21 +124,22 @@ describe("ReviewToolForm — the export-format radios", () => {
     (el) => el.type === "input" && el.props.type === "radio",
   );
 
-  it("renders exactly eight format radios named format", () => {
-    expect(radios).toHaveLength(8);
+  it("renders exactly nine format radios named format", () => {
+    expect(radios).toHaveLength(9);
     for (const r of radios) {
       expect(r.props.name).toBe("format");
     }
   });
 
-  it("offers json/csv/xlsx/md/html/txt/jsonld/rss in that surfaced order", () => {
+  it("offers json/csv/xlsx/md/html/txt/jsonld/rss/atom in that surfaced order", () => {
     // The order the form surfaces — same check-order spirit as L6.5/D-046.
     // `md` (Markdown testimonials, L37.3), `html` (self-contained
     // testimonials page, L38.3), `txt` (unstyled plain-text testimonials,
-    // L39.3), `jsonld` (schema.org structured data, L40.3) and `rss` (RSS 2.0
-    // syndication feed, L41.3) are appended after the columnar formats — the
-    // canonical tokens /api/reviews accepts (the `markdown` alias is API-only;
-    // the form submits the short `md`/`html`/`txt`/`jsonld`/`rss`).
+    // L39.3), `jsonld` (schema.org structured data, L40.3), `rss` (RSS 2.0
+    // syndication feed, L41.3) and `atom` (Atom 1.0 syndication feed, L42.3)
+    // are appended after the columnar formats — the canonical tokens
+    // /api/reviews accepts (the `markdown` alias is API-only; the form submits
+    // the short `md`/`html`/`txt`/`jsonld`/`rss`/`atom`).
     expect(radios.map((r) => r.props.value)).toEqual([
       "json",
       "csv",
@@ -148,6 +149,7 @@ describe("ReviewToolForm — the export-format radios", () => {
       "txt",
       "jsonld",
       "rss",
+      "atom",
     ]);
   });
 

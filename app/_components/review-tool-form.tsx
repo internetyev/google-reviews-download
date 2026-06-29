@@ -15,6 +15,7 @@ const FORMATS = [
   { value: "txt", label: "Plain text", hint: "available today" },
   { value: "jsonld", label: "JSON-LD", hint: "available today" },
   { value: "rss", label: "RSS", hint: "available today" },
+  { value: "atom", label: "Atom", hint: "available today" },
 ] as const;
 
 // Optional filter controls (L33.3). These post the same query params the HTTP
@@ -154,7 +155,10 @@ export function ReviewToolForm() {
           review-star rich snippets in search results. RSS is a
           standards-compliant 2.0 feed — point a feed reader, a "latest
           reviews" widget, or a Zapier/IFTTT automation at it to syndicate
-          new reviews out as they arrive.
+          new reviews out as they arrive. Atom is the IETF-standard (RFC
+          4287) feed — the same syndication use-case as RSS but with stable
+          per-entry IDs and required timestamps that many modern feed readers
+          and aggregators prefer.
         </span>
       </fieldset>
 
